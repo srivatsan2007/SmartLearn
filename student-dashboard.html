@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard | SmartLearn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar Overlay for mobile drawer -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Main Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-brand">
+          <div class="auth-brand-logo" style="width:36px; height:36px; background:transparent; padding:0;">
+            <img src="assets/logo.png" alt="SmartLearn Logo" style="width:36px; height:36px; object-fit:contain;">
+          </div>
+          <div>
+            <div class="sidebar-brand-name">SmartLearn</div>
+            <div class="sidebar-brand-sub">Student Portal</div>
+          </div>
+        </div>
+        <button class="sidebar-close-mobile-btn" onclick="document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').classList.remove('active');">&times;</button>
+      </div>
+
+      <div class="sidebar-menu-wrapper">
+        <div class="sidebar-menu-category">Main Menu</div>
+        <a href="#overview" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="assignments.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Assignments
+        </a>
+        <a href="study-materials.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Study Materials
+        </a>
+        <a href="quizzes.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Quizzes
+        </a>
+        <a href="#attendance" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Attendance
+        </a>
+        <a href="#performance" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Performance
+        </a>
+        <a href="#rewards" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+          Rewards & Leaderboard 🏆
+        </a>
+        <a href="#announcements" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          Announcements
+        </a>
+
+
+
+        <div class="sidebar-menu-category">AI Features</div>
+        <a href="#ai-assistant" id="open-ai-btn" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
+          SmartLearn AI
+        </a>
+
+        <div class="sidebar-menu-category">Account</div>
+        <a href="#profile" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profile & Settings
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item logout-link" onclick="SmartLearnAuth.logout(); return false;" style="color: var(--danger);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+      
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          
+          <div class="search-box-header">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search assignments, subjects, notes...">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="icon-circle-btn" id="theme-toggle" title="Toggle Theme">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+          </button>
+
+          <div class="icon-circle-btn" title="Notifications" onclick="SmartLearnApp.openModal('notifications-modal')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notification-dot"></span>
+          </div>
+
+          <!-- User Profile Dropdown -->
+          <div class="profile-dropdown-wrapper">
+            <div class="user-card-mini" id="user-profile-btn" style="cursor: pointer;">
+              <img id="user-avatar-img" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Student" alt="Student Avatar" class="user-avatar">
+              <div class="user-info-text desktop-only">
+                <div id="user-display-name" class="user-name">--</div>
+                <div id="user-display-role" class="user-role-badge">Student</div>
+              </div>
+            </div>
+
+            <div class="profile-dropdown-menu" id="user-profile-dropdown">
+              <a href="#profile" class="dropdown-item">My Profile</a>
+              <div style="border-top: 1px solid var(--border-color); margin: 0.25rem 0;"></div>
+              <a href="#" class="dropdown-item" onclick="SmartLearnAuth.logout(); return false;" style="color: var(--danger);">Logout</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Dashboard Container -->
+      <main class="dashboard-container">
+        
+        <!-- Tab 1: Dashboard Overview -->
+        <div id="overview" class="dashboard-tab-content">
+          <!-- Dynamic Header Greeting -->
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title" id="greeting-text">Good Morning 👋</h1>
+              <p class="greeting-sub" id="greeting-sub">Student Portal</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('ai-assistant-modal')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+              Ask SmartLearn AI
+            </button>
+          </div>
+
+          <!-- Dynamic Stat Metric Cards -->
+          <div class="stats-grid">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="stat-attendance-val">--%</div>
+                <div class="stat-lbl">Attendance Rate</div>
+                <div class="text-xs text-muted" id="stat-attendance-sub" style="margin-top: 0.2rem;">--</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="stat-pending-val">0</div>
+                <div class="stat-lbl">Pending Assignments</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Requires action</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="stat-exams-val">0</div>
+                <div class="stat-lbl">Upcoming Exams</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Scheduled tests</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="stat-score-val">--%</div>
+                <div class="stat-lbl">Average Score</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Academic Average</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard Content Grid -->
+          <div class="dashboard-sections-grid">
+            
+            <!-- Left Main Column -->
+            <div class="section-column">
+              
+              <!-- Day-Wise Class Timetable Card -->
+              <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+                  <div>
+                    <div class="section-card-title" style="margin-bottom: 0.15rem;">
+                      <span>Classroom Timetable</span>
+                      <span class="badge badge-primary" id="home-tt-active-day-badge">Today's Schedule</span>
+                    </div>
+                    <div class="text-xs text-muted">Click a day tab to view its schedule</div>
+                  </div>
+                  <div style="display: flex; gap: 0.25rem; flex-wrap: wrap;" id="home-tt-day-tabs">
+                    <button type="button" class="btn btn-xs btn-primary home-tt-tab active" onclick="SmartLearnDashboard.filterHomeTimetable('today', this)">Today</button>
+                    <button type="button" class="btn btn-xs btn-outline home-tt-tab" onclick="SmartLearnDashboard.filterHomeTimetable('Monday', this)">Mon</button>
+                    <button type="button" class="btn btn-xs btn-outline home-tt-tab" onclick="SmartLearnDashboard.filterHomeTimetable('Tuesday', this)">Tue</button>
+                    <button type="button" class="btn btn-xs btn-outline home-tt-tab" onclick="SmartLearnDashboard.filterHomeTimetable('Wednesday', this)">Wed</button>
+                    <button type="button" class="btn btn-xs btn-outline home-tt-tab" onclick="SmartLearnDashboard.filterHomeTimetable('Thursday', this)">Thu</button>
+                    <button type="button" class="btn btn-xs btn-outline home-tt-tab" onclick="SmartLearnDashboard.filterHomeTimetable('Friday', this)">Fri</button>
+                    <button type="button" class="btn btn-xs btn-outline home-tt-tab" onclick="SmartLearnDashboard.filterHomeTimetable('Saturday', this)">Sat</button>
+                  </div>
+                </div>
+                <div class="class-timeline" id="today-classes-container">
+                  <div class="empty-state-text">Loading timetable...</div>
+                </div>
+              </div>
+
+              <!-- Pending & Active Assignments Card -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Assignments & Deadlines</span>
+                  <span class="badge badge-warning">Action Required</span>
+                </div>
+                <div class="assignment-list" id="pending-assignments-container">
+                  <div class="empty-state-text">Loading assignments...</div>
+                </div>
+              </div>
+
+              <!-- Study Materials Card -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Class Resources & Materials</span>
+                  <span class="badge badge-info">Downloads</span>
+                </div>
+                <div class="assignment-list" id="study-materials-container">
+                  <div class="empty-state-text">Loading resources...</div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Sidebar Column -->
+            <div class="section-column">
+              
+              <!-- SmartLearn AI Assistant Interactive Card -->
+              <div class="ai-banner-card">
+                <div class="badge badge-primary" style="background: rgba(255,255,255,0.2); color: #ffffff; margin-bottom: 0.75rem;">✨ SmartLearn AI</div>
+                <h3 class="ai-banner-title">Connected AI Study Assistant</h3>
+                <p class="ai-banner-text">Ask SmartLearn AI for instant concept summaries, formula derivation, or practice quiz questions!</p>
+                <button class="btn" style="background-color: #ffffff; color: #312e81; font-weight: 700;" onclick="SmartLearnApp.openModal('ai-assistant-modal')">
+                  Ask SmartLearn AI &rarr;
+                </button>
+              </div>
+
+              <!-- Subject Performance & Dynamic AI Insights -->
+              <div class="card">
+                <div class="section-card-title">Subject Performance Breakdown</div>
+                <div id="subject-performance-container" style="display: flex; flex-direction: column; gap: 0.85rem; margin-bottom: 1.25rem;">
+                  <div class="empty-state-text">Loading performance data...</div>
+                </div>
+
+                <!-- Dynamic Weakest Subject Recommendation Box -->
+                <div id="learning-recommendation-box" style="padding: 0.85rem; background-color: var(--bg-subtle); border-radius: var(--radius-md); border-left: 3px solid var(--primary);">
+                  <!-- Populated dynamically based on lowest score -->
+                </div>
+              </div>
+
+              <!-- Upcoming Exams -->
+              <div class="card">
+                <div class="section-card-title">Upcoming Examinations</div>
+                <div class="assignment-list" id="upcoming-exams-container">
+                  <div class="empty-state-text">Loading exams...</div>
+                </div>
+              </div>
+
+              <!-- Institutional Announcements & Broadcast Notices -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Institutional Announcements 📢</span>
+                  <span class="badge badge-info">Latest</span>
+                </div>
+                <div id="student-announcements-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+                  <div class="empty-state-text">Loading announcements...</div>
+                </div>
+              </div>
+
+              <!-- Recent Quizzes -->
+              <div class="card">
+                <div class="section-card-title">Recent Quiz Results</div>
+                <div class="assignment-list" id="quizzes-container">
+                  <div class="empty-state-text">Loading quizzes...</div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Tab 3: Assignments Module Page -->
+        <div id="assignments" class="dashboard-tab-content" style="display: none;">
+          
+          <!-- Dynamic Header Greeting -->
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title" id="asgn-header-title">Good Morning 👋</h1>
+              <p class="greeting-sub">Student Assignment Portal • Manage assignments, track deadlines, submit coursework, and view faculty feedback.</p>
+            </div>
+          </div>
+
+          <!-- Live Summary Statistics Cards (5 Cards) -->
+          <div class="asgn-stats-grid">
+            <div class="asgn-stat-card">
+              <div class="asgn-stat-icon total">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              </div>
+              <div>
+                <div class="asgn-stat-val" id="asgn-total-count">0</div>
+                <div class="asgn-stat-label">Total Assigned</div>
+              </div>
+            </div>
+
+            <div class="asgn-stat-card">
+              <div class="asgn-stat-icon pending">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="asgn-stat-val" id="asgn-pending-count" style="color: #f59e0b;">0</div>
+                <div class="asgn-stat-label">Pending</div>
+              </div>
+            </div>
+
+            <div class="asgn-stat-card">
+              <div class="asgn-stat-icon submitted">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div class="asgn-stat-val" id="asgn-submitted-count" style="color: #3b82f6;">0</div>
+                <div class="asgn-stat-label">Submitted</div>
+              </div>
+            </div>
+
+            <div class="asgn-stat-card">
+              <div class="asgn-stat-icon graded">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="asgn-stat-val" id="asgn-graded-count" style="color: #10b981;">0</div>
+                <div class="asgn-stat-label">Graded</div>
+              </div>
+            </div>
+
+            <div class="asgn-stat-card">
+              <div class="asgn-stat-icon overdue">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              </div>
+              <div>
+                <div class="asgn-stat-val" id="asgn-overdue-count" style="color: #ef4444;">0</div>
+                <div class="asgn-stat-label">Overdue</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Search, Filters & Sorting Toolbar -->
+          <div class="asgn-toolbar">
+            <div class="asgn-search-box">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="asgn-search-input" class="form-control" placeholder="Search by title, subject, or faculty name..." oninput="SmartLearnAssignments.renderAssignmentModule()">
+            </div>
+
+            <div class="asgn-filter-group">
+              <select id="asgn-filter-status" class="form-control" onchange="SmartLearnAssignments.renderAssignmentModule()">
+                <option value="all">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="submitted">Submitted</option>
+                <option value="graded">Graded</option>
+                <option value="overdue">Overdue</option>
+              </select>
+
+              <select id="asgn-filter-subject" class="form-control" onchange="SmartLearnAssignments.renderAssignmentModule()">
+                <option value="all">All Subjects</option>
+              </select>
+
+              <select id="asgn-filter-date" class="form-control" onchange="SmartLearnAssignments.renderAssignmentModule()">
+                <option value="all">All Deadlines</option>
+                <option value="due-today">Due Today</option>
+                <option value="due-week">Due This Week</option>
+                <option value="due-later">Due Later</option>
+                <option value="overdue">Overdue</option>
+              </select>
+
+              <select id="asgn-sort-by" class="form-control" onchange="SmartLearnAssignments.renderAssignmentModule()">
+                <option value="newest">Sort: Newest First</option>
+                <option value="oldest">Sort: Oldest First</option>
+                <option value="deadline-near">Sort: Deadline (Nearest)</option>
+                <option value="deadline-far">Sort: Deadline (Farthest)</option>
+                <option value="highest-marks">Sort: Highest Marks</option>
+                <option value="lowest-marks">Sort: Lowest Marks</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dynamic Assignment Cards Grid -->
+          <div class="asgn-cards-grid" id="asgn-cards-container">
+            <div class="empty-state-text" style="grid-column: 1 / -1; padding: 2rem; text-align: center;">Loading class assignments...</div>
+          </div>
+
+          <!-- Submission & Grading History Section -->
+          <div class="card" style="margin-top: 2rem;">
+            <div class="section-card-title">
+              <span>Submission History & Evaluated Coursework</span>
+              <span class="badge badge-primary">Course Log</span>
+            </div>
+            <div id="asgn-history-container">
+              <div class="empty-state-text" style="padding: 1.5rem; text-align: center;">Loading submission records...</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab 4: Study Materials Module Page -->
+        <div id="study-materials" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title" id="sm-header-greeting">Study Materials 📚</h1>
+              <p class="greeting-sub" id="sm-header-sub">Access verified courseware, lecture slides, video tutorials, and exam prep for your class.</p>
+            </div>
+          </div>
+
+          <!-- Summary Stat Cards -->
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 1.5rem;">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="sm-stat-total">0</div>
+                <div class="stat-lbl">Total Materials</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-danger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="sm-stat-pdfs">0</div>
+                <div class="stat-lbl">PDF Documents</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="sm-stat-ppts">0</div>
+                <div class="stat-lbl">Slides & Docs</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="sm-stat-videos">0</div>
+                <div class="stat-lbl">Video Tutorials</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M9 15l2 2 4-4"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="sm-stat-examprep">0</div>
+                <div class="stat-lbl">Exam & Revision</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper" style="background: rgba(99, 102, 241, 0.15); color: var(--primary);">
+                <span>🔖</span>
+              </div>
+              <div>
+                <div class="stat-val" id="sm-stat-saved">0</div>
+                <div class="stat-lbl">My Bookmarks</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter & Search Controls Bar -->
+          <div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.85rem;">
+              <button type="button" class="btn btn-outline btn-sm sm-scope-tab-btn active" onclick="SmartLearnStudyMaterials.setScopeFilter('all', this)">
+                📚 All Class Materials
+              </button>
+              <button type="button" class="btn btn-outline btn-sm sm-scope-tab-btn" onclick="SmartLearnStudyMaterials.setScopeFilter('saved', this)">
+                🔖 My Saved Materials
+              </button>
+              <button type="button" class="btn btn-outline btn-sm sm-scope-tab-btn" onclick="SmartLearnStudyMaterials.setScopeFilter('examprep', this)">
+                📝 Exam & Question Papers
+              </button>
+              <button type="button" class="btn btn-outline btn-sm sm-scope-tab-btn" onclick="SmartLearnStudyMaterials.setScopeFilter('viewed', this)">
+                👁️ Recently Viewed
+              </button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.85rem; align-items: center;">
+              <div style="grid-column: span 2; min-width: 240px;">
+                <input type="text" id="sm-search-input" class="form-control" placeholder="🔍 Search materials, topics, subjects, tags, teachers...">
+              </div>
+              <div>
+                <select id="sm-filter-subject" class="form-control">
+                  <option value="all">Loading Subjects...</option>
+                </select>
+              </div>
+              <div>
+                <select id="sm-filter-type" class="form-control">
+                  <option value="all">All File Types</option>
+                  <option value="PDF">PDF Documents</option>
+                  <option value="PPT">PPT / Presentations</option>
+                  <option value="DOC">Word / Notes</option>
+                  <option value="Video">Video Lectures</option>
+                  <option value="Paper">Previous Papers</option>
+                </select>
+              </div>
+              <div>
+                <select id="sm-filter-date" class="form-control">
+                  <option value="all">All Dates</option>
+                  <option value="today">Uploaded Today</option>
+                  <option value="week">This Week</option>
+                  <option value="month">This Month</option>
+                  <option value="older">Older</option>
+                </select>
+              </div>
+              <div>
+                <select id="sm-filter-sort" class="form-control">
+                  <option value="newest">Sort: Newest First</option>
+                  <option value="oldest">Sort: Oldest First</option>
+                  <option value="alphabetical">Sort: Alphabetical (A-Z)</option>
+                  <option value="viewed">Sort: Recently Viewed</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Materials Grid -->
+          <div id="sm-materials-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem;">
+            <div class="card empty-state-card" style="grid-column: 1 / -1; text-align: center; padding: 2rem;">
+              Loading class study materials...
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 5: Student Attendance & QR Attendance Module -->
+        <div id="attendance" class="dashboard-tab-content" style="display: none;">
+
+          <!-- Dynamic Page Header -->
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title" id="att-header-title">Student Attendance 📅</h1>
+              <p class="greeting-sub" id="att-header-sub">Real-time attendance tracking, subject performance breakdown, history logs, and instant QR check-in.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnAttendance.openQrScanModal()">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+              📷 Scan QR Attendance
+            </button>
+          </div>
+
+          <!-- Low Attendance Warning Alert Banner (Rendered dynamically if overall % < 75%) -->
+          <div id="att-warning-banner" style="display: none; background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; border-radius: var(--radius-md); padding: 1rem 1.25rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div style="font-size: 1.5rem;">⚠️</div>
+              <div>
+                <h4 class="font-bold text-sm" style="color: #991b1b;">Low Attendance Warning (<span id="att-warning-pct">0%</span>)</h4>
+                <p class="text-xs" style="color: #b91c1c; margin-top: 0.15rem;">
+                  Your calculated attendance rate is below the institutional <strong>75% minimum requirement</strong> (<span id="att-warning-threshold">75%</span>). Please contact your faculty advisor.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Summary Metric Cards (Calculated dynamically from real stored records) -->
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom: 1.5rem;">
+            <!-- Overall Attendance Rate -->
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="att-stat-overall-pct">--%</div>
+                <div class="stat-lbl">Overall Attendance</div>
+                <div class="text-xs text-muted" id="att-stat-overall-sub" style="margin-top: 0.2rem;">--</div>
+              </div>
+            </div>
+
+            <!-- Total Conducted Classes -->
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="att-stat-total-classes">0</div>
+                <div class="stat-lbl">Total Classes</div>
+              </div>
+            </div>
+
+            <!-- Present Count -->
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="att-stat-present" style="color: var(--success);">0</div>
+                <div class="stat-lbl">Present</div>
+              </div>
+            </div>
+
+            <!-- Absent Count -->
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-danger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="att-stat-absent" style="color: var(--danger);">0</div>
+                <div class="stat-lbl">Absent</div>
+              </div>
+            </div>
+
+            <!-- Late Count -->
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="att-stat-late" style="color: var(--warning);">0</div>
+                <div class="stat-lbl">Late / Excused</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Grid Layout -->
+          <div class="dashboard-sections-grid">
+            
+            <!-- Left Main Column: Today's Status, Subject Breakdown, History Table -->
+            <div class="section-column">
+              
+              <!-- Today's Attendance Status Card -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Today's Attendance Status</span>
+                  <span class="badge badge-info" id="att-today-date-badge">Today</span>
+                </div>
+                <div id="att-today-status-container">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+
+              <!-- Subject-wise Attendance Breakdown -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Subject-wise Attendance Breakdown</span>
+                  <span class="badge badge-primary">Course Metrics</span>
+                </div>
+                <div id="att-subject-breakdown-container" style="display: flex; flex-direction: column; gap: 1rem;">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+
+              <!-- Attendance History Log Table -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Attendance History Log</span>
+                  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                    <select id="att-history-filter-subject" class="form-control form-select" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; min-height: 32px;" onchange="SmartLearnAttendance.renderAttendanceModule()">
+                      <option value="all">All Subjects</option>
+                    </select>
+                    <select id="att-history-filter-status" class="form-control form-select" style="font-size: 0.8rem; padding: 0.3rem 0.6rem; min-height: 32px;" onchange="SmartLearnAttendance.renderAttendanceModule()">
+                      <option value="all">All Statuses</option>
+                      <option value="present">Present</option>
+                      <option value="absent">Absent</option>
+                      <option value="late">Late</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div id="att-history-table-container" style="overflow-x: auto;">
+                  <!-- Populated dynamically -->
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Sidebar Column: Quick QR Check-in, Calendar, Attendance Trend Chart -->
+            <div class="section-column">
+              
+              <!-- Quick QR Scan Card -->
+              <div class="card" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); color: #ffffff;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem;">
+                  <span class="badge" style="background: rgba(255,255,255,0.2); color: #ffffff;">✨ Instant Check-in</span>
+                  <span class="text-xs" style="color: #cbd5e1;">Classroom QR</span>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: #ffffff; margin-bottom: 0.5rem;">QR Attendance Check-in</h3>
+                <p style="font-size: 0.825rem; color: #cbd5e1; margin-bottom: 1.15rem; line-height: 1.5;">
+                  Have a live QR session code from your faculty instructor? Scan or enter code to mark attendance instantly.
+                </p>
+                <button type="button" class="btn" style="background-color: #ffffff; color: #312e81; font-weight: 700; width: 100%;" onclick="SmartLearnAttendance.openQrScanModal()">
+                  📷 Open QR Scanner / Token Input
+                </button>
+              </div>
+
+              <!-- Student Personal QR Card for Faculty Scan -->
+              <div class="card" style="text-align: center; border: 1px solid var(--border-color);">
+                <div class="badge badge-primary" style="margin-bottom: 0.5rem;">Your Student ID QR</div>
+                <div style="background: #fff; padding: 1rem; border-radius: 12px; display: inline-block; box-shadow: var(--shadow-sm); margin-bottom: 0.5rem;">
+                  <svg viewBox="0 0 100 100" width="120" height="120">
+                    <rect width="100" height="100" fill="#ffffff" />
+                    <rect x="5" y="5" width="30" height="30" fill="#0f172a" />
+                    <rect x="10" y="10" width="20" height="20" fill="#ffffff" />
+                    <rect x="15" y="15" width="10" height="10" fill="#0f172a" />
+                    
+                    <rect x="65" y="5" width="30" height="30" fill="#0f172a" />
+                    <rect x="70" y="10" width="20" height="20" fill="#ffffff" />
+                    <rect x="75" y="15" width="10" height="10" fill="#0f172a" />
+                    
+                    <rect x="5" y="65" width="30" height="30" fill="#0f172a" />
+                    <rect x="10" y="70" width="20" height="20" fill="#ffffff" />
+                    <rect x="15" y="75" width="10" height="10" fill="#0f172a" />
+                    
+                    <rect x="40" y="10" width="10" height="10" fill="#0f172a" />
+                    <rect x="45" y="45" width="15" height="15" fill="#0f172a" />
+                    <rect x="65" y="65" width="20" height="20" fill="#0f172a" />
+                    <rect x="40" y="75" width="10" height="15" fill="#0f172a" />
+                  </svg>
+                </div>
+                <div class="font-bold text-sm" style="color: var(--text-main);" id="student-personal-qr-id">SL-2026-894</div>
+                <div class="text-xs text-muted">Show this QR to faculty for direct scanner check-in</div>
+              </div>
+
+              <!-- Monthly Attendance Calendar -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span id="att-calendar-month-year">Attendance Calendar</span>
+                  <div style="display: flex; gap: 0.35rem;">
+                    <button class="btn btn-outline btn-sm" style="padding: 0.2rem 0.5rem;" onclick="SmartLearnAttendance.changeCalendarMonth(-1)">&larr;</button>
+                    <button class="btn btn-outline btn-sm" style="padding: 0.2rem 0.5rem;" onclick="SmartLearnAttendance.changeCalendarMonth(1)">&rarr;</button>
+                  </div>
+                </div>
+                
+                <div id="att-calendar-grid-container">
+                  <!-- Rendered dynamically by JS -->
+                </div>
+
+                <div style="display: flex; justify-content: space-between; font-size: 0.725rem; color: var(--text-muted); margin-top: 0.85rem; padding-top: 0.75rem; border-top: 1px solid var(--border-color);">
+                  <div style="display: flex; align-items: center; gap: 0.35rem;"><span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--success); display: inline-block;"></span> Present</div>
+                  <div style="display: flex; align-items: center; gap: 0.35rem;"><span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--danger); display: inline-block;"></span> Absent</div>
+                  <div style="display: flex; align-items: center; gap: 0.35rem;"><span style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--warning); display: inline-block;"></span> Late</div>
+                </div>
+              </div>
+
+              <!-- Attendance Rate Trend Graph -->
+              <div class="card">
+                <div class="section-card-title">Attendance Rate Trend</div>
+                <div id="att-graph-container" style="min-height: 180px; display: flex; align-items: center; justify-content: center;">
+                  <!-- Graph rendered dynamically or empty state -->
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Tab 2: Profile & Settings Page -->
+        <div id="profile" class="dashboard-tab-content" style="display: none;">
+          
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Profile & Security Settings ⚙️</h1>
+              <p class="greeting-sub">Manage your personal profile, phone verification, password security, and official student ID card.</p>
+            </div>
+          </div>
+
+          <div class="dashboard-sections-grid">
+            
+            <!-- Left Column: Blocked Info & Phone/Password Settings -->
+            <div class="section-column">
+              
+              <!-- Card 1: Official Blocked Information -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Official Academic Identity</span>
+                  <span class="blocked-field-badge">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    System Locked
+                  </span>
+                </div>
+                <p class="text-xs text-muted" style="margin-bottom: 1.25rem;">The following core academic fields are locked by institutional administration and cannot be directly modified.</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                  <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="prof-blocked-fullname" class="form-control blocked-input" readonly>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="prof-blocked-email" class="form-control blocked-input" readonly>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Student ID / Roll No</label>
+                    <input type="text" id="prof-blocked-studentid" class="form-control blocked-input" readonly style="font-weight:700; color:var(--primary) !important;">
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Class / Grade</label>
+                    <input type="text" id="prof-blocked-class" class="form-control blocked-input" readonly>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Section</label>
+                    <input type="text" id="prof-blocked-section" class="form-control blocked-input" readonly>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Blood Group</label>
+                    <input type="text" id="prof-blocked-bloodgroup" class="form-control blocked-input" readonly style="font-weight:700; color:#f87171 !important;">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Card 2: Contact & Phone Number Management with OTP -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Phone Number & Contact Security</span>
+                  <span class="badge badge-info">OTP Verification</span>
+                </div>
+                <form onsubmit="SmartLearnDashboard.requestPhoneOtp(event)">
+                  <div class="form-group">
+                    <label class="form-label">Registered Phone Number</label>
+                    <div class="input-icon-wrapper">
+                      <input type="tel" id="prof-editable-phone" class="form-control" placeholder="+1 (555) 019-2834" required>
+                      <svg class="field-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-primary btn-sm">
+                    Update Phone Number (OTP Required)
+                  </button>
+                </form>
+              </div>
+
+              <!-- Card 3: Password Security with OTP -->
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Password & Authentication</span>
+                  <span class="badge badge-warning">OTP Protected</span>
+                </div>
+                <form onsubmit="SmartLearnDashboard.requestPasswordOtp(event)">
+                  <div class="form-group">
+                    <label class="form-label">Current Password</label>
+                    <input type="password" id="prof-curr-pass" class="form-control" placeholder="••••••••" required>
+                  </div>
+
+                  <div class="form-row-2col">
+                    <div class="form-group">
+                      <label class="form-label">New Password</label>
+                      <input type="password" id="prof-new-pass" class="form-control" placeholder="••••••••" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Confirm New Password</label>
+                      <input type="password" id="prof-conf-pass" class="form-control" placeholder="••••••••" required minlength="6">
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary btn-sm">
+                    Change Password (OTP Required)
+                  </button>
+                </form>
+              </div>
+
+            </div>
+
+            <!-- Right Column: Student ID Card Generator -->
+            <div class="section-column">
+              
+              <div class="card">
+                <div class="section-card-title">
+                  <span>Official Student ID Card</span>
+                  <span class="badge badge-success">Downloadable</span>
+                </div>
+                <p class="text-xs text-muted" style="margin-bottom: 1rem;">Fill in your photo, address, and blood group to dynamically generate your official SmartLearn Identity Card.</p>
+                
+                <form onsubmit="SmartLearnDashboard.generateIdCard(event)" style="display: flex; flex-direction: column; gap: 1rem;">
+                  <div class="form-group">
+                    <label class="form-label">Residential Address</label>
+                    <input type="text" id="idcard-address" class="form-control" placeholder="e.g. 124 Innovation Way, Metro City" value="124 Innovation Way, Academic Campus" required>
+                  </div>
+
+                  <div class="form-row-2col">
+                    <div class="form-group">
+                      <label class="form-label">Blood Group</label>
+                      <select id="idcard-bloodgroup" class="form-control form-select" required>
+                        <option value="O+">O Positive (O+)</option>
+                        <option value="A+">A Positive (A+)</option>
+                        <option value="B+">B Positive (B+)</option>
+                        <option value="AB+">AB Positive (AB+)</option>
+                        <option value="O-">O Negative (O-)</option>
+                        <option value="A-">A Negative (A-)</option>
+                        <option value="B-">B Negative (B-)</option>
+                        <option value="AB-">AB Negative (AB-)</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label class="form-label">Choose Student Photo</label>
+                      <input type="file" id="idcard-photofile" class="form-control" accept="image/*" onchange="SmartLearnDashboard.handlePhotoFileUpload(event)" style="padding: 0.4rem 0.75rem; cursor: pointer;">
+                    </div>
+                  </div>
+
+                  <button type="submit" class="btn btn-secondary btn-sm">
+                    Update & Preview ID Card
+                  </button>
+                </form>
+
+                <!-- Dynamic ID Card Preview Container -->
+                <div class="id-card-container-preview">
+                  <div id="printable-id-card-wrapper">
+                    <div class="student-id-card" id="student-id-card-preview">
+                      <!-- Rendered dynamically by JS -->
+                    </div>
+                  </div>
+                  
+                  <button type="button" class="btn btn-primary btn-block" style="margin-top: 1rem;" onclick="SmartLearnDashboard.downloadIdCard()">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download / Print ID Card
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Tab: Performance & Analytics -->
+        <div id="performance" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Academic Performance & Analytics 📊</h1>
+              <p class="greeting-sub">Track subject-wise proficiency, exam scores, attendance breakdown, and AI learning recommendations.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-outline" onclick="SmartLearnApp.showToast('Generating official performance PDF report...', 'info')">
+                📥 Export Report
+              </button>
+              <button class="btn btn-primary" onclick="SmartLearnPerformanceCharts.init()">
+                🔄 Refresh Analytics
+              </button>
+            </div>
+          </div>
+
+          <!-- Top Metric Cards Grid (4 Cards) -->
+          <div class="stats-grid" style="margin-bottom: 1.5rem;">
+            <div class="card stat-card" style="border-left: 4px solid var(--primary-color);">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="perf-cumulative-gpa">88.5%</div>
+                <div class="stat-lbl">Cumulative Grade (GPA 3.8)</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Grade A+ • Term 1</div>
+              </div>
+            </div>
+
+            <div class="card stat-card" style="border-left: 4px solid #06b6d4;">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="perf-quiz-avg">92%</div>
+                <div class="stat-lbl">Quiz & Assessment Avg</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Top 5% in Class</div>
+              </div>
+            </div>
+
+            <div class="card stat-card" style="border-left: 4px solid #f59e0b;">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="perf-asgn-turnin">100%</div>
+                <div class="stat-lbl">Assignment Turn-in</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">5 of 5 Submitted On-time</div>
+              </div>
+            </div>
+
+            <div class="card stat-card" style="border-left: 4px solid #10b981;">
+              <div class="stat-icon-wrapper stat-icon-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="perf-attendance-rate">94%</div>
+                <div class="stat-lbl">Attendance Rate</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">23 / 24 Days Attended</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 1: Bar Chart & Donut Chart -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <!-- Bar Chart: Subject Marks Comparison -->
+            <div class="card" style="display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                  <div class="section-card-title">📊 Subject Marks & Exam Performance</div>
+                  <div class="text-xs text-muted">Comparison of Assignments, Quizzes, and Exam Marks</div>
+                </div>
+                <span class="badge badge-primary">Term 1</span>
+              </div>
+              <div style="position: relative; height: 260px; width: 100%;">
+                <canvas id="perfSubjectBarChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Donut Chart: Attendance & Participation -->
+            <div class="card" style="display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                  <div class="section-card-title">🍩 Attendance & Classroom Presence</div>
+                  <div class="text-xs text-muted">Monthly presence, late check-ins & leaves</div>
+                </div>
+                <span class="badge badge-success">94% Active</span>
+              </div>
+              <div style="position: relative; height: 260px; width: 100%; display: flex; justify-content: center; align-items: center;">
+                <canvas id="perfAttendanceDonutChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 2: Score Trend Line Chart & Grade Breakdown Pie Chart -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem;">
+            <!-- Line Chart: Term Progress Trend -->
+            <div class="card" style="display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                  <div class="section-card-title">📈 Assessment Progress & Score Trend</div>
+                  <div class="text-xs text-muted">Score trajectory across Unit Tests and Mid-Terms</div>
+                </div>
+                <span class="badge badge-info">Upward Trend ↗</span>
+              </div>
+              <div style="position: relative; height: 250px; width: 100%;">
+                <canvas id="perfTrendLineChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Pie Chart: Grade Distribution -->
+            <div class="card" style="display: flex; flex-direction: column;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <div>
+                  <div class="section-card-title">🥧 Grade Distribution Breakdown</div>
+                  <div class="text-xs text-muted">Percentage of A+, A, and B+ grades achieved</div>
+                </div>
+                <span class="badge badge-warning">A+ Dominant</span>
+              </div>
+              <div style="position: relative; height: 250px; width: 100%; display: flex; justify-content: center; align-items: center;">
+                <canvas id="perfGradePieChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detailed Subject Score Table & AI Recommendations Grid -->
+          <div class="dashboard-sections-grid" style="margin-bottom: 1.5rem;">
+            <div class="section-column" style="flex: 2;">
+              <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                  <div class="section-card-title">📋 Comprehensive Subject Scorecard</div>
+                  <span class="badge badge-primary">B.Tech CSE-A</span>
+                </div>
+                <div style="overflow-x: auto;">
+                  <table class="data-table" style="width: 100%;">
+                    <thead>
+                      <tr>
+                        <th>Subject Name</th>
+                        <th>Instructor</th>
+                        <th>Assignments</th>
+                        <th>Quizzes</th>
+                        <th>Exam Marks</th>
+                        <th>Overall Grade</th>
+                        <th>Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="perf-scorecard-tbody">
+                      <tr>
+                        <td><strong>Computer Science (CS-101)</strong></td>
+                        <td>Dr. Priya Sharma</td>
+                        <td><span class="badge badge-success">96%</span></td>
+                        <td><span class="badge badge-success">92%</span></td>
+                        <td><span class="badge badge-success">94/100</span></td>
+                        <td><strong class="text-primary">94% (A+)</strong></td>
+                        <td><span class="badge badge-success">Excellent</span></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Data Structures (CS-201)</strong></td>
+                        <td>Prof. Marcus Vance</td>
+                        <td><span class="badge badge-success">95%</span></td>
+                        <td><span class="badge badge-success">90%</span></td>
+                        <td><span class="badge badge-success">92/100</span></td>
+                        <td><strong class="text-primary">92% (A+)</strong></td>
+                        <td><span class="badge badge-success">Excellent</span></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Mathematics & Calculus</strong></td>
+                        <td>Prof. Rajesh Gupta</td>
+                        <td><span class="badge badge-primary">88%</span></td>
+                        <td><span class="badge badge-primary">85%</span></td>
+                        <td><span class="badge badge-primary">84/100</span></td>
+                        <td><strong class="text-primary">86% (A)</strong></td>
+                        <td><span class="badge badge-primary">Strong</span></td>
+                      </tr>
+                      <tr>
+                        <td><strong>Physics & Mechanics</strong></td>
+                        <td>Dr. Anita Verma</td>
+                        <td><span class="badge badge-warning">80%</span></td>
+                        <td><span class="badge badge-warning">76%</span></td>
+                        <td><span class="badge badge-warning">78/100</span></td>
+                        <td><strong style="color: #f59e0b;">78% (B+)</strong></td>
+                        <td><span class="badge badge-warning">Needs Revision</span></td>
+                      </tr>
+                      <tr>
+                        <td><strong>English & Communication</strong></td>
+                        <td>Prof. Sarah Jenkins</td>
+                        <td><span class="badge badge-success">92%</span></td>
+                        <td><span class="badge badge-primary">88%</span></td>
+                        <td><span class="badge badge-success">90/100</span></td>
+                        <td><strong class="text-primary">90% (A+)</strong></td>
+                        <td><span class="badge badge-success">Excellent</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-column" style="flex: 1;">
+              <div class="card" style="height: 100%;">
+                <div class="section-card-title">💡 Smart AI Learning Recommendations</div>
+                
+                <div id="learning-recommendation-box" style="margin-top: 1rem;">
+                  <div style="background: var(--bg-subtle); border-radius: 12px; padding: 1rem; border: 1px solid var(--border-color);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+                      <span class="badge badge-warning">High Priority</span>
+                      <span class="text-xs text-muted">Smart AI Advisor</span>
+                    </div>
+                    <div class="font-bold text-sm" style="margin-bottom: 0.3rem;">Focus Area: Physics & Mechanics</div>
+                    <p class="text-xs text-muted" style="line-height: 1.5;">
+                      "Your Physics score is currently 78% (B+). Allocate 30 minutes daily to practice kinematics and Newton's laws equations to push your grade into the A tier!"
+                    </p>
+                  </div>
+                </div>
+
+                <div style="margin-top: 1.25rem; padding: 1rem; background: rgba(79, 70, 229, 0.05); border-radius: 12px; border: 1px dashed var(--primary-color);">
+                  <div class="font-bold text-xs" style="color: var(--primary-color); margin-bottom: 0.35rem;">🎯 Term 1 Target Objective</div>
+                  <p class="text-xs text-muted">Aim for an overall 90%+ average to qualify for the Academic Honors List.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab: Student 5-Day Class Timetable -->
+        <div id="timetable" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Classroom Weekly Timetable 📅</h1>
+              <p class="greeting-sub">Official 5-day (Monday to Friday) 8-period weekly schedule managed by your Class Teacher.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <div class="badge badge-primary" id="student-tt-class-badge-tab" style="font-size: 0.9rem; padding: 0.5rem 0.85rem;">B.Tech CSE-A</div>
+            </div>
+          </div>
+
+          <!-- View Switcher & Day Selector -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
+              <div>
+                <div class="section-card-title" style="margin-bottom: 0.2rem;">🗓️ 5-Day Weekly Class Schedule (8 Periods / Day)</div>
+                <div class="text-xs text-muted">Complete weekly schedule from Monday to Friday with room allocations and period times</div>
+              </div>
+              <div style="display: flex; gap: 0.5rem;">
+                <button class="btn btn-sm btn-primary" id="btn-view-matrix" onclick="SmartLearnStudentTimetable.switchView('matrix')">🗓️ Full 5-Day Matrix</button>
+                <button class="btn btn-sm btn-outline" id="btn-view-daily" onclick="SmartLearnStudentTimetable.switchView('daily')">📅 Day-by-Day View</button>
+              </div>
+            </div>
+
+            <!-- 5-Day Full Matrix View (Default) -->
+            <div id="student-tt-matrix-view" style="overflow-x: auto;">
+              <table class="data-table" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                  <tr>
+                    <th style="width: 110px; text-align: center; background: var(--bg-subtle);">Period / Time</th>
+                    <th style="width: 18%;">Monday</th>
+                    <th style="width: 18%;">Tuesday</th>
+                    <th style="width: 18%;">Wednesday</th>
+                    <th style="width: 18%;">Thursday</th>
+                    <th style="width: 18%;">Friday</th>
+                  </tr>
+                </thead>
+                <tbody id="student-5day-timetable-matrix-body">
+                  <!-- Rendered dynamically for all 5 days -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Single Day Tabs View -->
+            <div id="student-tt-daily-view" style="display: none;">
+              <!-- Day Selector Tabs -->
+              <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; overflow-x: auto; padding-bottom: 0.35rem;">
+                <button class="btn btn-sm btn-primary tt-day-btn" onclick="SmartLearnStudentTimetable.selectDay('Monday', this)">Monday</button>
+                <button class="btn btn-sm btn-outline tt-day-btn" onclick="SmartLearnStudentTimetable.selectDay('Tuesday', this)">Tuesday</button>
+                <button class="btn btn-sm btn-outline tt-day-btn" onclick="SmartLearnStudentTimetable.selectDay('Wednesday', this)">Wednesday</button>
+                <button class="btn btn-sm btn-outline tt-day-btn" onclick="SmartLearnStudentTimetable.selectDay('Thursday', this)">Thursday</button>
+                <button class="btn btn-sm btn-outline tt-day-btn" onclick="SmartLearnStudentTimetable.selectDay('Friday', this)">Friday</button>
+              </div>
+
+              <!-- 8 Periods Grid -->
+              <div style="overflow-x: auto;">
+                <table class="data-table" style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th style="width: 100px;">Period</th>
+                      <th style="width: 140px;">Time Slot</th>
+                      <th>Subject Name</th>
+                      <th>Faculty Instructor</th>
+                      <th>Room / Lab</th>
+                      <th style="text-align: center;">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="student-timetable-8periods-body-tab">
+                    <!-- Rendered dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Student Exam Timetable -->
+        <div id="exam-timetable" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Official Exam Timetable 📝</h1>
+              <p class="greeting-sub">Scheduled term examinations, room allocations, time slots, and exam instructions.</p>
+            </div>
+            <div>
+              <div class="badge badge-primary" id="student-exam-class-badge" style="font-size: 0.9rem; padding: 0.5rem 0.85rem;">B.Tech CSE-A</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-title" style="margin-bottom: 1rem;">📅 Term Examination Schedule</div>
+            <div style="overflow-x: auto;">
+              <table class="data-table" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Exam Title</th>
+                    <th>Exam Date</th>
+                    <th>Time Slot</th>
+                    <th>Hall / Room</th>
+                    <th>Status</th>
+                    <th>Guidelines & Instructions</th>
+                  </tr>
+                </thead>
+                <tbody id="student-exam-timetable-body">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Student Announcements Broadcast View -->
+        <div id="announcements" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Institutional Announcements & Circulars 📢</h1>
+              <p class="greeting-sub">Official campus notices, academic directives, and institutional announcements.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-title" style="margin-bottom: 1rem;">Recent Broadcasts & Circulars</div>
+            <div id="student-announcements-list" style="display: flex; flex-direction: column; gap: 1rem;">
+              <div class="empty-state-text">Loading announcements...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Gamification, Points, Badges, Achievements & Leaderboard -->
+        <div id="rewards" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Rewards & Leaderboard 🏆</h1>
+              <p class="greeting-sub">Earn reward points, unlock achievements, collect badges, and climb the institutional leaderboard!</p>
+            </div>
+          </div>
+
+          <!-- Top Metric Stat Cards -->
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; margin-bottom: 1.5rem;">
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(79, 70, 229, 0.1); color: var(--primary);">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value text-primary" id="reward-stat-points">1,450 PTS</div>
+                <div class="stat-label">Total Reward Points</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value" id="reward-stat-level" style="color: var(--success); font-size:1.1rem;">Level 5 - Senior Scholar</div>
+                <div class="stat-label">Scholar Level</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: var(--warning);">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value" id="reward-stat-badges-count" style="color: var(--warning);">5 Badges</div>
+                <div class="stat-label">Badges Collected</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon" style="background: rgba(6, 182, 212, 0.1); color: var(--info);">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div class="stat-details">
+                <div class="stat-value" id="reward-stat-rank" style="color: var(--info);">#1 in Class</div>
+                <div class="stat-label">Department Rank</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 1: Badges Showcase Grid -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+              <div class="section-card-title">🏅 My Earned Badges & Faculty Awards</div>
+              <span class="badge badge-primary">Academic Recognitions</span>
+            </div>
+            <div id="reward-badges-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Section 2: Achievements Milestones Tracker -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+              <div class="section-card-title">🎯 Milestone Achievements</div>
+              <span class="badge badge-info">Unlock Bonus Points</span>
+            </div>
+            <div id="reward-achievements-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Section 3: Class & Department Leaderboard -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+              <div class="section-card-title">🥇 Class & Department Leaderboard</div>
+              <span class="badge badge-success">Live Rankings</span>
+            </div>
+            <div id="reward-leaderboard-container" style="overflow-x: auto;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Section 4: Recent Points History Log -->
+          <div class="card">
+            <div class="section-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+              <div class="section-card-title">📜 Recent Points History</div>
+              <span class="badge badge-outline">Points Log</span>
+            </div>
+            <div id="reward-history-log-container" style="display: flex; flex-direction: column;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Assignment Details & Submission Modal -->
+  <div class="modal-overlay" id="assignment-detail-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 650px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div id="modal-asgn-subject" class="badge badge-primary" style="margin-bottom: 0.35rem;">Subject</div>
+          <h2 class="modal-title" id="modal-asgn-title">Assignment Title</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('assignment-detail-modal')">&times;</button>
+      </div>
+      
+      <div class="modal-body" style="gap: 1.25rem; display: flex; flex-direction: column;">
+        <!-- Meta Details Box -->
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.15rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; font-size: 0.85rem;">
+          <div>
+            <div class="text-muted text-xs">Faculty Instructor</div>
+            <div class="font-bold text-main" id="modal-asgn-teacher">--</div>
+          </div>
+          <div>
+            <div class="text-muted text-xs">Submission Deadline</div>
+            <div class="font-bold text-main" id="modal-asgn-duedate">--</div>
+          </div>
+          <div>
+            <div class="text-muted text-xs">Maximum Score</div>
+            <div class="font-bold text-main" id="modal-asgn-maxmarks">--</div>
+          </div>
+        </div>
+
+        <!-- Description & Instructions -->
+        <div>
+          <h4 class="font-bold text-sm" style="color: var(--text-main); margin-bottom: 0.35rem;">Description</h4>
+          <p class="text-xs text-muted" id="modal-asgn-description" style="line-height: 1.5;">--</p>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm" style="color: var(--text-main); margin-bottom: 0.35rem;">Submission Instructions</h4>
+          <p class="text-xs text-muted" id="modal-asgn-instructions" style="line-height: 1.5;">--</p>
+        </div>
+
+        <!-- Attached Resources -->
+        <div>
+          <h4 class="font-bold text-sm" style="color: var(--text-main); margin-bottom: 0.5rem;">Attached Course Resources</h4>
+          <div id="modal-asgn-resources" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Submission Status Box -->
+        <div id="modal-asgn-submission-status">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Submission Form -->
+        <form id="asgn-submit-form" onsubmit="SmartLearnAssignments.handleSubmissionFormSubmit(event)">
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label">Upload Submission File</label>
+            <input type="file" id="asgn-modal-file-input" class="form-control">
+            <small class="text-muted text-xs" style="margin-top: 0.25rem; display: block;">Supported formats: .pdf, .zip, .docx, .cpp, .java, .png (Max 25MB)</small>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Submission Comments / Notes</label>
+            <textarea id="asgn-modal-comments" class="form-control" rows="3" placeholder="Add any comments or notes for your instructor..."></textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('assignment-detail-modal')">Cancel</button>
+            <button type="submit" id="modal-asgn-submit-btn" class="btn btn-primary">Submit Assignment</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Submit Assignment -->
+  <div class="modal-overlay" id="submit-assignment-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">Submit Assignment</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnDashboard.submitAssignment(event)">
+        <div class="modal-body">
+          <input type="hidden" id="submit-assignment-id">
+          <div class="form-group">
+            <label class="form-label">Assignment Title</label>
+            <div class="font-bold text-primary" id="submit-assignment-title">--</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Submission Notes / Code Link</label>
+            <textarea id="submit-assignment-notes" class="form-control" rows="4" placeholder="Enter solution notes, GitHub repository link, or submission text..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Turn In Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Notifications -->
+  <div class="modal-overlay" id="notifications-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">Notifications</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="notifications-list" style="display:flex; flex-direction:column; gap:0.6rem;">
+          <div class="empty-state-text">Loading notifications...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: AI Assistant Chat & Study Workspace -->
+  <div class="modal-overlay" id="ai-assistant-modal">
+    <div class="modal-container" style="max-width: 680px;">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <div class="ai-avatar-mini" style="width:36px; height:36px; background: linear-gradient(135deg, #4f46e5, #8b5cf6);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/></svg>
+          </div>
+          <div>
+            <div class="modal-title">SmartLearn AI Study Assistant 🧠</div>
+            <div class="text-xs text-muted">Personalized Learning & Doubt Solver Workspace</div>
+          </div>
+        </div>
+        <button class="modal-close-btn" data-close-modal onclick="SmartLearnApp.closeModal('ai-assistant-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.25rem;">
+        <!-- AI Feature Modes Bar -->
+        <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-bottom: 0.85rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.65rem;">
+          <button type="button" class="btn btn-outline btn-xs ai-mode-btn active" style="font-size:0.75rem; padding: 0.25rem 0.55rem;" onclick="SmartLearnApp.triggerAiMode('doubt')">
+            ❓ Doubt Solver
+          </button>
+          <button type="button" class="btn btn-outline btn-xs ai-mode-btn" style="font-size:0.75rem; padding: 0.25rem 0.55rem;" onclick="SmartLearnApp.triggerAiMode('explain')">
+            📖 Explain Topic
+          </button>
+          <button type="button" class="btn btn-outline btn-xs ai-mode-btn" style="font-size:0.75rem; padding: 0.25rem 0.55rem;" onclick="SmartLearnApp.triggerAiMode('questions')">
+            📝 Practice Questions
+          </button>
+          <button type="button" class="btn btn-outline btn-xs ai-mode-btn" style="font-size:0.75rem; padding: 0.25rem 0.55rem;" onclick="SmartLearnApp.triggerAiMode('weak_subject')">
+            🎯 Weak Subject
+          </button>
+          <button type="button" class="btn btn-outline btn-xs ai-mode-btn" style="font-size:0.75rem; padding: 0.25rem 0.55rem;" onclick="SmartLearnApp.triggerAiMode('study_plan')">
+            🚀 Study Plan
+          </button>
+          <button type="button" class="btn btn-outline btn-xs ai-mode-btn" style="font-size:0.75rem; padding: 0.25rem 0.55rem;" onclick="SmartLearnApp.triggerAiMode('resources')">
+            📚 Recommended Notes
+          </button>
+          <button type="button" class="btn btn-outline btn-xs ai-mode-btn" style="font-size:0.75rem; padding: 0.25rem 0.55rem;" onclick="SmartLearnApp.triggerAiMode('revision')">
+            🔄 Revision Tips
+          </button>
+        </div>
+
+        <!-- Quick Prompt Suggestion Chips -->
+        <div style="display: flex; gap: 0.4rem; overflow-x: auto; padding-bottom: 0.5rem; margin-bottom: 0.75rem;" class="hide-scrollbar">
+          <button type="button" class="btn btn-outline btn-sm" style="font-size:0.725rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="SmartLearnApp.sendAiQuery('Explain AVL Tree rotations with code example')">
+            💡 Explain AVL Tree Rotations
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" style="font-size:0.725rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="SmartLearnApp.sendAiQuery('Generate 3 practice questions for Calculus')">
+            📝 3 Calculus Practice Questions
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" style="font-size:0.725rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="SmartLearnApp.triggerAiMode('weak_subject')">
+            🎯 Analyze My Weakest Subject
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" style="font-size:0.725rem; padding: 0.2rem 0.5rem; white-space: nowrap;" onclick="SmartLearnApp.triggerAiMode('study_plan')">
+            🚀 Create 7-Day Revision Plan
+          </button>
+        </div>
+
+        <!-- Chat History -->
+        <div class="ai-chat-history" id="ai-chat-history" style="height: 320px; overflow-y: auto; background: var(--bg-subtle); border-radius: 12px; padding: 1rem; margin-bottom: 0.85rem; display: flex; flex-direction: column; gap: 0.85rem;">
+          <div class="ai-chat-msg ai-msg">
+            <div class="ai-avatar-mini">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"/></svg>
+            </div>
+            <div class="msg-bubble">
+              Hello! 👋 I'm your **SmartLearn AI Study Assistant**. 
+              <br><br>
+              I can help you with:
+              <br>• <strong>Doubt Solving</strong> (Code, Math, Science & Concepts)
+              <br>• <strong>Topic Explanations & Summaries</strong>
+              <br>• <strong>Practice-Question Generation</strong>
+              <br>• <strong>Weak-Subject Identification & Study Plan</strong>
+              <br>• <strong>Resource & Study Notes Recommendations</strong>
+              <br>• <strong>Smart Revision Schedules</strong>
+              <br><br>
+              Click an action button above or type your question below!
+            </div>
+          </div>
+        </div>
+
+        <!-- Input Bar -->
+        <div style="display: flex; gap: 0.5rem;">
+          <input type="text" id="ai-prompt-input" class="form-control" placeholder="Ask e.g. Explain Binary Search Tree, or solve a calculus problem..." onkeypress="if(event.key==='Enter') SmartLearnApp.sendAiQuery()">
+          <button class="btn btn-primary" onclick="SmartLearnApp.sendAiQuery()">Send &rarr;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: OTP Security Verification -->
+  <div class="modal-overlay" id="otp-verification-modal">
+    <div class="modal-container" style="max-width: 420px;">
+      <div class="modal-header">
+        <div class="modal-title" id="otp-modal-header-title">Security OTP Verification</div>
+        <button class="modal-close-btn" data-close-modal onclick="SmartLearnDashboard.closeOtpModalSuccess()">&times;</button>
+      </div>
+
+      <!-- State 1: Typing OTP Input Form -->
+      <form id="otp-form-content" onsubmit="SmartLearnDashboard.verifyOtpSubmit(event)">
+        <div class="modal-body text-center">
+          <div class="demo-otp-badge">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Demo Verification OTP: <strong>123456</strong>
+          </div>
+
+          <p class="text-xs text-muted" id="otp-modal-description">Enter the 6-digit OTP code sent to your registered contact number to authorize this change.</p>
+
+          <div class="otp-input-group">
+            <input type="text" class="otp-box" maxlength="1" id="otp-1" autofocus onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-2')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-2" onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-3')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-3" onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-4')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-4" onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-5')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-5" onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-6')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-6" onkeyup="SmartLearnDashboard.moveOtpFocus(this, null)">
+          </div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="SmartLearnApp.showToast('Resent OTP: 123456', 'info')">Resend OTP</button>
+          <button type="submit" class="btn btn-primary btn-sm">Verify & Update</button>
+        </div>
+      </form>
+
+      <!-- State 2: Animated Success Tick Screen -->
+      <div id="otp-success-content" class="modal-body text-center" style="display: none; padding: 2.25rem 1.5rem;">
+        <div class="animated-success-circle">
+          <svg class="success-checkmark-svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="23" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-lg" style="margin-top: 1.25rem; color: var(--text-main);" id="otp-success-title">Verified & Changed! 🎉</h3>
+        <p class="text-xs text-muted" style="margin-top: 0.4rem;" id="otp-success-message">Your credentials have been securely updated.</p>
+        <button type="button" class="btn btn-primary btn-sm" style="margin-top: 1.5rem; width: 100%;" onclick="SmartLearnDashboard.closeOtpModalSuccess()">Done</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal: Material Detail & Preview Viewer -->
+  <div class="modal-overlay" id="study-material-detail-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 680px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary" id="sm-modal-type">PDF</div>
+          <h2 class="modal-title" id="sm-modal-title" style="margin-top: 0.25rem;">Material Details</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('study-material-detail-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="gap: 1.15rem; display: flex; flex-direction: column;">
+        <!-- Material Info Box -->
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.45rem; font-size: 0.85rem;">
+          <div>📘 <strong>Subject:</strong> <span id="sm-modal-subject">--</span></div>
+          <div>👤 <strong>Faculty Instructor:</strong> <span id="sm-modal-teacher">--</span></div>
+          <div>📅 <strong>Upload Date:</strong> <span id="sm-modal-date">--</span></div>
+          <div>📎 <strong>File Details:</strong> <span id="sm-modal-filename" class="font-bold text-primary">--</span> (<span id="sm-modal-size">--</span>)</div>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm" style="color: var(--text-main); margin-bottom: 0.35rem;">Overview & Key Topics</h4>
+          <p id="sm-modal-desc" class="text-xs text-muted" style="line-height: 1.6;">
+            --
+          </p>
+        </div>
+
+        <!-- Embedded Viewer Frame -->
+        <div id="sm-modal-viewer-container">
+          <!-- Populated dynamically -->
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color); padding-top: 0.85rem;">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('study-material-detail-modal')">Close</button>
+          <button type="button" id="sm-modal-download-btn" class="btn btn-primary">⬇ Download Material File</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: QR Attendance Scanner / Session Token Input -->
+  <div class="modal-overlay" id="qr-attendance-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 520px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary" style="margin-bottom: 0.25rem;">Live Check-in</div>
+          <h2 class="modal-title">📷 Mark QR Attendance</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('qr-attendance-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.15rem;">
+        
+        <!-- Mode Switcher: Scanner vs Session Token -->
+        <div style="display: flex; gap: 0.5rem; background: var(--bg-subtle); padding: 0.35rem; border-radius: var(--radius-md);">
+          <button type="button" id="qr-tab-scanner-btn" class="btn btn-sm btn-primary" style="flex: 1;" onclick="SmartLearnAttendance.switchQrTab('scanner')">
+            📷 Camera Scanner
+          </button>
+          <button type="button" id="qr-tab-token-btn" class="btn btn-sm btn-outline" style="flex: 1;" onclick="SmartLearnAttendance.switchQrTab('token')">
+            🔑 Session Code / Token
+          </button>
+        </div>
+
+        <!-- Scanner View (View 1) -->
+        <div id="qr-scanner-view" style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.85rem;">
+          <div id="qr-reader-box" style="width: 100%; max-width: 320px; height: 230px; background: #0f172a; border-radius: 12px; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #fff; border: 1px solid rgba(255,255,255,0.1);">
+            <div style="position: absolute; border: 2px dashed #4f46e5; width: 170px; height: 170px; border-radius: 12px; animation: pulse 1.5s infinite;"></div>
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="#6366f1" stroke-width="2" style="margin-bottom: 0.5rem;"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><rect x="7" y="7" width="10" height="10" rx="1"/></svg>
+            <span style="font-size: 0.8rem; color: #cbd5e1; z-index: 2;">Align classroom QR code in view</span>
+          </div>
+          <p class="text-xs text-muted">Point your mobile camera at your instructor's live screen QR, or switch tabs to enter code manually.</p>
+        </div>
+
+        <!-- Token Form View (View 2) -->
+        <div id="qr-token-view" style="display: none; flex-direction: column; gap: 1rem;">
+          <form onsubmit="SmartLearnAttendance.handleTokenCheckIn(event)">
+            <div class="form-group">
+              <label class="form-label">Enter Live Session Code / Token *</label>
+              <input type="text" id="qr-session-token-input" class="form-control" placeholder="e.g. SESS-849201" style="font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;" required>
+              <small class="text-xs text-muted" style="margin-top: 0.35rem; display: block;">Enter the 6-digit session code projected on your faculty's classroom screen.</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+              Submit Session Code & Check In
+            </button>
+          </form>
+        </div>
+
+        <!-- Real Success Feedback Container -->
+        <div id="qr-success-feedback" style="display: none; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; padding: 1.15rem; text-align: center;">
+          <div style="width: 44px; height: 44px; border-radius: 50%; background: #10b981; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 0.5rem auto;">✓</div>
+          <h3 class="font-bold text-md" style="color: #065f46;">Attendance Marked Successfully! 🎉</h3>
+          <div id="qr-success-details-list" style="font-size: 0.8rem; color: #047857; margin-top: 0.75rem; text-align: left; background: #ffffff; padding: 0.85rem; border-radius: 8px; border: 1px solid #d1fae5; display: flex; flex-direction: column; gap: 0.3rem;">
+            <!-- Rendered dynamically with real authenticated user data -->
+          </div>
+        </div>
+
+        <!-- Error Feedback Container -->
+        <div id="qr-error-feedback" style="display: none; background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px; padding: 0.85rem 1rem; text-align: center; color: #991b1b; font-size: 0.85rem; font-weight: 600;">
+          <!-- Error message dynamically set -->
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/demo-data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    const SmartLearnPerformanceCharts = {
+      subjectBarChart: null,
+      attendanceDonutChart: null,
+      trendLineChart: null,
+      gradePieChart: null,
+
+      loadRealData() {
+        const currentUser = (typeof SmartLearnAuth !== "undefined" && SmartLearnAuth.getCurrentUser) 
+          ? SmartLearnAuth.getCurrentUser() 
+          : null;
+
+        const userId = currentUser ? (currentUser.id || currentUser.uid) : "usr_student_01";
+
+        // 1. Fetch Real Data from SmartLearnStorage
+        const allGrades = (typeof SmartLearnStorage !== "undefined") ? (SmartLearnStorage.get(STORAGE_KEYS.GRADES) || []) : [];
+        const studentGrades = allGrades.filter(g => !g.studentId || g.studentId === userId);
+
+        const allAttendance = (typeof SmartLearnStorage !== "undefined") ? (SmartLearnStorage.get(STORAGE_KEYS.ATTENDANCE) || []) : [];
+        const studentAttendance = allAttendance.filter(a => !a.studentId || a.studentId === userId);
+
+        const allQuizAttempts = (typeof SmartLearnStorage !== "undefined") ? (SmartLearnStorage.get(STORAGE_KEYS.QUIZ_ATTEMPTS) || []) : [];
+        const studentQuizAttempts = allQuizAttempts.filter(q => !q.studentId || q.studentId === userId);
+
+        const allAssignments = (typeof SmartLearnStorage !== "undefined") ? (SmartLearnStorage.get(STORAGE_KEYS.ASSIGNMENTS) || []) : [];
+        const studentAssignments = allAssignments.filter(a => !a.studentId || a.studentId === userId);
+
+        const allSubmissions = (typeof SmartLearnStorage !== "undefined") ? (SmartLearnStorage.get(STORAGE_KEYS.SUBMISSIONS) || []) : [];
+        const studentSubmissions = allSubmissions.filter(s => !s.studentId || s.studentId === userId);
+
+        // Fallback default subjects if user has no grade records yet
+        const defaultSubjects = [
+          { subject: "Data Structures", teacher: "Prof. Marcus Vance", assignScore: 95, quizScore: 90, examScore: 92 },
+          { subject: "Computer Science", teacher: "Faculty Instructor", assignScore: 96, quizScore: 92, examScore: 94 },
+          { subject: "Mathematics", teacher: "Prof. Rajesh Gupta", assignScore: 88, quizScore: 85, examScore: 84 },
+          { subject: "Physics", teacher: "Dr. Anita Verma", assignScore: 80, quizScore: 76, examScore: 78 },
+          { subject: "English", teacher: "Prof. Sarah Jenkins", assignScore: 92, quizScore: 88, examScore: 90 }
+        ];
+
+        // 2. Group student grades by subject
+        const subjectMap = {};
+        studentGrades.forEach(g => {
+          const subjName = g.subject || "General Academic";
+          if (!subjectMap[subjName]) {
+            subjectMap[subjName] = { scoredMarks: 0, maxMarks: 0, tests: [], teacher: g.teacherName || g.instructor || "Faculty Instructor" };
+          }
+          subjectMap[subjName].scoredMarks += Number(g.scoredMarks || 0);
+          subjectMap[subjName].maxMarks += Number(g.maxMarks || 100);
+          subjectMap[subjName].tests.push(g);
+        });
+
+        let calculatedSubjects = Object.keys(subjectMap).map(subjKey => {
+          const item = subjectMap[subjKey];
+          const overallPct = item.maxMarks > 0 ? Math.round((item.scoredMarks / item.maxMarks) * 100) : 80;
+          return {
+            subject: subjKey,
+            teacher: item.teacher,
+            assignScore: Math.min(100, Math.round(overallPct * 1.02)),
+            quizScore: Math.min(100, Math.round(overallPct * 0.98)),
+            examScore: overallPct
+          };
+        });
+
+        if (calculatedSubjects.length === 0) {
+          calculatedSubjects = defaultSubjects;
+        }
+
+        // 3. Compute KPI Metrics
+        const totalOverallPct = Math.round(
+          calculatedSubjects.reduce((acc, s) => acc + s.examScore, 0) / calculatedSubjects.length
+        );
+        const overallGPA = (totalOverallPct / 25).toFixed(1);
+
+        let quizAvgPct = 90;
+        if (studentQuizAttempts.length > 0) {
+          const sumQ = studentQuizAttempts.reduce((acc, q) => acc + (q.percentage || ((q.score / (q.totalQuestions || 10)) * 100)), 0);
+          quizAvgPct = Math.round(sumQ / studentQuizAttempts.length);
+        } else {
+          quizAvgPct = Math.round(calculatedSubjects.reduce((acc, s) => acc + s.quizScore, 0) / calculatedSubjects.length);
+        }
+
+        const totalAssgCount = studentAssignments.length > 0 ? studentAssignments.length : 5;
+        const submittedAssgCount = studentSubmissions.length > 0 ? studentSubmissions.length : totalAssgCount;
+        const turnInPct = Math.round((submittedAssgCount / totalAssgCount) * 100);
+
+        let presentCount = 0, lateCount = 0, excusedCount = 0, absentCount = 0;
+        if (studentAttendance.length > 0) {
+          studentAttendance.forEach(a => {
+            const st = (a.status || "").toLowerCase();
+            if (st === "present") presentCount++;
+            else if (st === "late") lateCount++;
+            else if (st === "excused" || st === "leave") excusedCount++;
+            else absentCount++;
+          });
+        } else {
+          presentCount = 22;
+          lateCount = 1;
+          excusedCount = 1;
+          absentCount = 0;
+        }
+        const totalAttDays = presentCount + lateCount + excusedCount + absentCount;
+        const attendanceRatePct = totalAttDays > 0 ? Math.round(((presentCount + lateCount) / totalAttDays) * 100) : 94;
+
+        // 4. Update Top KPI Elements
+        const gpaEl = document.getElementById("perf-cumulative-gpa");
+        if (gpaEl) gpaEl.innerText = `${totalOverallPct}% (GPA ${overallGPA})`;
+
+        const quizAvgEl = document.getElementById("perf-quiz-avg");
+        if (quizAvgEl) quizAvgEl.innerText = `${quizAvgPct}%`;
+
+        const turninEl = document.getElementById("perf-asgn-turnin");
+        if (turninEl) turninEl.innerText = `${turnInPct}% (${submittedAssgCount}/${totalAssgCount})`;
+
+        const attRateEl = document.getElementById("perf-attendance-rate");
+        if (attRateEl) attRateEl.innerText = `${attendanceRatePct}% (${presentCount}/${totalAttDays})`;
+
+        // 5. Render Scorecard Table
+        const scorecardTbody = document.getElementById("perf-scorecard-tbody");
+        if (scorecardTbody) {
+          scorecardTbody.innerHTML = calculatedSubjects.map(s => {
+            const weightedScore = Math.round((s.assignScore * 0.3) + (s.quizScore * 0.2) + (s.examScore * 0.5));
+            let gradeLetter = "A+";
+            let statusBadge = `<span class="badge badge-success">Excellent</span>`;
+            let gradeColor = "var(--primary-color)";
+
+            if (weightedScore >= 90) {
+              gradeLetter = "A+";
+              statusBadge = `<span class="badge badge-success">Excellent</span>`;
+            } else if (weightedScore >= 82) {
+              gradeLetter = "A";
+              statusBadge = `<span class="badge badge-primary">Strong</span>`;
+            } else if (weightedScore >= 75) {
+              gradeLetter = "B+";
+              statusBadge = `<span class="badge badge-warning">Needs Revision</span>`;
+              gradeColor = "#f59e0b";
+            } else {
+              gradeLetter = "B";
+              statusBadge = `<span class="badge badge-danger">Needs Focus</span>`;
+              gradeColor = "#ef4444";
+            }
+
+            return `
+              <tr>
+                <td><strong>${s.subject}</strong></td>
+                <td>${s.teacher}</td>
+                <td><span class="badge badge-success">${s.assignScore}%</span></td>
+                <td><span class="badge badge-primary">${s.quizScore}%</span></td>
+                <td><span class="badge badge-info">${s.examScore}/100</span></td>
+                <td><strong style="color: ${gradeColor};">${weightedScore}% (${gradeLetter})</strong></td>
+                <td>${statusBadge}</td>
+              </tr>
+            `;
+          }).join("");
+        }
+
+        // 6. Dynamic AI Recommendation Engine
+        const recBox = document.getElementById("learning-recommendation-box");
+        if (recBox && calculatedSubjects.length > 0) {
+          const sorted = [...calculatedSubjects].sort((a, b) => a.examScore - b.examScore);
+          const weakest = sorted[0];
+
+          let prioText = "High Priority";
+          let prioClass = "badge-warning";
+          if (weakest.examScore < 75) {
+            prioText = "Critical Focus";
+            prioClass = "badge-danger";
+          } else if (weakest.examScore >= 88) {
+            prioText = "Academic Distinction";
+            prioClass = "badge-success";
+          }
+
+          recBox.innerHTML = `
+            <div style="background: var(--bg-subtle); border-radius: 12px; padding: 1rem; border: 1px solid var(--border-color);">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem;">
+                <span class="badge ${prioClass}">${prioText}</span>
+                <span class="text-xs text-muted">Smart AI Advisor</span>
+              </div>
+              <div class="font-bold text-sm" style="margin-bottom: 0.3rem;">Focus Area: ${weakest.subject} (${weakest.examScore}%)</div>
+              <p class="text-xs text-muted" style="line-height: 1.5;">
+                "Your lowest scoring subject is currently ${weakest.subject} at ${weakest.examScore}%. Practice core problem sets to elevate your grade into the highest tier!"
+              </p>
+            </div>
+          `;
+        }
+
+        // 7. Calculate Grade Distribution
+        let gAPlus = 0, gA = 0, gBPlus = 0, gB = 0;
+        calculatedSubjects.forEach(s => {
+          if (s.examScore >= 90) gAPlus++;
+          else if (s.examScore >= 82) gA++;
+          else if (s.examScore >= 75) gBPlus++;
+          else gB++;
+        });
+
+        // 8. Dynamic Progress Trend Data
+        const trendLabels = ['Unit Test 1', 'Unit Test 2', 'Mid-Term', 'Unit Test 3', 'Final (Target)'];
+        const trendData = [
+          Math.max(60, totalOverallPct - 8),
+          Math.max(65, totalOverallPct - 4),
+          Math.max(70, totalOverallPct - 2),
+          totalOverallPct,
+          Math.min(100, totalOverallPct + 4)
+        ];
+
+        return {
+          subjects: calculatedSubjects.map(s => s.subject),
+          assignScores: calculatedSubjects.map(s => s.assignScore),
+          quizScores: calculatedSubjects.map(s => s.quizScore),
+          examScores: calculatedSubjects.map(s => s.examScore),
+          attendanceData: [presentCount, lateCount, excusedCount, absentCount],
+          gradeDistribution: [gAPlus, gA, gBPlus, gB],
+          trendLabels,
+          trendData
+        };
+      },
+
+      init() {
+        if (typeof Chart === 'undefined') return;
+
+        const data = this.loadRealData();
+
+        const primary = '#4f46e5';
+        const primarySubtle = 'rgba(79, 70, 229, 0.15)';
+        const cyan = '#06b6d4';
+        const amber = '#f59e0b';
+        const emerald = '#10b981';
+        const rose = '#ef4444';
+
+        if (this.subjectBarChart) this.subjectBarChart.destroy();
+        if (this.attendanceDonutChart) this.attendanceDonutChart.destroy();
+        if (this.trendLineChart) this.trendLineChart.destroy();
+        if (this.gradePieChart) this.gradePieChart.destroy();
+
+        // 1. Dynamic Subject-Wise Marks & Exam Scores Bar Chart
+        const barCtx = document.getElementById('perfSubjectBarChart');
+        if (barCtx) {
+          this.subjectBarChart = new Chart(barCtx.getContext('2d'), {
+            type: 'bar',
+            data: {
+              labels: data.subjects,
+              datasets: [
+                {
+                  label: 'Assignments (%)',
+                  data: data.assignScores,
+                  backgroundColor: primary,
+                  borderRadius: 6
+                },
+                {
+                  label: 'Quizzes (%)',
+                  data: data.quizScores,
+                  backgroundColor: cyan,
+                  borderRadius: 6
+                },
+                {
+                  label: 'Exam Marks (%)',
+                  data: data.examScores,
+                  backgroundColor: emerald,
+                  borderRadius: 6
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 11 } } }
+              },
+              scales: {
+                y: { min: 0, max: 100, ticks: { callback: v => v + '%' } }
+              }
+            }
+          });
+        }
+
+        // 2. Dynamic Monthly Attendance Breakdown Donut Chart
+        const donutCtx = document.getElementById('perfAttendanceDonutChart');
+        if (donutCtx) {
+          this.attendanceDonutChart = new Chart(donutCtx.getContext('2d'), {
+            type: 'doughnut',
+            data: {
+              labels: [
+                `Present (${data.attendanceData[0]})`,
+                `Late (${data.attendanceData[1]})`,
+                `Excused (${data.attendanceData[2]})`,
+                `Absent (${data.attendanceData[3]})`
+              ],
+              datasets: [{
+                data: data.attendanceData,
+                backgroundColor: [emerald, amber, cyan, rose],
+                borderWidth: 2
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 11 } } }
+              },
+              cutout: '68%'
+            }
+          });
+        }
+
+        // 3. Dynamic Assessment Progress & Score Trend Line Chart
+        const lineCtx = document.getElementById('perfTrendLineChart');
+        if (lineCtx) {
+          this.trendLineChart = new Chart(lineCtx.getContext('2d'), {
+            type: 'line',
+            data: {
+              labels: data.trendLabels,
+              datasets: [{
+                label: 'Overall Average (%)',
+                data: data.trendData,
+                borderColor: primary,
+                backgroundColor: primarySubtle,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 5,
+                pointBackgroundColor: primary
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                y: { min: 50, max: 100, ticks: { callback: v => v + '%' } }
+              }
+            }
+          });
+        }
+
+        // 4. Dynamic Grade Distribution Pie Chart
+        const pieCtx = document.getElementById('perfGradePieChart');
+        if (pieCtx) {
+          this.gradePieChart = new Chart(pieCtx.getContext('2d'), {
+            type: 'pie',
+            data: {
+              labels: [
+                `Grade A+ (${data.gradeDistribution[0]})`,
+                `Grade A (${data.gradeDistribution[1]})`,
+                `Grade B+ (${data.gradeDistribution[2]})`,
+                `Grade B (${data.gradeDistribution[3]})`
+              ],
+              datasets: [{
+                data: data.gradeDistribution,
+                backgroundColor: [primary, cyan, amber, rose],
+                borderWidth: 2
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 11 } } }
+              }
+            }
+          });
+        }
+      }
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      SmartLearnDashboard.initStudentDashboard();
+      if (typeof SmartLearnAnnouncements !== "undefined") {
+        SmartLearnAnnouncements.renderStudentAnnouncements();
+      }
+      if (typeof SmartLearnAttendance !== "undefined") {
+        SmartLearnAttendance.initStudentAttendance();
+      }
+
+      setTimeout(() => {
+        if (typeof SmartLearnAnnouncements !== "undefined") {
+          SmartLearnAnnouncements.renderStudentAnnouncements();
+        }
+        SmartLearnPerformanceCharts.init();
+      }, 300);
+    });
+  </script>
+</body>
+</html>

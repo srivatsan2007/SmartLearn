@@ -1,0 +1,12 @@
+[
+  {
+    "id": "usr_admin_01",
+    "fullName": "System Admin",
+    "email": "admin@classora.demo",
+    "password": "admin123",
+    "role": "Administrator",
+    "phone": "+1 (555) 019-9900",
+    "department": "IT & Operations",
+    "createdAt": "2026-08-01T09:00:00Z"
+  }
+]

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartLearn — Quiz Management Module</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+  <style>
+    /* Quiz Specific Custom Styles */
+    .quiz-card {
+      background: var(--bg-card, #ffffff);
+      border: 1px solid var(--border-color, #e2e8f0);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+    }
+    .quiz-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+    }
+    .quiz-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .quiz-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.6rem 1rem;
+      margin: 1rem 0;
+      padding: 0.75rem;
+      background: var(--bg-subtle, #f8fafc);
+      border-radius: 8px;
+      font-size: 0.8rem;
+    }
+    .quiz-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted, #64748b);
+    }
+    .quiz-meta-item strong {
+      color: var(--text-main, #1e293b);
+    }
+    .question-nav-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+      gap: 0.4rem;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 0.5rem;
+      background: var(--bg-subtle, #f8fafc);
+      border-radius: 8px;
+    }
+    .question-nav-pill {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      border: 1px solid var(--border-color, #cbd5e1);
+      background: #ffffff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .question-nav-pill.answered {
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #15803d;
+    }
+    .question-nav-pill.active {
+      border-color: #4f46e5;
+      background: #4f46e5;
+      color: #ffffff;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+    }
+    .option-card {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 1rem 1.1rem;
+      border: 2px solid var(--border-color, #e2e8f0);
+      border-radius: 10px;
+      background: #ffffff;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 0.65rem;
+    }
+    .option-card:hover {
+      border-color: var(--primary, #4f46e5);
+      background: rgba(79, 70, 229, 0.02);
+    }
+    .option-card.selected {
+      border-color: var(--primary, #4f46e5);
+      background: rgba(79, 70, 229, 0.08);
+      font-weight: 600;
+    }
+    .option-radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border-color, #cbd5e1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .option-card.selected .option-radio {
+      border-color: var(--primary, #4f46e5);
+      background: var(--primary, #4f46e5);
+    }
+    .option-card.selected .option-radio::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffffff;
+    }
+    .quiz-timer-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 0.85rem;
+      background: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+      border-radius: 20px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      font-family: monospace;
+    }
+    .bookmark-btn {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: #94a3b8;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+    .bookmark-btn.active, .bookmark-btn:hover {
+      color: #f59e0b;
+      transform: scale(1.15);
+    }
+  </style>
+</head>
+<body class="dashboard-body">
+  <div class="dashboard-layout">
+    
+    <!-- Sidebar Overlay for mobile drawer -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Main Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-brand">
+          <div class="auth-brand-logo" style="width:36px; height:36px; background:transparent; padding:0;">
+            <img src="assets/logo.png" alt="SmartLearn Logo" style="width:36px; height:36px; object-fit:contain;">
+          </div>
+          <div>
+            <div class="sidebar-brand-name">SmartLearn</div>
+            <div class="sidebar-brand-sub">Student Portal</div>
+          </div>
+        </div>
+        <button class="sidebar-close-mobile-btn" onclick="document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').classList.remove('active');">&times;</button>
+      </div>
+
+      <div class="sidebar-menu-wrapper">
+        <div class="sidebar-menu-category">Main Menu</div>
+        <a href="student-dashboard.html#overview" class="nav-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="assignments.html" class="nav-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Assignments
+        </a>
+        <a href="study-materials.html" class="nav-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Study Materials
+        </a>
+        <a href="quizzes.html" class="nav-item active">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Quizzes
+        </a>
+        <a href="student-dashboard.html#attendance" class="nav-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Attendance
+        </a>
+        <a href="student-dashboard.html#performance" class="nav-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Performance
+        </a>
+
+
+        <div class="sidebar-menu-category">AI Features</div>
+        <a href="student-dashboard.html#ai-assistant" class="nav-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
+          SmartLearn AI
+        </a>
+
+        <div class="sidebar-menu-category">Account</div>
+        <a href="student-dashboard.html#profile" class="nav-item">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profile & Settings
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item logout-link" onclick="SmartLearnAuth.logout(); return false;" style="color: var(--danger);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      
+      <!-- Top Header Bar -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle" onclick="document.getElementById('sidebar').classList.toggle('active'); document.getElementById('sidebar-overlay').classList.toggle('active');">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          
+          <div class="search-box-header">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search quizzes, subjects, notes..." oninput="const q = document.getElementById('quiz-search-input'); if(q){q.value=this.value; SmartLearnQuizzes.renderQuizzesModule();}">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="icon-circle-btn" id="theme-toggle" title="Toggle Theme">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+          </button>
+
+          <div class="icon-circle-btn" title="Notifications" onclick="SmartLearnApp.openModal('notifications-modal')">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="notification-dot"></span>
+          </div>
+
+          <div class="user-profile-btn" onclick="window.location.href='student-dashboard.html#profile'" style="cursor: pointer;">
+            <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Avatar" class="user-avatar">
+            <div class="user-info">
+              <span class="user-name" id="user-display-name">User Account</span>
+              <span class="user-role" id="user-display-role">Student</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content Container -->
+      <main class="main-content-container" style="padding: 1.5rem;">
+        
+        <!-- Header Title Banner -->
+        <div class="dashboard-page-header" style="margin-bottom: 1.5rem;">
+          <div>
+            <h1 class="greeting-title" id="quiz-welcome-heading">Quizzes 🎯</h1>
+            <p class="greeting-sub">Test your knowledge, take timed assessments, review performance analytics, and track your progress.</p>
+          </div>
+        </div>
+
+        <!-- 1. Summary Cards Grid -->
+        <div class="stats-grid" style="margin-bottom: 1.5rem;">
+          <div class="card stat-card">
+            <div class="stat-icon-wrapper stat-icon-primary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div>
+              <div class="stat-val" id="quiz-stat-available">0</div>
+              <div class="stat-lbl">Available Quizzes</div>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon-wrapper stat-icon-success">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div>
+              <div class="stat-val" id="quiz-stat-completed">0</div>
+              <div class="stat-lbl">Completed</div>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon-wrapper stat-icon-warning">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <div class="stat-val" id="quiz-stat-pending">0</div>
+              <div class="stat-lbl">Pending Attempts</div>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon-wrapper stat-icon-info">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+            </div>
+            <div>
+              <div class="stat-val" id="quiz-stat-avg-score">0%</div>
+              <div class="stat-lbl">Average Score</div>
+            </div>
+          </div>
+
+          <div class="card stat-card">
+            <div class="stat-icon-wrapper stat-icon-accent">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
+            <div>
+              <div class="stat-val" id="quiz-stat-passed">0</div>
+              <div class="stat-lbl">Passed Quizzes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Search & Filters Toolbar -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1rem 1.25rem;">
+          <div style="display: flex; flex-wrap: wrap; gap: 0.85rem; align-items: center; justify-content: space-between;">
+            
+            <!-- Search Bar -->
+            <div style="flex: 1; min-width: 240px; position: relative;">
+              <input type="text" id="quiz-search-input" class="form-control" placeholder="🔍 Search by quiz title, subject, teacher or topic..." oninput="SmartLearnQuizzes.renderQuizzesModule()">
+            </div>
+
+            <!-- Filters -->
+            <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; align-items: center;">
+              
+              <!-- Status Filter -->
+              <select id="quiz-filter-status" class="form-control" style="width: auto;" onchange="SmartLearnQuizzes.renderQuizzesModule()">
+                <option value="all">Status: All</option>
+                <option value="available">Available</option>
+                <option value="pending">Pending</option>
+                <option value="completed">Completed</option>
+                <option value="passed">Passed</option>
+                <option value="failed">Failed</option>
+                <option value="expired">Expired</option>
+              </select>
+
+              <!-- Subject Filter -->
+              <select id="quiz-filter-subject" class="form-control" style="width: auto;" onchange="SmartLearnQuizzes.renderQuizzesModule()">
+                <option value="all">Subject: All</option>
+              </select>
+
+              <!-- Date Filter -->
+              <select id="quiz-filter-date" class="form-control" style="width: auto;" onchange="SmartLearnQuizzes.renderQuizzesModule()">
+                <option value="all">Deadline: All</option>
+                <option value="today">Ends Today</option>
+                <option value="week">Ends This Week</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="expired">Expired</option>
+              </select>
+
+              <!-- Sorting -->
+              <select id="quiz-filter-sort" class="form-control" style="width: auto;" onchange="SmartLearnQuizzes.renderQuizzesModule()">
+                <option value="newest">Sort: Newest</option>
+                <option value="oldest">Sort: Oldest</option>
+                <option value="highest_marks">Highest Marks</option>
+                <option value="duration_short">Shortest Duration</option>
+                <option value="duration_long">Longest Duration</option>
+                <option value="deadline">Deadline Nearest</option>
+              </select>
+
+              <!-- Bookmarks Only Toggle -->
+              <button type="button" id="quiz-bookmark-toggle-btn" class="btn btn-outline btn-sm" onclick="SmartLearnQuizzes.toggleBookmarksOnlyFilter()" style="display: flex; align-items: center; gap: 0.35rem;">
+                ⭐ Bookmarks
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Quizzes Grid -->
+        <div style="margin-bottom: 2rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <h2 class="font-bold text-lg" style="color: var(--text-main);">Available & Assigned Quizzes</h2>
+            <span class="text-xs text-muted" id="quiz-results-count">Showing 0 quizzes</span>
+          </div>
+
+          <div id="quiz-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 1.25rem;">
+            <!-- Quiz Cards rendered dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- 4. Performance Analytics & Insights Grid -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+          
+          <!-- Subject-Wise Quiz Performance -->
+          <div class="card">
+            <div class="section-card-title" style="margin-bottom: 1rem;">📊 Subject-Wise Quiz Performance</div>
+            <div id="quiz-subject-performance-list" style="display: flex; flex-direction: column; gap: 1rem;">
+              <!-- Dynamic subject bars -->
+            </div>
+          </div>
+
+          <!-- Dynamic Learning Insights -->
+          <div class="card" style="background: linear-gradient(135deg, rgba(79,70,229,0.04) 0%, rgba(99,102,241,0.08) 100%); border: 1px solid var(--border-color);">
+            <div class="section-card-title" style="margin-bottom: 1rem;">💡 Smart Learning Insights</div>
+            <div id="quiz-learning-insights-container">
+              <!-- Dynamic insights rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. My Quiz History -->
+        <div class="card">
+          <div class="section-card-title" style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>📜 My Quiz History & Attempt Logs</span>
+            <span class="badge badge-info" id="quiz-history-count">0 Attempts Recorded</span>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="table" style="width: 100%; text-align: left; border-collapse: collapse;">
+              <thead>
+                <tr style="border-bottom: 2px solid var(--border-color);">
+                  <th style="padding: 0.75rem;">Quiz Title</th>
+                  <th style="padding: 0.75rem;">Subject</th>
+                  <th style="padding: 0.75rem;">Submitted Date</th>
+                  <th style="padding: 0.75rem;">Score</th>
+                  <th style="padding: 0.75rem;">Percentage</th>
+                  <th style="padding: 0.75rem;">Status</th>
+                  <th style="padding: 0.75rem; text-align: right;">Action</th>
+                </tr>
+              </thead>
+              <tbody id="quiz-history-tbody">
+                <!-- History rows rendered dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal 1: Quiz Details View Modal -->
+  <div class="modal-overlay" id="quiz-detail-modal" style="display: none;">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <div class="modal-title" id="quiz-modal-title">Quiz Details</div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('quiz-detail-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="quiz-modal-body-content">
+        <!-- Rendered dynamically -->
+      </div>
+      <div class="modal-footer" id="quiz-modal-footer-actions">
+        <!-- Action buttons rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Active Interactive Quiz Interface Modal -->
+  <div class="modal-overlay" id="quiz-active-interface-modal" style="display: none; z-index: 1050;">
+    <div class="modal-container" style="max-width: 820px; width: 95%;">
+      <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
+        <div>
+          <h3 class="modal-title" id="active-quiz-title" style="font-size: 1.15rem;">Data Structures Basics</h3>
+          <span class="text-xs text-muted" id="active-quiz-subtitle">Question 1 of 5</span>
+        </div>
+        <div class="quiz-timer-badge">
+          ⏱️ <span id="active-quiz-timer">15:00</span>
+        </div>
+      </div>
+      <div class="modal-body" style="padding: 1.25rem 1.5rem;">
+        
+        <!-- Progress Bar -->
+        <div style="height: 6px; background: #e2e8f0; border-radius: 10px; overflow: hidden; margin-bottom: 1.25rem;">
+          <div id="active-quiz-progress-bar" style="height: 100%; background: var(--primary); width: 20%; transition: width 0.3s ease;"></div>
+        </div>
+
+        <!-- Question Navigator Bar -->
+        <div style="margin-bottom: 1.25rem;">
+          <label class="form-label" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted);">Question Navigator</label>
+          <div class="question-nav-grid" id="active-quiz-nav-grid">
+            <!-- Nav pills rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Question Card -->
+        <div style="background: var(--bg-subtle, #f8fafc); border-radius: 10px; padding: 1.25rem; border: 1px solid var(--border-color); margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+            <span class="badge badge-primary" id="active-question-num-badge">Question 1</span>
+            <span class="text-xs text-muted" id="active-question-marks-badge">5 Marks</span>
+          </div>
+          <h3 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin-bottom: 1rem;" id="active-question-text">Question text goes here...</h3>
+
+          <!-- Options Container -->
+          <div id="active-question-options-container">
+            <!-- Options rendered dynamically -->
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+        <button type="button" class="btn btn-outline" id="active-quiz-prev-btn" onclick="SmartLearnQuizzes.navigateQuestion(-1)">
+          ← Previous
+        </button>
+
+        <div style="display: flex; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnQuizzes.confirmSubmitQuiz()">
+            Submit Quiz
+          </button>
+          <button type="button" class="btn btn-primary" id="active-quiz-next-btn" onclick="SmartLearnQuizzes.navigateQuestion(1)">
+            Next Question →
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Quiz Submission Confirmation Dialog -->
+  <div class="modal-overlay" id="quiz-submit-confirm-modal" style="display: none; z-index: 1100;">
+    <div class="modal-container" style="max-width: 460px;">
+      <div class="modal-header">
+        <div class="modal-title">Submit Quiz Confirmation</div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('quiz-submit-confirm-modal')">&times;</button>
+      </div>
+      <div class="modal-body text-center" style="padding: 1.5rem 1.25rem;">
+        <div style="font-size: 3rem; margin-bottom: 0.75rem;">📋</div>
+        <h3 class="font-bold text-lg" style="margin-bottom: 0.5rem; color: var(--text-main);">Ready to Submit?</h3>
+        <p class="text-sm text-muted" id="submit-confirm-message">You have answered 4 of 4 questions. Are you sure you want to finalize your submission?</p>
+      </div>
+      <div class="modal-footer" style="justify-content: center; gap: 1rem;">
+        <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('quiz-submit-confirm-modal')">Resume Quiz</button>
+        <button type="button" class="btn btn-primary" onclick="SmartLearnQuizzes.finalizeQuizSubmission()">Yes, Submit Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 4: Quiz Result & Detailed Review Modal -->
+  <div class="modal-overlay" id="quiz-result-modal" style="display: none; z-index: 1050;">
+    <div class="modal-container" style="max-width: 760px; width: 95%;">
+      <div class="modal-header">
+        <div class="modal-title" id="result-modal-title">Quiz Result & Score Report</div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('quiz-result-modal')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 1.5rem;" id="quiz-result-body-content">
+        <!-- Rendered dynamically via JS -->
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('quiz-result-modal')">Back to Quizzes</button>
+        <div id="quiz-result-footer-actions">
+          <!-- Retake or Review buttons -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/demo-data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = SmartLearnAuth.protectDashboard("Student");
+      if (user) {
+        document.getElementById('user-display-name').innerText = user.fullName || user.name;
+        document.getElementById('user-display-role').innerText = `Student • ${user.className || 'B.Tech CSE'}-${user.section || 'A'}`;
+        if (user.avatar) document.getElementById('user-avatar-img').src = user.avatar;
+
+        const welcomeHeading = document.getElementById('quiz-welcome-heading');
+        if (welcomeHeading) {
+          welcomeHeading.innerText = `Welcome, ${user.fullName || user.name} 🎯`;
+        }
+
+        if (typeof SmartLearnApp !== "undefined") {
+          SmartLearnApp.init();
+        }
+
+        if (typeof SmartLearnQuizzes !== "undefined") {
+          SmartLearnQuizzes.init();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

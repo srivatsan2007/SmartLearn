@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | SmartLearn - Connected Classroom</title>
+  <meta name="description" content="Create a SmartLearn account for Students, Teachers, and Parents.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+</head>
+<body>
+
+  <div class="auth-page-wrapper">
+    
+    <!-- Left Hero Banner -->
+    <div class="auth-left-hero">
+      <div class="auth-hero-orb-1"></div>
+      <div class="auth-hero-orb-2"></div>
+
+      <!-- Brand Header -->
+      <div class="auth-brand">
+        <div class="auth-brand-logo" style="background: transparent; padding: 0;">
+          <img src="assets/logo.png" alt="SmartLearn Logo" style="width: 42px; height: 42px; object-fit: contain;">
+        </div>
+        <div>
+          <span>SmartLearn</span>
+          <div style="font-size: 0.725rem; font-weight: 600; color: #a5b4fc; text-transform: uppercase; letter-spacing: 0.08em;">Connected Classroom</div>
+        </div>
+      </div>
+
+      <!-- Hero Body -->
+      <div class="auth-hero-body">
+        <div class="hero-pill-tag">
+          <span></span> Join 50,000+ Connected Learners
+        </div>
+
+        <h1 class="auth-hero-title">Start Your Connected Classroom Journey</h1>
+        
+        <p class="auth-hero-subtitle">
+          "Join thousands of students, teachers, and parents transforming education with SmartLearn AI and real-time analytics."
+        </p>
+
+        <div class="auth-hero-features">
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/></svg>
+            </div>
+            <div>
+              <div class="auth-feature-title">Seamless Academic Sync</div>
+              <div class="auth-feature-desc">Instantly access timetables, assignments, grades, and study materials anytime.</div>
+            </div>
+          </div>
+
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <div class="auth-feature-title">Parent & Teacher Portal</div>
+              <div class="auth-feature-desc">Transparent student progress tracking, instant notifications, and direct messaging.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Footer -->
+      <div class="auth-hero-footer">
+        <span>© 2026 SmartLearn Systems Inc.</span>
+        <span>All rights reserved.</span>
+      </div>
+    </div>
+
+    <!-- Right Form Section -->
+    <div class="auth-right-panel animate-fade-in">
+      
+      <div class="auth-card-header">
+        <h2 class="auth-card-title">Create Your Account ✨</h2>
+        <p class="auth-card-desc">Select your portal role to customize your workspace.</p>
+      </div>
+
+      <form id="register-form" onsubmit="handleRegisterSubmit(event)">
+        
+        <!-- Segmented Role Selector -->
+        <label class="role-selector-label">I am a:</label>
+        <div class="role-selector-grid">
+          <button type="button" class="role-tab-btn active" data-role="Student" onclick="setRegisterRole('Student')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            Student
+          </button>
+
+          <button type="button" class="role-tab-btn" data-role="Teacher" onclick="setRegisterRole('Teacher')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Teacher
+          </button>
+
+          <button type="button" class="role-tab-btn" data-role="Parent" onclick="setRegisterRole('Parent')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+            Parent
+          </button>
+
+          <button type="button" class="role-tab-btn" data-role="Administrator" onclick="setRegisterRole('Administrator')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Admin
+          </button>
+        </div>
+
+        <input type="hidden" id="register-role" value="Student">
+
+        <!-- Full Name -->
+        <div class="form-group">
+          <label for="reg-name" class="form-label">Full Name</label>
+          <div class="input-icon-wrapper">
+            <input type="text" id="reg-name" class="form-control" placeholder="e.g. Alex Kumar" required>
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+        </div>
+
+        <!-- Email Address -->
+        <div class="form-group">
+          <label for="reg-email" class="form-label">Email Address</label>
+          <div class="input-icon-wrapper">
+            <input type="email" id="reg-email" class="form-control" placeholder="alex@smartlearn.demo" required>
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+        </div>
+
+        <!-- Password & Confirm Password (2-col) -->
+        <div class="form-row-2col">
+          <div class="form-group">
+            <label for="reg-password" class="form-label">Password</label>
+            <div class="input-icon-wrapper">
+              <input type="password" id="reg-password" class="form-control" placeholder="••••••••" required>
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-confirm-password" class="form-label">Confirm Password</label>
+            <div class="input-icon-wrapper">
+              <input type="password" id="reg-confirm-password" class="form-control" placeholder="••••••••" required>
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Phone Number -->
+        <div class="form-group">
+          <label for="reg-phone" class="form-label">Phone Number</label>
+          <div class="input-icon-wrapper">
+            <input type="tel" id="reg-phone" class="form-control" placeholder="+1 (555) 019-2834" required>
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+        </div>
+
+        <!-- Dynamic Role Specific Fields -->
+        <div id="dynamic-role-fields">
+          <!-- Student Fields -->
+          <div id="student-fields">
+            <div class="form-group">
+              <label for="reg-student-id" class="form-label">Student ID / Roll No</label>
+              <input type="text" id="reg-student-id" class="form-control" placeholder="e.g. SL-2026-901">
+            </div>
+
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label for="reg-class" class="form-label">Degree Program & Year</label>
+                <input type="text" id="reg-class" class="form-control" placeholder="e.g. B.Tech CSE (Year 2)">
+              </div>
+              <div class="form-group">
+                <label for="reg-section" class="form-label">Section</label>
+                <input type="text" id="reg-section" class="form-control" placeholder="e.g. A">
+              </div>
+            </div>
+
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label for="reg-student-department" class="form-label">Department *</label>
+                <select id="reg-student-department" class="form-control" required>
+                  <option value="CSE">CSE</option>
+                  <option value="ECE">ECE</option>
+                  <option value="MECH">MECH</option>
+                  <option value="IT">IT</option>
+                  <option value="BIOTECH">BIOTECH</option>
+                  <option value="EEE">EEE</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="reg-bloodgroup" class="form-label">Blood Group</label>
+                <select id="reg-bloodgroup" class="form-control">
+                  <option value="O+">O Positive (O+)</option>
+                  <option value="O-">O Negative (O-)</option>
+                  <option value="A+">A Positive (A+)</option>
+                  <option value="A-">A Negative (A-)</option>
+                  <option value="B+">B Positive (B+)</option>
+                  <option value="B-">B Negative (B-)</option>
+                  <option value="AB+">AB Positive (AB+)</option>
+                  <option value="AB-">AB Negative (AB-)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Teacher Fields -->
+          <div id="teacher-fields" style="display: none;">
+            <div class="form-group">
+              <label for="reg-employee-id" class="form-label">Employee ID</label>
+              <input type="text" id="reg-employee-id" class="form-control" placeholder="e.g. EMP-4082">
+            </div>
+
+            <div class="form-row-2col">
+              <div class="form-group">
+                <label for="reg-subject" class="form-label">Primary Subject</label>
+                <input type="text" id="reg-subject" class="form-control" placeholder="e.g. Computer Science">
+              </div>
+              <div class="form-group">
+                <label for="reg-department" class="form-label">Department *</label>
+                <select id="reg-department" class="form-control" required>
+                  <option value="CSE">CSE</option>
+                  <option value="ECE">ECE</option>
+                  <option value="MECH">MECH</option>
+                  <option value="IT">IT</option>
+                  <option value="BIOTECH">BIOTECH</option>
+                  <option value="EEE">EEE</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-handled-classes" class="form-label">Handled Classes / Batches</label>
+              <input type="text" id="reg-handled-classes" class="form-control" placeholder="e.g. B.Tech CSE - Sec A, B.Tech CSE - Sec B">
+            </div>
+          </div>
+
+          <!-- Parent Fields -->
+          <div id="parent-fields" style="display: none;">
+            <div class="form-group">
+              <label for="reg-student-id-child" class="form-label">Child Student ID</label>
+              <input type="text" id="reg-student-id-child" class="form-control" placeholder="e.g. SL-2026-894">
+            </div>
+          </div>
+
+          <!-- Admin Fields -->
+          <div id="admin-fields" style="display: none;">
+            <div class="form-group">
+              <label for="reg-admin-dept" class="form-label">Administrative Scope / Department</label>
+              <select id="reg-admin-dept" class="form-control">
+                <option value="IT & Operations">IT & Operations</option>
+                <option value="Academic Affairs">Academic Affairs</option>
+                <option value="General Administration">General Administration</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-auth-submit">
+          <span>Create Account</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </form>
+
+      <!-- Footer navigation -->
+      <div class="auth-footer-text">
+        Already have an account? 
+        <a href="login.html" class="font-bold">Sign In &rarr;</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js?v=1.0.2"></script>
+  <script src="js/demo-data.js?v=1.0.2"></script>
+  <script src="js/auth.js?v=1.0.2"></script>
+  <script src="js/app.js?v=1.0.2"></script>
+  <script>
+    function showToastUI(message, type = "info") {
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        SmartLearnApp.showToast(message, type);
+      } else {
+        let container = document.getElementById("toast-container");
+        if (!container) {
+          container = document.createElement("div");
+          container.id = "toast-container";
+          container.className = "toast-container";
+          document.body.appendChild(container);
+        }
+        const toast = document.createElement("div");
+        toast.className = `toast toast-${type}`;
+        toast.innerText = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+      }
+    }
+
+    function setRegisterRole(role) {
+      document.getElementById('register-role').value = role;
+      
+      document.querySelectorAll('.role-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-role') === role) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+
+      // Toggle dynamic role fields
+      document.getElementById('student-fields').style.display = role === 'Student' ? 'block' : 'none';
+      document.getElementById('teacher-fields').style.display = role === 'Teacher' ? 'block' : 'none';
+      document.getElementById('parent-fields').style.display = role === 'Parent' ? 'block' : 'none';
+      document.getElementById('admin-fields').style.display = (role === 'Administrator' || role === 'Admin') ? 'block' : 'none';
+    }
+
+    async function handleRegisterSubmit(event) {
+      event.preventDefault();
+      const role = document.getElementById('register-role').value;
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const confirmPassword = document.getElementById('reg-confirm-password').value;
+      const phone = document.getElementById('reg-phone').value.trim();
+
+      if (password !== confirmPassword) {
+        showToastUI("Passwords do not match!", "error");
+        return;
+      }
+
+      let extraData = { phone };
+      if (role === 'Student') {
+        extraData.studentId = document.getElementById('reg-student-id').value.trim();
+        const selectedDept = document.getElementById('reg-student-department').value;
+        const inputClass = document.getElementById('reg-class').value.trim();
+        extraData.class = inputClass || `B.Tech ${selectedDept}`;
+        extraData.className = extraData.class;
+        extraData.section = document.getElementById('reg-section').value.trim() || 'A';
+        extraData.bloodGroup = document.getElementById('reg-bloodgroup').value;
+        extraData.department = selectedDept;
+      } else if (role === 'Teacher') {
+        extraData.employeeId = document.getElementById('reg-employee-id').value.trim();
+        extraData.subject = document.getElementById('reg-subject').value.trim();
+        const selectedDept = document.getElementById('reg-department').value.trim();
+        extraData.department = selectedDept;
+        const inputHandled = document.getElementById('reg-handled-classes')?.value.trim();
+        extraData.handledClasses = inputHandled || `B.Tech ${selectedDept || 'CSE'} - Sec A, B`;
+      } else if (role === 'Parent') {
+        extraData.childStudentId = document.getElementById('reg-student-id-child').value.trim();
+      } else if (role === 'Administrator' || role === 'Admin') {
+        extraData.department = document.getElementById('reg-admin-dept').value;
+      }
+
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      showToastUI("Creating account...", "info");
+
+      const result = await SmartLearnAuth.register({ name, email, password, confirmPassword, role, ...extraData });
+      if (result.success) {
+        showToastUI(result.message, "success");
+        setTimeout(() => {
+          window.location.href = "login.html";
+        }, 1200);
+      } else {
+        showToastUI(result.message, "error");
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const emailParam = params.get("email");
+      const roleParam = params.get("role");
+      if (emailParam) {
+        const emailInput = document.getElementById("reg-email");
+        if (emailInput) emailInput.value = emailParam;
+        const nameInput = document.getElementById("reg-name");
+        if (nameInput && !nameInput.value) {
+          const prefix = emailParam.split("@")[0];
+          nameInput.value = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+        }
+      }
+      if (roleParam) {
+        setRegisterRole(roleParam);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,2381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Dashboard | SmartLearn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Reusable Sidebar for Teacher -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-brand">
+          <div class="auth-brand-logo" style="width:36px; height:36px; background:transparent; padding:0;">
+            <img src="assets/logo.png" alt="SmartLearn Logo" style="width:36px; height:36px; object-fit:contain;">
+          </div>
+          <div>
+            <div class="sidebar-brand-name">SmartLearn</div>
+            <div class="sidebar-brand-sub">Teacher Portal</div>
+          </div>
+        </div>
+        <button class="sidebar-close-mobile-btn" onclick="document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').classList.remove('active');">&times;</button>
+      </div>
+
+      <div class="sidebar-menu-wrapper">
+        <div class="sidebar-menu-category">Main Menu</div>
+        <a href="#overview" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a>
+        <a href="#assignments" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Assignments
+        </a>
+        <a href="#resources" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Resources
+        </a>
+        <a href="#quizzes" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg>
+          Quizzes
+        </a>
+        <a href="#attendance" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          Attendance
+        </a>
+        <a href="#students" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+          Students
+        </a>
+        <a href="#performance" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Performance
+        </a>
+        <a href="#rewards" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+          Rewards & Badges 🏆
+        </a>
+        <a href="#announcements" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          Announcements
+        </a>
+        <a href="#timetable" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Timetable Manager
+        </a>
+        <a href="#exam-timetable" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          Exam Timetable Manager
+        </a>
+
+        <div class="sidebar-menu-category">Account</div>
+        <a href="#profile" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profile & Settings
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item logout-link" onclick="SmartLearnAuth.logout(); return false;" style="color: var(--danger);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <div class="main-wrapper">
+      
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          
+          <div class="search-box-header">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search students, submissions, classes...">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="icon-circle-btn" id="theme-toggle" title="Toggle Theme">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+          </button>
+
+          <div class="icon-circle-btn" title="Notifications">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+            <span class="notification-dot"></span>
+          </div>
+
+          <div class="profile-dropdown-wrapper">
+            <div class="user-card-mini" id="user-profile-btn" style="cursor: pointer;">
+              <img id="user-avatar-img" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=150&q=80" alt="Teacher Avatar" class="user-avatar">
+              <div class="user-info-text desktop-only">
+                <div id="user-display-name" class="user-name">Faculty Member</div>
+                <div id="user-display-role" class="user-role-badge">Faculty</div>
+              </div>
+            </div>
+
+            <div class="profile-dropdown-menu" id="user-profile-dropdown">
+              <a href="#profile" class="dropdown-item">My Profile</a>
+              <a href="#settings" class="dropdown-item">Settings</a>
+              <div style="border-top: 1px solid var(--border-color); margin: 0.25rem 0;"></div>
+              <a href="#" class="dropdown-item" onclick="SmartLearnAuth.logout(); return false;" style="color: var(--danger);">Logout</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Dashboard Body -->
+      <main class="dashboard-container">
+        
+        <!-- Tab 1: Overview Dashboard -->
+        <div id="overview" class="dashboard-tab-content">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title" id="greeting-text">Welcome 👋</h1>
+              <p class="greeting-sub">"Empower your classroom with smart tools and real-time insights."</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-outline" onclick="SmartLearnTeacherAttendance.openTeacherQrModal()">
+                📷 Launch QR Attendance
+              </button>
+              <button class="btn btn-primary" onclick="SmartLearnApp.openModal('create-assignment-modal')">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Create Assignment
+              </button>
+            </div>
+          </div>
+
+          <!-- Metric Stat Cards -->
+          <div class="stats-grid">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-stat-total-students">--</div>
+                <div class="stat-lbl">Total Enrolled Students</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-info" style="background-color: var(--info-light); color: var(--info);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-stat-today-classes">--</div>
+                <div class="stat-lbl">Today's Classes</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-stat-pending-count">0</div>
+                <div class="stat-lbl">Pending Submissions</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-stat-avg-performance">--</div>
+                <div class="stat-lbl">Avg Class Performance</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Class Coordinator Portal Banner & Roster (Rendered dynamically if user is nominated Class Coordinator) -->
+          <div id="teacher-coordinator-portal-container" style="display: none; margin-bottom: 2rem;">
+            <!-- Rendered dynamically via renderTeacherDashboard() -->
+          </div>
+
+          <!-- Quick Actions Banner -->
+          <div class="card" style="margin-bottom: 2rem;">
+            <div class="section-card-title">Quick Classroom Actions</div>
+            <div class="quick-actions-grid">
+              <button class="action-tile-btn" onclick="SmartLearnApp.openModal('create-assignment-modal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+                <span>Create Assignment</span>
+              </button>
+
+              <button class="action-tile-btn" onclick="SmartLearnApp.openModal('create-quiz-modal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                <span>Create Quiz</span>
+              </button>
+
+              <button class="action-tile-btn" onclick="SmartLearnApp.openModal('mark-attendance-modal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                <span>Mark Attendance</span>
+              </button>
+
+              <button class="action-tile-btn" onclick="SmartLearnApp.openModal('upload-material-modal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span>Upload Resource</span>
+              </button>
+
+              <button class="action-tile-btn" onclick="SmartLearnApp.openModal('post-announcement-modal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                <span>Post Notice</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- At-Risk & Low Marks Identification Engine Container -->
+          <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--danger);">
+            <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.2rem;">⚠️</span>
+                <span>At-Risk Students & Low Marks Identification Engine</span>
+              </div>
+              <span class="badge badge-danger" id="at-risk-count-badge">0 Students Identified</span>
+            </div>
+            <p class="text-xs text-muted" style="margin-bottom: 1rem;">
+              Automated analytics engine identifying enrolled students scoring below 70% in test evaluations, missing assignments, or attendance below 75%.
+            </p>
+
+            <div id="teacher-at-risk-students-list">
+              <div class="empty-state-text">Scanning student performance records...</div>
+            </div>
+          </div>
+
+          <!-- Dashboard Content Grid -->
+          <div class="dashboard-sections-grid">
+            
+            <!-- Left Column -->
+            <div class="section-column">
+              
+              <!-- Today's Schedule -->
+              <div class="card">
+                <div class="section-card-title">Today's Class Schedule</div>
+                
+                <div class="class-timeline">
+                  <div class="class-item">
+                    <div class="class-time">09:00 AM</div>
+                    <div class="class-details">
+                      <div class="class-name">B.Tech CSE-A • Data Structures</div>
+                      <div class="class-sub">38 Students Registered • Lab 402</div>
+                    </div>
+                    <span class="badge badge-success">Ongoing</span>
+                  </div>
+
+                  <div class="class-item" style="border-left-color: var(--secondary);">
+                    <div class="class-time" style="color: var(--secondary);">10:15 AM</div>
+                    <div class="class-details">
+                      <div class="class-name">B.Tech IT-B • Advanced Java & OOP</div>
+                      <div class="class-sub">42 Students Registered • Lab 405</div>
+                    </div>
+                    <span class="badge badge-info">Next</span>
+                  </div>
+
+                  <div class="class-item" style="border-left-color: var(--slate-400);">
+                    <div class="class-time" style="color: var(--slate-500);">01:30 PM</div>
+                    <div class="class-details">
+                      <div class="class-name">BCA-Sem 2 • Web Development</div>
+                      <div class="class-sub">32 Students Registered • Room 102</div>
+                    </div>
+                    <span class="badge badge-info">Upcoming</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Assignment Submissions -->
+              <div class="card">
+                <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center;">
+                  <span>Student Submissions & Coursework</span>
+                  <span class="badge badge-primary">Live Data</span>
+                </div>
+                
+                <div class="assignment-list" id="teacher-recent-submissions-list">
+                  <div class="empty-state-text" style="padding: 1.5rem; text-align: center;">Loading student submissions...</div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Column -->
+            <div class="section-column">
+              
+              <!-- Class Performance Overview -->
+              <div class="card">
+                <div class="section-card-title">Class Performance Overview</div>
+                
+                <div style="display: flex; flex-direction: column; gap: 1rem;" id="teacher-overview-class-perf-list">
+                  <div style="padding: 0.85rem; background-color: var(--bg-subtle); border-radius: var(--radius-md);">
+                    <div style="display: flex; justify-content: space-between;" class="font-bold text-sm">
+                      <span>B.Tech CSE-A</span>
+                      <span class="text-primary">88% Avg</span>
+                    </div>
+                    <div class="text-xs text-muted" style="margin-top:0.2rem;">Attendance: 94% • 38 Students</div>
+                  </div>
+
+                  <div style="padding: 0.85rem; background-color: var(--bg-subtle); border-radius: var(--radius-md);">
+                    <div style="display: flex; justify-content: space-between;" class="font-bold text-sm">
+                      <span>B.Tech CSE-B</span>
+                      <span class="text-primary">84% Avg</span>
+                    </div>
+                    <div class="text-xs text-muted" style="margin-top:0.2rem;">Attendance: 91% • 42 Students</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Recent Announcements -->
+              <div class="card">
+                <div class="section-card-title">Recent Announcements 📢</div>
+                <div id="teacher-recent-announcements" style="margin-bottom: 0.75rem;">
+                  <div class="empty-state-text">Loading announcements...</div>
+                </div>
+                <button class="btn btn-outline btn-sm btn-block" onclick="SmartLearnApp.openModal('post-announcement-modal')">Post New Notice</button>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Tab 2: Assignments Module Page -->
+        <div id="assignments" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Assignment Evaluation & Coursework Portal 📝</h1>
+              <p class="greeting-sub">Manage class assignments, review student submissions, download attached solutions, and publish grades with feedback.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('create-assignment-modal')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create New Assignment
+            </button>
+          </div>
+
+          <!-- Assignment Evaluation Summary Cards -->
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-bottom: 1.5rem;">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-asgn-total-count">0</div>
+                <div class="stat-lbl">Published Assignments</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-asgn-received-count">0</div>
+                <div class="stat-lbl">Submissions Received</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-asgn-pending-stat" style="color: #f59e0b;">0</div>
+                <div class="stat-lbl">Needs Grading</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-asgn-graded-stat" style="color: #10b981;">0</div>
+                <div class="stat-lbl">Graded & Feedback Sent</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Student Submissions Filter Bar & Evaluation Roster -->
+          <div class="card">
+            <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <span>Student Submissions Roster</span>
+              <span class="badge badge-primary">Evaluation Center</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
+              <div>
+                <input type="text" id="teacher-asgn-search" class="form-control" placeholder="🔍 Search student name, ID, or assignment..." oninput="SmartLearnTeacherAssignments.renderTeacherDashboard()">
+              </div>
+              <div>
+                <select id="teacher-asgn-class-filter" class="form-control" onchange="SmartLearnTeacherAssignments.renderTeacherDashboard()">
+                  <option value="all">All Classes</option>
+                  <option value="B.Tech CSE">B.Tech CSE</option>
+                  <option value="B.Tech IT">B.Tech IT</option>
+                </select>
+              </div>
+              <div>
+                <select id="teacher-asgn-status-filter" class="form-control" onchange="SmartLearnTeacherAssignments.renderTeacherDashboard()">
+                  <option value="all">All Submission Statuses</option>
+                  <option value="pending">Pending Evaluation</option>
+                  <option value="graded">Graded</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Detailed Submissions List -->
+            <div class="assignment-list" id="teacher-submissions-container">
+              <div class="empty-state-text" style="padding: 1.5rem; text-align: center;">Loading student submissions...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 3: Resources & Study Materials Page -->
+        <div id="resources" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Study Materials & Resource Management 📚</h1>
+              <p class="greeting-sub">Upload lecture notes, reference PDFs, presentation slides, and question papers for students.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('upload-material-modal')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Upload New Resource
+            </button>
+          </div>
+
+          <div class="card">
+            <div class="section-card-title">Uploaded Class Resources</div>
+            <div class="assignment-list" id="teacher-resources-container">
+              <div class="empty-state-text" style="padding: 1.5rem; text-align: center;">Loading uploaded resources...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Quizzes Management -->
+        <div id="quizzes" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Quiz & Assessment Builder 🎯</h1>
+              <p class="greeting-sub">Create dynamic class quizzes, manage automated evaluation keys, track student attempts and view analytics.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnTeacherQuizzes.openCreateQuizModal()">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create New Quiz
+            </button>
+          </div>
+
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <div class="section-card-title" style="margin-bottom: 0;">Published & Draft Quizzes</div>
+              <div id="teacher-quiz-count-badge" class="badge badge-primary">0 Quizzes</div>
+            </div>
+
+            <div id="teacher-quizzes-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.25rem;">
+              <div class="empty-state-text" style="grid-column: 1 / -1; padding: 2rem; text-align: center;">Loading class quizzes...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Teacher Attendance Management & Live QR -->
+        <div id="attendance" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Classroom Attendance & Live QR Engine 📷</h1>
+              <p class="greeting-sub">Launch 5-minute QR check-in codes, auto-mark unsubmitted students absent, scan student ID cards, or manage classroom registers.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="SmartLearnTeacherAttendance.openTeacherQrModal()">
+                📷 Launch 5-Min QR Code
+              </button>
+              <button class="btn btn-outline" onclick="SmartLearnTeacherAttendance.openScanStudentQrModal()">
+                🔍 Scan Student QR
+              </button>
+            </div>
+          </div>
+
+          <!-- Active Session Banner (if session is active) -->
+          <div id="teacher-live-session-banner" class="card" style="display: none; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); color: #fff; margin-bottom: 1.5rem; border: 1px solid var(--primary-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+              <div>
+                <div class="badge badge-success" style="margin-bottom: 0.35rem;">🟢 LIVE ATTENDANCE SESSION</div>
+                <h3 id="live-banner-title" style="font-size: 1.35rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem;">B.Tech CSE-A • Computer Science</h3>
+                <div class="text-xs" style="color: #94a3b8;">Students have 5 minutes to submit the session code on their website.</div>
+              </div>
+              <div style="text-align: center; background: rgba(255,255,255,0.08); padding: 0.75rem 1.25rem; border-radius: 12px; border: 1px solid rgba(255,255,255,0.15);">
+                <div class="text-xs" style="color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.05em;">SESSION CODE</div>
+                <div id="live-banner-code" style="font-size: 1.75rem; font-weight: 800; color: #818cf8; letter-spacing: 0.1em;">SESS-849201</div>
+                <div id="live-banner-timer" style="font-size: 0.85rem; font-weight: 700; color: #f87171; margin-top: 0.25rem;">Expires in: 04:59</div>
+              </div>
+              <div>
+                <button class="btn btn-warning btn-sm" onclick="SmartLearnTeacherAttendance.finalizeCurrentSession()">
+                  🔒 Finalize & Mark Remaining Absent
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Session Student Roster & Real-time Verification -->
+            <div style="background: rgba(15, 23, 42, 0.6); border-radius: 10px; padding: 1rem; border: 1px solid rgba(255,255,255,0.12);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                <div class="font-bold text-sm" style="color: #e2e8f0;">⚡ Real-Time Student Session Submissions</div>
+                <div class="badge badge-primary" id="live-session-counter">0 / 0 Present</div>
+              </div>
+              
+              <div style="overflow-x: auto;">
+                <table class="data-table" style="width: 100%; color: #fff;">
+                  <thead>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.15); color: #94a3b8; font-size: 0.75rem;">
+                      <th style="padding: 0.5rem; text-align: left;">Student Name & ID</th>
+                      <th style="padding: 0.5rem; text-align: center;">Session Status</th>
+                      <th style="padding: 0.5rem; text-align: right;">Time / Check-in Method</th>
+                    </tr>
+                  </thead>
+                  <tbody id="live-session-roster-body">
+                    <!-- Populated dynamically in real time -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Grid: Manual Roll-Call & Live Register -->
+          <div class="dashboard-sections-grid">
+            <!-- Left Column: Manual Class Register -->
+            <div class="section-column">
+              <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                  <div class="section-card-title" style="margin-bottom: 0;">✍️ Classroom Manual Register</div>
+                  <div style="display: flex; gap: 0.35rem;">
+                    <button class="btn btn-outline btn-sm" onclick="SmartLearnTeacherAttendance.setAllManualStatus('present')">Mark All Present</button>
+                    <button class="btn btn-outline btn-sm" onclick="SmartLearnTeacherAttendance.setAllManualStatus('absent')">Mark All Absent</button>
+                  </div>
+                </div>
+
+                <!-- Class & Date Selector Controls -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1rem; background: var(--bg-subtle); padding: 0.85rem; border-radius: 10px;">
+                  <div>
+                    <label class="form-label text-xs">Class</label>
+                    <select id="teacher-manual-class" class="form-control form-select" onchange="SmartLearnTeacherAttendance.renderManualAttendanceTable()">
+                      <option value="B.Tech CSE">B.Tech CSE</option>
+                      <option value="B.Tech ECE">B.Tech ECE</option>
+                      <option value="B.Tech MECH">B.Tech MECH</option>
+                      <option value="B.Tech IT">B.Tech IT</option>
+                      <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+                      <option value="B.Tech EEE">B.Tech EEE</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="form-label text-xs">Section</label>
+                    <select id="teacher-manual-section" class="form-control form-select" onchange="SmartLearnTeacherAttendance.renderManualAttendanceTable()">
+                      <option value="A">Section A</option>
+                      <option value="B">Section B</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="form-label text-xs">Subject</label>
+                    <select id="teacher-manual-subject" class="form-control form-select" onchange="SmartLearnTeacherAttendance.renderManualAttendanceTable()">
+                      <option value="sub_cs">Computer Science</option>
+                      <option value="sub_math">Mathematics</option>
+                      <option value="sub_phys">Physics</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="form-label text-xs">Date</label>
+                    <input type="date" id="teacher-manual-date" class="form-control" onchange="SmartLearnTeacherAttendance.renderManualAttendanceTable()">
+                  </div>
+                </div>
+
+                <!-- Register List Table -->
+                <div style="overflow-x: auto;">
+                  <table class="data-table" style="width: 100%;">
+                    <thead>
+                      <tr>
+                        <th>Student Name & ID</th>
+                        <th style="text-align: center;">Mark Attendance Status</th>
+                        <th>Notes / Method</th>
+                      </tr>
+                    </thead>
+                    <tbody id="teacher-manual-register-body">
+                      <!-- Rendered dynamically -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+                  <button class="btn btn-primary" onclick="SmartLearnTeacherAttendance.saveManualAttendance()">
+                    💾 Save Class Register
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Today's Summary & Recent Logs -->
+            <div class="section-column">
+              <div class="card">
+                <div class="section-card-title">📊 Today's Attendance Overview</div>
+                <div id="teacher-today-summary-box" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-top: 0.75rem;">
+                  <div style="background: var(--bg-subtle); border-radius: 10px; padding: 0.85rem; text-align: center;">
+                    <div class="font-bold text-xl text-primary" id="teacher-today-present-count">0</div>
+                    <div class="text-xs text-muted">Present Today</div>
+                  </div>
+                  <div style="background: var(--bg-subtle); border-radius: 10px; padding: 0.85rem; text-align: center;">
+                    <div class="font-bold text-xl text-danger" id="teacher-today-absent-count">0</div>
+                    <div class="text-xs text-muted">Absent Today</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="card">
+                <div class="section-card-title">Recent Check-in Submissions</div>
+                <div id="teacher-recent-checkins-list" style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.75rem; max-height: 350px; overflow-y: auto;">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Classroom Student Roster & Management -->
+        <div id="students" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Classroom Student Roster & Management 🎓</h1>
+              <p class="greeting-sub">Enrol students using Register IDs, track individual progress, assign coursework, mark attendance, record marks, and attach study materials.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="SmartLearnTeacherStudents.openAddStudentModal()">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add Student by Register ID
+              </button>
+            </div>
+          </div>
+
+          <!-- Metric Stat Cards for Student Roster -->
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-bottom: 1.5rem;">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="tstudent-total-count">0</div>
+                <div class="stat-lbl">Class Enrolled Students</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="tstudent-sections-count">0</div>
+                <div class="stat-lbl">Assigned Class Sections</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="tstudent-avg-attendance">--</div>
+                <div class="stat-lbl">Average Attendance Rate</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filter & Search Roster Bar -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+              <div>
+                <label class="form-label text-xs">Search Roster</label>
+                <input type="text" id="tstudent-search-input" class="form-control" placeholder="🔍 Search Name, Register ID (SL-2026-xxx)..." oninput="SmartLearnTeacherStudents.renderRoster()">
+              </div>
+              <div>
+                <label class="form-label text-xs">Filter Roster View</label>
+                <select id="tstudent-section-filter" class="form-control form-select" onchange="SmartLearnTeacherStudents.renderRoster()">
+                  <option value="all">All Department Students</option>
+                  <option value="my_registered">✨ Students Registered by Me</option>
+                  <option value="B.Tech CSE-A">B.Tech CSE - Section A</option>
+                  <option value="B.Tech CSE-B">B.Tech CSE - Section B</option>
+                  <option value="B.Tech ECE-A">B.Tech ECE - Section A</option>
+                  <option value="B.Tech MECH-A">B.Tech MECH - Section A</option>
+                  <option value="B.Tech IT-A">B.Tech IT - Section A</option>
+                  <option value="B.Tech BIOTECH-A">B.Tech BIOTECH - Section A</option>
+                  <option value="B.Tech EEE-A">B.Tech EEE - Section A</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Container for Student Roster Cards / Table -->
+          <div id="teacher-students-roster-container">
+            <!-- Rendered Dynamically -->
+          </div>
+        </div>
+
+        <!-- Tab: Enrolled Students Performance & Analytics -->
+        <div id="performance" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Enrolled Students Performance & Analytics 📊</h1>
+              <p class="greeting-sub">Track attendance percentage, coursework & quiz marks, and assignment completion rates for all enrolled department students.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-outline" onclick="SmartLearnTeacherPerformance.renderPerformanceTab()">
+                🔄 Refresh Metrics
+              </button>
+            </div>
+          </div>
+
+          <!-- Top Performance Overview Stat Cards -->
+          <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 1.5rem;">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="tperf-total-students">0</div>
+                <div class="stat-lbl">Enrolled Department Students</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="tperf-avg-att">--</div>
+                <div class="stat-lbl">Average Attendance Rate</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="tperf-avg-marks">--</div>
+                <div class="stat-lbl">Average Marks & Quiz Score</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="tperf-avg-asgn">--</div>
+                <div class="stat-lbl">Assignment Submission Rate</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Search & Filter Controls -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+              <div>
+                <label class="form-label text-xs">Search Student</label>
+                <input type="text" id="tperf-search-input" class="form-control" placeholder="🔍 Search by Name or Student Register ID..." oninput="SmartLearnTeacherPerformance.renderPerformanceTab()">
+              </div>
+              <div>
+                <label class="form-label text-xs">Filter by Section</label>
+                <select id="tperf-section-filter" class="form-control form-select" onchange="SmartLearnTeacherPerformance.renderPerformanceTab()">
+                  <option value="ALL">All Sections</option>
+                  <option value="A">Section A</option>
+                  <option value="B">Section B</option>
+                  <option value="C">Section C</option>
+                  <option value="D">Section D</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label text-xs">Performance Level</label>
+                <select id="tperf-status-filter" class="form-control form-select" onchange="SmartLearnTeacherPerformance.renderPerformanceTab()">
+                  <option value="ALL">All Performance Levels</option>
+                  <option value="EXCELLENT">🌟 High Performers (>=85%)</option>
+                  <option value="AVERAGE">📈 Average (60% - 84%)</option>
+                  <option value="NEEDS_ATTENTION">⚠️ Needs Attention (&lt;60%)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Enrolled Students Performance Data Table -->
+          <div class="card">
+            <div class="section-card-title" style="margin-bottom: 1rem;">🎓 Enrolled Students Performance Roster</div>
+            <div style="overflow-x: auto;">
+              <table class="data-table" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Student Name & ID</th>
+                    <th style="text-align: center;">Section</th>
+                    <th>Attendance %</th>
+                    <th>Coursework & Quiz Marks</th>
+                    <th style="text-align: center;">Assignments</th>
+                    <th style="text-align: center;">Overall Status</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tperf-table-body">
+                  <!-- Rendered Dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Announcements & Broadcast Notices -->
+        <div id="announcements" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Faculty Notices & Announcements 📢</h1>
+              <p class="greeting-sub">Broadcast important academic notices, exam alerts, and department circulars to enrolled students and parents.</p>
+            </div>
+            <div>
+              <button class="btn btn-primary" onclick="SmartLearnApp.openModal('post-announcement-modal')">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Post New Notice
+              </button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-title" style="margin-bottom: 1rem;">Recent Broadcasts & Circulars</div>
+            <div id="teacher-announcements-list" style="display: flex; flex-direction: column; gap: 1rem;">
+              <div class="card" style="background: var(--bg-subtle); border-left: 4px solid var(--primary-color);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem;">
+                  <div class="font-bold text-md" style="color: var(--text-main);">📅 Mid-Semester Internal Examination Schedule</div>
+                  <span class="badge badge-primary">Department Broadcast</span>
+                </div>
+                <div class="text-sm text-muted" style="margin-bottom: 0.5rem;">Official timetable for B.Tech CSE Mid-Semester examinations has been published. Check Exam Timetable tab for details.</div>
+                <div class="text-xs text-muted">Posted: Today • By Faculty Coordinator</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 4: Teacher Profile & Settings Page -->
+        <div id="profile" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Faculty Profile & Settings ⚙️</h1>
+              <p class="greeting-sub">Official faculty record management. Note: Teacher details are system-locked and managed strictly by System Administrators.</p>
+            </div>
+          </div>
+
+          <!-- Notice: Admin Access Control Active -->
+          <div class="card" style="margin-bottom: 1.5rem; background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25);">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; flex: 1;">
+                <div style="font-size: 1.8rem;">🛡️</div>
+                <div>
+                  <div class="font-bold text-md" style="color: var(--text-main);">Administrator Access Control Active</div>
+                  <div class="text-xs text-muted" style="margin-top: 0.2rem;">
+                    Faculty details (Name, Employee ID, Department, Blood Group, Gender, Handled Classes, Email & Phone) can <strong>ONLY be modified by System Administrators</strong>.
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="SmartLearnDashboard.openAdminEditTeacherModal()">
+                🔑 Admin Edit Override
+              </button>
+            </div>
+          </div>
+
+          <!-- Faculty Profile Header Card -->
+          <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, rgba(79,70,229,0.06) 0%, rgba(99,102,241,0.02) 100%); border: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+              <div style="position: relative;">
+                <img id="prof-teacher-avatar-img" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=250&q=80" alt="Faculty Avatar" class="user-avatar" style="width: 86px; height: 86px; border-radius: 50%; border: 3px solid var(--primary); object-fit: cover; box-shadow: var(--shadow-md);">
+              </div>
+              <div style="flex: 1;">
+                <div style="display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;">
+                  <h2 id="prof-teacher-card-name" class="font-bold text-xl" style="color: var(--text-main);">Faculty Member</h2>
+                  <span class="badge badge-primary" id="prof-teacher-card-empid">Emp ID: Pending</span>
+                  <span class="badge badge-success">Active Faculty</span>
+                </div>
+                <div class="text-sm text-muted" id="prof-teacher-card-role" style="margin-top: 0.25rem;">Faculty • Computer Science & Engineering</div>
+                <div class="text-xs text-muted" style="margin-top: 0.25rem;">🏫 SmartLearn Institution of Technology • Department of Computer Science</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 1: Locked System Credentials -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem;">
+              <span>Official Locked Credentials (System Records)</span>
+              <span class="badge badge-warning">🔒 Editable by Admin Only</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem;">
+              <!-- Field 1: Employee ID -->
+              <div class="form-group">
+                <label class="form-label">Employee ID (System Locked)</label>
+                <div style="position: relative;">
+                  <input type="text" id="prof-teacher-empid" class="form-control" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed; font-weight: 600;" value="TCH-2026-042">
+                  <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0.6;">🔒</span>
+                </div>
+              </div>
+
+              <!-- Field 2: Full Name -->
+              <div class="form-group">
+                <label class="form-label">Faculty Full Name (Admin Locked)</label>
+                <div style="position: relative;">
+                  <input type="text" id="prof-teacher-fullname" class="form-control" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed; font-weight: 600;" value="">
+                  <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0.6;">🔒</span>
+                </div>
+              </div>
+
+              <!-- Field 3: Department -->
+              <div class="form-group">
+                <label class="form-label">Academic Department (Admin Locked)</label>
+                <div style="position: relative;">
+                  <input type="text" id="prof-teacher-department" class="form-control" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed; font-weight: 600;" value="Computer Science & Engineering">
+                  <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0.6;">🔒</span>
+                </div>
+              </div>
+
+              <!-- Field 4: Blood Group -->
+              <div class="form-group">
+                <label class="form-label">Blood Group (Admin Locked)</label>
+                <div style="position: relative;">
+                  <input type="text" id="prof-teacher-bloodgroup" class="form-control" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed; font-weight: 600;" value="O+">
+                  <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0.6;">🔒</span>
+                </div>
+              </div>
+
+              <!-- Field 5: Gender -->
+              <div class="form-group">
+                <label class="form-label">Gender (Admin Locked)</label>
+                <div style="position: relative;">
+                  <input type="text" id="prof-teacher-gender" class="form-control" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed; font-weight: 600;" value="Female">
+                  <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0.6;">🔒</span>
+                </div>
+              </div>
+
+              <!-- Field 6: Classes Going to Handle -->
+              <div class="form-group">
+                <label class="form-label">Classes Going to Handle / Assigned Sections</label>
+                <div style="position: relative;">
+                  <input type="text" id="prof-teacher-classes" class="form-control" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed; font-weight: 600; color: var(--primary);" value="B.Tech CSE-A, B.Tech IT-B">
+                  <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0.6;">🔒</span>
+                </div>
+              </div>
+
+              <!-- Field 7: Official Email -->
+              <div class="form-group" style="grid-column: 1 / -1;">
+                <label class="form-label">Official Email Address (Admin Locked)</label>
+                <div style="position: relative;">
+                  <input type="email" id="prof-teacher-email" class="form-control" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed;" value="teacher@classora.demo">
+                  <span style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); opacity: 0.6;">🔒</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Contact Mobile Number (Admin Controlled) -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span>📱 Contact Mobile Number</span>
+              <span class="badge badge-warning">🔒 Editable by Admin Only</span>
+            </div>
+            <p class="text-xs text-muted" style="margin-bottom: 1.1rem;">Faculty phone number updates must be processed through the System Administrator.</p>
+
+            <form onsubmit="SmartLearnDashboard.requestPhoneOtp(event)">
+              <div style="display: grid; grid-template-columns: 1fr auto; gap: 0.85rem; align-items: flex-end;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Registered Mobile Number</label>
+                  <input type="tel" id="prof-teacher-phone" class="form-control" placeholder="+91 98765 43210" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed;">
+                </div>
+                <button type="submit" class="btn btn-outline" style="opacity: 0.7;">
+                  🔒 Send OTP & Update (Admin Restricted)
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Section 3: Password Security (Admin Controlled) -->
+          <div class="card">
+            <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+              <span>🔒 Password Security & Credentials</span>
+              <span class="badge badge-warning">🔒 Editable by Admin Only</span>
+            </div>
+            <p class="text-xs text-muted" style="margin-bottom: 1.1rem;">Faculty passwords and security access keys can only be reset by the System Administrator.</p>
+
+            <form onsubmit="SmartLearnDashboard.requestPasswordOtp(event)">
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Current Password</label>
+                  <input type="password" id="prof-teacher-curr-pass" class="form-control" placeholder="••••••••" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">New Password</label>
+                  <input type="password" id="prof-teacher-new-pass" class="form-control" placeholder="Admin Restricted" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed;">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Confirm New Password</label>
+                  <input type="password" id="prof-teacher-conf-pass" class="form-control" placeholder="Admin Restricted" readonly disabled style="background: var(--bg-subtle); cursor: not-allowed;">
+                </div>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <button type="submit" class="btn btn-outline" style="opacity: 0.7;">
+                  🔒 Update Password (Admin Restricted)
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Tab: Teacher 8-Period Timetable Editor -->
+        <div id="timetable" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Classroom Timetable Manager 📅</h1>
+              <p class="greeting-sub">Manage and publish the official 8-period daily schedule for your classes. Edits instantly update student portals.</p>
+            </div>
+            <div>
+              <button class="btn btn-primary" onclick="SmartLearnTeacherTimetable.saveTimetable()">
+                💾 Save 8-Period Schedule
+              </button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <!-- Class, Section, and Day Filter Controls -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.25rem; background: var(--bg-subtle); padding: 1rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <div>
+                <label class="form-label text-xs font-bold">Select Class / Department</label>
+                <select id="teacher-tt-class" class="form-control form-select" onchange="SmartLearnTeacherTimetable.renderEditorTable()">
+                  <option value="B.Tech CSE">B.Tech CSE</option>
+                  <option value="B.Tech ECE">B.Tech ECE</option>
+                  <option value="B.Tech MECH">B.Tech MECH</option>
+                  <option value="B.Tech IT">B.Tech IT</option>
+                  <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+                  <option value="B.Tech EEE">B.Tech EEE</option>
+                  <option value="B.Tech CSE">B.Tech CSE</option>
+                  <option value="B.Tech ECE">B.Tech ECE</option>
+                  <option value="B.Tech MECH">B.Tech MECH</option>
+                  <option value="B.Tech IT">B.Tech IT</option>
+                  <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+                  <option value="B.Tech EEE">B.Tech EEE</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label text-xs font-bold">Select Section</label>
+                <select id="teacher-tt-section" class="form-control form-select" onchange="SmartLearnTeacherTimetable.renderEditorTable()">
+                  <option value="A">Section A</option>
+                  <option value="B">Section B</option>
+                  <option value="C">Section C</option>
+                  <option value="D">Section D</option>
+                </select>
+              </div>
+              <div>
+                <label class="form-label text-xs font-bold">Select Day of Week</label>
+                <select id="teacher-tt-day" class="form-control form-select" onchange="SmartLearnTeacherTimetable.renderEditorTable()">
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 8 Periods Editor Table -->
+            <div style="overflow-x: auto;">
+              <table class="data-table" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th style="width: 100px;">Period</th>
+                    <th style="width: 170px;">Time Slot</th>
+                    <th>Subject Name</th>
+                    <th>Instructor Name</th>
+                    <th>Room / Hall</th>
+                  </tr>
+                </thead>
+                <tbody id="teacher-timetable-editor-body">
+                  <!-- 8 rows rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <div class="text-xs text-muted">🔒 Restricted: Timetable can be edited by authorized Teachers alone.</div>
+              <button class="btn btn-primary" onclick="SmartLearnTeacherTimetable.saveTimetable()">
+                💾 Save 8-Period Timetable
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Teacher Exam Timetable Manager -->
+        <div id="exam-timetable" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Exam Timetable Manager 📝</h1>
+              <p class="greeting-sub">Schedule and publish official term examinations, room allocations, and exam guidelines. Changes instantly reflect across Student & Parent dashboards.</p>
+            </div>
+            <div>
+              <button class="btn btn-primary" onclick="SmartLearnTeacherExamTimetable.openAddModal()">
+                + Schedule New Exam
+              </button>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <!-- Filter Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem; background: var(--bg-subtle); padding: 1rem; border-radius: 12px; border: 1px solid var(--border-color);">
+              <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div>
+                  <label class="form-label text-xs font-bold" style="margin-bottom: 0.25rem;">Filter Class</label>
+                  <select id="teacher-exam-filter-class" class="form-control form-select" onchange="SmartLearnTeacherExamTimetable.renderExamTable()">
+                    <option value="ALL">All Departments</option>
+                    <option value="B.Tech CSE">B.Tech CSE</option>
+                    <option value="B.Tech ECE">B.Tech ECE</option>
+                    <option value="B.Tech MECH">B.Tech MECH</option>
+                    <option value="B.Tech IT">B.Tech IT</option>
+                    <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+                    <option value="B.Tech EEE">B.Tech EEE</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="form-label text-xs font-bold" style="margin-bottom: 0.25rem;">Filter Section</label>
+                  <select id="teacher-exam-filter-section" class="form-control form-select" onchange="SmartLearnTeacherExamTimetable.renderExamTable()">
+                    <option value="ALL">All Sections</option>
+                    <option value="A">Section A</option>
+                    <option value="B">Section B</option>
+                  </select>
+                </div>
+              </div>
+              <div class="text-xs text-muted">
+                🔒 Direct Sync: Published exams automatically update Student & Parent portals.
+              </div>
+            </div>
+
+            <!-- Exam Schedule List / Table -->
+            <div style="overflow-x: auto;">
+              <table class="data-table" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th>Exam Title & Subject</th>
+                    <th>Class / Sec</th>
+                    <th>Exam Date</th>
+                    <th>Time Slot</th>
+                    <th>Room / Hall</th>
+                    <th>Instructions</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="teacher-exam-timetable-table-body">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Rewards & Gamification Manager for Faculty -->
+        <div id="rewards" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Rewards & Badges Manager 🏆</h1>
+              <p class="greeting-sub">Grant reward points, assign custom badges, and recognize student academic excellence.</p>
+            </div>
+          </div>
+
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="section-card-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+              <div class="section-card-title">🏅 Student Gamification Roster</div>
+              <span class="badge badge-primary">Faculty Award System</span>
+            </div>
+            <div id="teacher-gamification-roster-container" style="overflow-x: auto;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal: Create / Edit Exam Schedule -->
+  <div class="modal-overlay" id="create-exam-modal">
+    <div class="modal-container" style="max-width: 650px;">
+      <div class="modal-header">
+        <div class="modal-title" id="exam-modal-title">Schedule New Examination</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnTeacherExamTimetable.saveExam(event)">
+        <input type="hidden" id="exam-id">
+        <div class="modal-body" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+          <div class="form-group" style="grid-column: span 1;">
+            <label class="form-label">Subject Name *</label>
+            <select id="exam-subject" class="form-control form-select" required>
+              <option value="Computer Science">Computer Science</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+              <option value="English">English</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column: span 1;">
+            <label class="form-label">Exam Title / Assessment Name *</label>
+            <input type="text" id="exam-title" class="form-control" placeholder="e.g. Mid-Term Practical Exam" required>
+          </div>
+
+          <div class="form-group" style="grid-column: span 1;">
+            <label class="form-label">Class / Program *</label>
+            <select id="exam-class" class="form-control form-select" required>
+              <option value="B.Tech CSE">B.Tech CSE</option>
+              <option value="B.Tech ECE">B.Tech ECE</option>
+              <option value="B.Tech MECH">B.Tech MECH</option>
+              <option value="B.Tech IT">B.Tech IT</option>
+              <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+              <option value="B.Tech EEE">B.Tech EEE</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column: span 1;">
+            <label class="form-label">Section *</label>
+            <select id="exam-section" class="form-control form-select" required>
+              <option value="ALL">All Sections (Entire Department)</option>
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+              <option value="D">Section D</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="grid-column: span 1;">
+            <label class="form-label">Exam Date *</label>
+            <input type="date" id="exam-date" class="form-control" required>
+          </div>
+          <div class="form-group" style="grid-column: span 1;">
+            <label class="form-label">Time Slot *</label>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <input type="time" id="exam-start-time" class="form-control" required>
+              <span class="text-xs text-muted">to</span>
+              <input type="time" id="exam-end-time" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="grid-column: span 2;">
+            <label class="form-label">Room / Examination Hall *</label>
+            <input type="text" id="exam-room" class="form-control" placeholder="e.g. Room CS Lab 1 / Main Auditorium" required>
+          </div>
+
+          <div class="form-group" style="grid-column: span 2;">
+            <label class="form-label">Exam Guidelines & Instructions</label>
+            <textarea id="exam-instructions" class="form-control" rows="3" placeholder="Enter special rules, allowed materials, or instructions for students..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">💾 Publish Exam Schedule</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Create Assignment -->
+  <div class="modal-overlay" id="create-assignment-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 600px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary">Coursework Management</div>
+          <h2 class="modal-title" style="margin-top: 0.25rem;">Create New Assignment</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('create-assignment-modal')">&times;</button>
+      </div>
+      <form onsubmit="SmartLearnTeacherAssignments.publishAssignment(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Assignment Title *</label>
+            <input type="text" id="asgn-title" class="form-control" placeholder="e.g. Graph Algorithms & Shortest Path Homework" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <input type="text" id="asgn-subject" class="form-control" placeholder="e.g. Data Structures" value="Data Structures" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Max Marks *</label>
+              <input type="number" id="asgn-maxmarks" class="form-control" value="100" min="1" max="500" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Target Class / Department *</label>
+              <select id="asgn-class" class="form-control form-select" required>
+                <option value="B.Tech CSE">B.Tech CSE</option>
+                <option value="B.Tech ECE">B.Tech ECE</option>
+                <option value="B.Tech MECH">B.Tech MECH</option>
+                <option value="B.Tech IT">B.Tech IT</option>
+                <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+                <option value="B.Tech EEE">B.Tech EEE</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Target Section *</label>
+              <select id="asgn-section" class="form-control form-select" required>
+                <option value="ALL">All Sections (Entire Department)</option>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+                <option value="D">Section D</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Submission Due Date *</label>
+            <input type="date" id="asgn-duedate" class="form-control" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Instructions & Problem Statement</label>
+            <textarea id="asgn-desc" class="form-control" rows="3" placeholder="Provide guidelines, link to reference material, or problem specification..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('create-assignment-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">🚀 Publish & Notify Section Students</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Create Quiz -->
+  <div class="modal-overlay" id="create-quiz-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 600px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-accent">Quiz Engine</div>
+          <h2 class="modal-title" style="margin-top: 0.25rem;">Create New Quiz</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('create-quiz-modal')">&times;</button>
+      </div>
+      <form onsubmit="SmartLearnTeacherQuizzes.publishQuiz(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Quiz Title *</label>
+            <input type="text" id="quiz-title" class="form-control" placeholder="e.g. Unit 2 Data Structures MCQ Assessment" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <input type="text" id="quiz-subject" class="form-control" placeholder="e.g. Data Structures" value="Data Structures" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Duration (Minutes) *</label>
+              <input type="number" id="quiz-duration" class="form-control" value="15" min="5" max="180" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Target Class / Department *</label>
+              <select id="quiz-class" class="form-control form-select" required>
+                <option value="B.Tech CSE">B.Tech CSE</option>
+                <option value="B.Tech ECE">B.Tech ECE</option>
+                <option value="B.Tech MECH">B.Tech MECH</option>
+                <option value="B.Tech IT">B.Tech IT</option>
+                <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+                <option value="B.Tech EEE">B.Tech EEE</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Target Section *</label>
+              <select id="quiz-section" class="form-control form-select" required>
+                <option value="ALL">All Sections (Entire Department)</option>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+                <option value="D">Section D</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Total Marks *</label>
+              <input type="number" id="quiz-totalmarks" class="form-control" value="20" min="5" max="200" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Passing Marks</label>
+              <input type="number" id="quiz-passmarks" class="form-control" value="8" min="1" max="100">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Instructions for Students</label>
+            <textarea id="quiz-desc" class="form-control" rows="2" placeholder="Enter instructions regarding timing, questions format, and negative marking if any..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('create-quiz-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">🎯 Publish Quiz & Notify Section Students</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Upload Study Material -->
+  <div class="modal-overlay" id="upload-material-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 580px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary">Study Materials & Courseware</div>
+          <h2 class="modal-title" style="margin-top: 0.25rem;">Upload Study Material</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('upload-material-modal')">&times;</button>
+      </div>
+
+      <form onsubmit="SmartLearnTeacherAssignments.uploadStudyMaterial(event)">
+        <div class="modal-body" style="gap: 1rem; display: flex; flex-direction: column;">
+          <div class="form-group">
+            <label class="form-label">Material Title</label>
+            <input type="text" id="tm-title" class="form-control" placeholder="e.g. Data Structures AVL Trees Comprehensive Notes" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Description / Topics Covered</label>
+            <textarea id="tm-desc" class="form-control" rows="2" placeholder="Brief summary of concepts, formula sheet, or lecture slides..."></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Subject</label>
+              <select id="tm-subject" class="form-control">
+                <option value="sub_ds201">Data Structures (CS-201)</option>
+                <option value="sub_math11">Mathematics (MATH-11)</option>
+                <option value="sub_phy11">Physics (PHY-11)</option>
+                <option value="sub_cs101">Computer Science (CS-101)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Material Type</label>
+              <select id="tm-type" class="form-control">
+                <option value="PDF">PDF Document</option>
+                <option value="PPT">PPT / Presentation</option>
+                <option value="DOC">Word / Lecture Notes</option>
+                <option value="Video">Video Tutorial</option>
+                <option value="Paper">Previous Question Paper</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Target Class</label>
+              <select id="tm-class" class="form-control">
+                <option value="B.Tech CSE">B.Tech CSE</option>
+                <option value="B.Tech ECE">B.Tech ECE</option>
+                <option value="B.Tech MECH">B.Tech MECH</option>
+                <option value="B.Tech IT">B.Tech IT</option>
+                <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+                <option value="B.Tech EEE">B.Tech EEE</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Target Section</label>
+              <select id="tm-section" class="form-control">
+                <option value="ALL">All Sections (Entire Department)</option>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+                <option value="D">Section D</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Choose Document / File from Device</label>
+            <input type="file" id="tm-fileinput" class="form-control" accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.zip,.png,.jpg,.jpeg,.txt" onchange="if(this.files && this.files[0]) { document.getElementById('tm-filename').value = this.files[0].name; }">
+            <small class="text-muted" style="font-size: 0.75rem; margin-top: 0.2rem; display: block;">Select a document, PDF, slide deck, or video file from your computer.</small>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Resource Display Name</label>
+            <input type="text" id="tm-filename" class="form-control" placeholder="e.g. Data_Structures_AVL_Notes.pdf">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">File Web URL (Optional if file selected above)</label>
+            <input type="url" id="tm-fileurl" class="form-control" placeholder="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Publishing Visibility</label>
+            <select id="tm-publish" class="form-control">
+              <option value="true">Published (Visible to Students & Send Notification)</option>
+              <option value="false">Draft (Unpublished Teacher Preview)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('upload-material-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Publish Study Material</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Post Announcement -->
+  <div class="modal-overlay" id="post-announcement-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">Post Classroom Notice</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnApp.handleQuickActionSubmit(event, 'Announcement Post')">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Notice Title</label>
+            <input type="text" class="form-control" placeholder="e.g. Lab Session Rescheduled" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Content</label>
+            <textarea class="form-control" rows="3" placeholder="Enter notice details..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Post Notice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Teacher Grading & Feedback -->
+  <div class="modal-overlay" id="teacher-grade-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 600px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-warning" id="tg-modal-status-badge">Needs Grading</div>
+          <h2 class="modal-title" id="tg-modal-student-name" style="margin-top: 0.25rem;">Evaluate Student Submission</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-grade-modal')">&times;</button>
+      </div>
+      
+      <div class="modal-body" style="gap: 1.15rem; display: flex; flex-direction: column;">
+        <!-- Submission Info Box -->
+        <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 12px; padding: 1rem; display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem;">
+          <div>📘 <strong>Assignment:</strong> <span id="tg-modal-asgn-title">--</span></div>
+          <div>👤 <strong>Student Info:</strong> <span id="tg-modal-student-info">--</span></div>
+          <div>📅 <strong>Submitted On:</strong> <span id="tg-modal-submitted-at">--</span></div>
+          <div>📎 <strong>Attached Solution File:</strong> <span id="tg-modal-file-name" class="font-bold text-primary">--</span></div>
+          <div id="tg-modal-comments-wrap">💬 <strong>Student Remarks:</strong> "<span id="tg-modal-comments">--</span>"</div>
+        </div>
+
+        <!-- Grading Form -->
+        <form id="teacher-grading-form" onsubmit="SmartLearnTeacherAssignments.submitGrade(event)">
+          <input type="hidden" id="tg-modal-submission-id">
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label class="form-label" style="display: flex; justify-content: space-between;">
+              <span>Enter Student Score / Marks</span>
+              <span class="text-xs text-muted" id="tg-modal-score-limit">(Max Marks: 100)</span>
+            </label>
+            <input type="number" id="tg-modal-marks-input" class="form-control" placeholder="e.g. 92" min="0" max="100" step="0.5" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label class="form-label">Teacher Feedback & Comments</label>
+            <textarea id="tg-modal-feedback-input" class="form-control" rows="3" placeholder="Provide constructive feedback or remarks for the student..."></textarea>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+            <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-grade-modal')">Cancel</button>
+            <button type="submit" id="tg-modal-save-btn" class="btn btn-primary">Save Grade & Send Feedback</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: OTP Security Verification -->
+  <div class="modal-overlay" id="otp-verification-modal" style="display: none;">
+    <div class="modal-container" style="max-width: 420px;">
+      <div class="modal-header">
+        <div class="modal-title" id="otp-modal-header-title">Security OTP Verification</div>
+        <button class="modal-close-btn" data-close-modal onclick="SmartLearnDashboard.closeOtpModalSuccess()">&times;</button>
+      </div>
+
+      <!-- State 1: Typing OTP Input Form -->
+      <form id="otp-form-content" onsubmit="SmartLearnDashboard.verifyOtpSubmit(event)">
+        <div class="modal-body text-center">
+          <div class="demo-otp-badge">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Demo Verification OTP: <strong>123456</strong>
+          </div>
+
+          <p class="text-xs text-muted" id="otp-modal-description">Enter the 6-digit OTP code sent to your registered contact number to authorize this change.</p>
+
+          <div class="otp-input-group">
+            <input type="text" class="otp-box" maxlength="1" id="otp-1" autofocus onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-2')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-2" onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-3')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-3" onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-4')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-4" onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-5')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-5" onkeyup="SmartLearnDashboard.moveOtpFocus(this, 'otp-6')">
+            <input type="text" class="otp-box" maxlength="1" id="otp-6" onkeyup="SmartLearnDashboard.moveOtpFocus(this, null)">
+          </div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="SmartLearnApp.showToast('Resent OTP: 123456', 'info')">Resend OTP</button>
+          <button type="submit" class="btn btn-primary btn-sm">Verify & Update</button>
+        </div>
+      </form>
+
+      <!-- State 2: Animated Success Tick Screen -->
+      <div id="otp-success-content" class="modal-body text-center" style="display: none; padding: 2.25rem 1.5rem;">
+        <div class="animated-success-circle">
+          <svg class="success-checkmark-svg" viewBox="0 0 52 52">
+            <circle class="checkmark-circle" cx="26" cy="26" r="23" fill="none"/>
+            <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+        <h3 class="font-bold text-lg" style="margin-top: 1.25rem; color: var(--text-main);" id="otp-success-title">Verified & Changed! 🎉</h3>
+        <p class="text-xs text-muted" style="margin-top: 0.4rem;" id="otp-success-message">Your credentials have been securely updated.</p>
+        <button type="button" class="btn btn-primary btn-sm" style="margin-top: 1.5rem; width: 100%;" onclick="SmartLearnDashboard.closeOtpModalSuccess()">Done</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Modal: Admin Edit Teacher Profile Override -->
+  <div class="modal-overlay" id="admin-edit-teacher-modal" style="display: none;">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <div class="modal-title">🛡️ Admin Faculty Profile Override</div>
+        <button class="modal-close-btn" data-close-modal onclick="SmartLearnApp.closeModal('admin-edit-teacher-modal')">&times;</button>
+      </div>
+      <form onsubmit="SmartLearnDashboard.saveAdminTeacherProfile(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="badge badge-warning" style="margin-bottom: 0.5rem;">System Administrator Privilege</div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Employee ID</label>
+              <input type="text" id="adm-edit-empid" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Faculty Full Name</label>
+              <input type="text" id="adm-edit-name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Academic Department</label>
+              <input type="text" id="adm-edit-dept" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Blood Group</label>
+              <input type="text" id="adm-edit-blood" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Gender</label>
+              <input type="text" id="adm-edit-gender" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assigned Classes / Sections</label>
+              <input type="text" id="adm-edit-classes" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Registered Phone Number</label>
+              <input type="tel" id="adm-edit-phone" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Official Email Address</label>
+              <input type="email" id="adm-edit-email" class="form-control" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('admin-edit-teacher-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Admin Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Teacher Create & Design Quiz -->
+  <div class="modal-overlay" id="teacher-create-quiz-modal" style="display: none;">
+    <div class="modal-container" style="max-width: 680px; width: 95%;">
+      <div class="modal-header">
+        <div class="modal-title">🎯 Create & Publish Quiz Assessment</div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-create-quiz-modal')">&times;</button>
+      </div>
+      <form onsubmit="SmartLearnTeacherQuizzes.saveNewQuiz(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem; max-height: 70vh; overflow-y: auto;">
+          <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.85rem;">
+            <div class="form-group" style="grid-column: span 2;">
+              <label class="form-label">Quiz Title *</label>
+              <input type="text" id="create-quiz-title" class="form-control" placeholder="e.g. Chapter 4: Data Structures & Trees Assessment" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <select id="create-quiz-subject" class="form-control" required>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Mathematics">Mathematics</option>
+                <option value="Physics">Physics</option>
+                <option value="English">English</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Question Count Preset *</label>
+              <select id="create-quiz-qcount-preset" class="form-control" onchange="SmartLearnTeacherQuizzes.handleQuestionCountPresetChange(this.value)">
+                <option value="5">5 Questions (Quick Test)</option>
+                <option value="20">20 Questions (Standard Test)</option>
+                <option value="25">25 Questions (Mid Assessment)</option>
+                <option value="30">30 Questions (Full Unit Test)</option>
+                <option value="50">50 Questions (Comprehensive Exam)</option>
+                <option value="custom">Custom Questions Builder</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Total Marks (Editable) *</label>
+              <input type="number" id="create-quiz-total-marks" class="form-control" value="20" min="1" max="500" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Marks Per Question (Editable) *</label>
+              <input type="number" id="create-quiz-marks-per-q" class="form-control" value="1" min="0.5" max="50" step="0.5" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Passing Score (Marks) *</label>
+              <input type="number" id="create-quiz-pass" class="form-control" value="10" min="1" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Duration (Minutes) *</label>
+              <input type="number" id="create-quiz-duration" class="form-control" value="20" min="5" max="180" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Class Target *</label>
+              <select id="create-quiz-class" class="form-control">
+                <option value="B.Tech CSE">B.Tech CSE</option>
+                <option value="B.Tech ECE">B.Tech ECE</option>
+                <option value="B.Tech MECH">B.Tech MECH</option>
+                <option value="B.Tech IT">B.Tech IT</option>
+                <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+                <option value="B.Tech EEE">B.Tech EEE</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Section Target</label>
+              <select id="create-quiz-section" class="form-control">
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="All">All Sections</option>
+              </select>
+            </div>
+            <div class="form-group" style="grid-column: span 2;">
+              <label class="form-label">Instructions / Description</label>
+              <textarea id="create-quiz-desc" class="form-control" rows="2" placeholder="Provide notes or guidelines for students..."></textarea>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border-color); padding-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+              <h4 class="font-bold text-sm" style="color: var(--text-main);">Quiz Questions & Answer Keys</h4>
+              <button type="button" class="btn btn-outline btn-sm" onclick="SmartLearnTeacherQuizzes.addQuestionToBuffer()">
+                + Add Question
+              </button>
+            </div>
+
+            <div id="teacher-questions-builder-container">
+              <!-- Dynamically populated question forms -->
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-create-quiz-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">🚀 Publish Quiz Now</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: View Student Quiz Attempt Analytics -->
+  <div class="modal-overlay" id="teacher-quiz-attempts-modal" style="display: none;">
+    <div class="modal-container" style="max-width: 650px; width: 95%;">
+      <div class="modal-header">
+        <div class="modal-title" id="teacher-attempts-modal-title">Student Submissions & Scorecard</div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-quiz-attempts-modal')">&times;</button>
+      </div>
+      <div class="modal-body" id="teacher-attempts-modal-body" style="max-height: 65vh; overflow-y: auto;">
+        <!-- Populated dynamically -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="SmartLearnApp.closeModal('teacher-quiz-attempts-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Teacher Live QR Attendance Generator -->
+  <div class="modal-overlay" id="teacher-qr-session-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 520px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary" style="margin-bottom: 0.25rem;">Faculty Tool</div>
+          <h2 class="modal-title">📷 Launch Live QR Attendance Session</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-qr-session-modal')">&times;</button>
+      </div>
+
+      <form onsubmit="SmartLearnTeacherAttendance.startQrSession(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label">Target Class</label>
+            <select id="teacher-qr-class" class="form-control form-select">
+              <option value="B.Tech CSE">B.Tech CSE</option>
+              <option value="B.Tech ECE">B.Tech ECE</option>
+              <option value="B.Tech MECH">B.Tech MECH</option>
+              <option value="B.Tech IT">B.Tech IT</option>
+              <option value="B.Tech BIOTECH">B.Tech BIOTECH</option>
+              <option value="B.Tech EEE">B.Tech EEE</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <select id="teacher-qr-section" class="form-control form-select">
+              <option value="A">Section A</option>
+              <option value="B">Section B</option>
+              <option value="C">Section C</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <select id="teacher-qr-subject" class="form-control form-select">
+              <option value="sub_cs">Computer Science & IT</option>
+              <option value="sub_math">Mathematics</option>
+              <option value="sub_phys">Physics & Mechanics</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Session Duration (Minutes)</label>
+            <select id="teacher-qr-duration" class="form-control form-select">
+              <option value="2">2 Minutes (Fast Check-in)</option>
+              <option value="5" selected>5 Minutes (Standard)</option>
+              <option value="10">10 Minutes</option>
+              <option value="15">15 Minutes</option>
+            </select>
+          </div>
+
+          <!-- Active QR Session Projection Container -->
+          <div id="teacher-active-qr-box" style="display: none; flex-direction: column; align-items: center; justify-content: center; background: #0f172a; border-radius: 12px; padding: 1.25rem; color: #fff; text-align: center;">
+            <div style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 0.25rem;" id="teacher-session-subject-display">Computer Science (B.Tech CSE-A)</div>
+            
+            <!-- Dynamic QR Code Matrix -->
+            <div style="background: #fff; padding: 0.75rem; border-radius: 12px; margin: 0.5rem 0;">
+              <svg viewBox="0 0 100 100" width="160" height="160">
+                <rect width="100" height="100" fill="#ffffff"/>
+                <rect x="10" y="10" width="30" height="30" fill="#0f172a"/>
+                <rect x="15" y="15" width="20" height="20" fill="#ffffff"/>
+                <rect x="20" y="20" width="10" height="10" fill="#0f172a"/>
+                <rect x="60" y="10" width="30" height="30" fill="#0f172a"/>
+                <rect x="65" y="15" width="20" height="20" fill="#ffffff"/>
+                <rect x="70" y="20" width="10" height="10" fill="#0f172a"/>
+                <rect x="10" y="60" width="30" height="30" fill="#0f172a"/>
+                <rect x="15" y="65" width="20" height="20" fill="#ffffff"/>
+                <rect x="20" y="70" width="10" height="10" fill="#0f172a"/>
+                <rect x="45" y="45" width="10" height="10" fill="#0f172a"/>
+                <rect x="60" y="60" width="15" height="15" fill="#0f172a"/>
+                <rect x="75" y="75" width="15" height="15" fill="#0f172a"/>
+              </svg>
+            </div>
+
+            <div class="font-bold" style="font-size: 1.5rem; letter-spacing: 0.1em; color: #6366f1;" id="teacher-session-token-display">SESS-000000</div>
+            <div class="text-xs" style="color: #ef4444; font-weight: 700; margin-top: 0.35rem;" id="teacher-session-timer-display">Expires in: 05:00</div>
+            <div class="text-xs text-muted" style="margin-top: 0.35rem;">Project this screen or share the session code with your students.</div>
+
+            <!-- Modal Real-Time Student Roster -->
+            <div style="width: 100%; margin-top: 1rem; text-align: left; background: rgba(255,255,255,0.05); padding: 0.75rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span class="text-xs font-bold" style="color: #cbd5e1;">Live Student Submissions</span>
+                <span class="badge badge-primary text-xs" id="modal-live-session-counter">0 / 0 Present</span>
+              </div>
+              <div style="max-height: 140px; overflow-y: auto;">
+                <table style="width: 100%; font-size: 0.75rem; color: #fff;">
+                  <tbody id="modal-live-session-roster-body">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-qr-session-modal')">Close</button>
+          <button type="submit" class="btn btn-primary">🚀 Generate Live QR & Code</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Faculty Scan Student QR Code -->
+  <div class="modal-overlay" id="teacher-scan-student-qr-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 500px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary" style="margin-bottom: 0.25rem;">Faculty Scanner</div>
+          <h2 class="modal-title">🔍 Scan / Verify Student ID & QR</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-scan-student-qr-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+        <div style="background: #0f172a; border-radius: 12px; padding: 1.5rem; text-align: center; color: #fff;">
+          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📷</div>
+          <div style="font-size: 0.9rem; font-weight: 600; color: #e2e8f0;">Point camera at Student ID Card QR Code</div>
+          <div class="text-xs" style="color: #94a3b8; margin-top: 0.25rem;">Or select student ID below to simulate scan</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Select Enrolled Student</label>
+          <select id="teacher-scan-student-select" class="form-control form-select">
+            <!-- Populated dynamically with students -->
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Subject</label>
+          <select id="teacher-scan-subject-select" class="form-control form-select">
+            <option value="sub_cs">Computer Science & IT</option>
+            <option value="sub_math">Mathematics</option>
+            <option value="sub_phys">Physics & Mechanics</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-scan-student-qr-modal')">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="SmartLearnTeacherAttendance.processStudentScanSubmit()">✅ Mark Present via Student QR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add Student by Register Number with Autocomplete Suggestions -->
+  <div class="modal-overlay" id="teacher-add-student-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 550px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: visible;">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary">Classroom Enrolment</div>
+          <h2 class="modal-title" style="margin-top: 0.25rem;">Add Student to Class</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-add-student-modal')">&times;</button>
+      </div>
+
+      <form onsubmit="SmartLearnTeacherStudents.saveAddStudent(event)">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.15rem; position: relative;">
+          <!-- Register Number Autocomplete Input -->
+          <div class="form-group" style="position: relative;">
+            <label class="form-label font-bold">Type Register Number / Student ID *</label>
+            <input type="text" id="tadd-regid-input" class="form-control" placeholder="Type Register Number (e.g. SL-2026-894) or Name..." autocomplete="off" required oninput="SmartLearnTeacherStudents.handleRegisterIdInput(this.value)">
+            <small class="text-muted" style="font-size: 0.75rem; margin-top: 0.25rem; display: block;">Suggestions will appear as you type the student ID or name.</small>
+            
+            <!-- Dynamic Autocomplete Suggestions Container -->
+            <div id="tadd-suggestions-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-surface); border: 1px solid var(--primary); border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 1000; max-height: 240px; overflow-y: auto; margin-top: 4px;">
+              <!-- Rendered suggestion items -->
+            </div>
+          </div>
+
+          <!-- Selected Student Display Box -->
+          <div id="tadd-selected-student-box" style="display: none; padding: 0.85rem; background: var(--bg-subtle); border-radius: 8px; border: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <img id="tadd-selected-avatar" src="" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+              <div>
+                <div class="font-bold text-sm" id="tadd-selected-name">--</div>
+                <div class="text-xs text-muted">Register ID: <strong id="tadd-selected-regid" class="text-primary">--</strong> • Email: <span id="tadd-selected-email">--</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Class & Section Selection -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Assign Class *</label>
+              <select id="tadd-class-select" class="form-control form-select" required>
+                <option value="B.Tech CSE">B.Tech CSE</option>
+                <option value="B.Tech IT">B.Tech IT</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Assign Section *</label>
+              <select id="tadd-section-select" class="form-control form-select" required>
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-add-student-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">➕ Enrol Student to Class</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Student Marks & Evaluation -->
+  <div class="modal-overlay" id="teacher-student-marks-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 620px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden;">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary">Academic Marks & Evaluation</div>
+          <h2 class="modal-title" id="ts-marks-modal-title" style="margin-top: 0.25rem;">Record Student Marks</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-student-marks-modal')">&times;</button>
+      </div>
+
+      <form onsubmit="SmartLearnTeacherStudents.saveStudentMarks(event)">
+        <input type="hidden" id="ts-marks-student-id">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <!-- Existing Marks List -->
+          <div style="background: var(--bg-subtle); padding: 0.85rem; border-radius: 8px; border: 1px solid var(--border-color);">
+            <div class="font-bold text-xs text-muted" style="margin-bottom: 0.5rem; text-transform: uppercase;">Current Recorded Marks & Grades</div>
+            <div id="ts-marks-existing-list" style="display: flex; flex-direction: column; gap: 0.4rem; max-height: 140px; overflow-y: auto;">
+              <!-- Dynamic entries -->
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border-color); padding-top: 0.85rem;">
+            <div class="font-bold text-sm" style="color: var(--text-main); margin-bottom: 0.75rem;">➕ Add / Update Subject Mark Record</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.85rem;">
+              <div class="form-group">
+                <label class="form-label">Subject *</label>
+                <select id="ts-marks-subject" class="form-control form-select" required>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Mathematics">Mathematics</option>
+                  <option value="Physics">Physics</option>
+                  <option value="Chemistry">Chemistry</option>
+                  <option value="English">English</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Assessment Title *</label>
+                <input type="text" id="ts-marks-title" class="form-control" placeholder="e.g. Mid-Term Exam / Unit Quiz 1" required>
+              </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.85rem;">
+              <div class="form-group">
+                <label class="form-label">Marks Obtained *</label>
+                <input type="number" id="ts-marks-score" class="form-control" placeholder="e.g. 92" min="0" max="100" step="0.5" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Max Marks *</label>
+                <input type="number" id="ts-marks-max" class="form-control" value="100" min="1" max="1000" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Teacher Feedback & Remarks</label>
+              <textarea id="ts-marks-remarks" class="form-control" rows="2" placeholder="Write feedback for the student..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-student-marks-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">💾 Save Student Marks</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Mark Student Attendance -->
+  <div class="modal-overlay" id="teacher-student-attendance-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 580px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden;">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-success">Classroom Attendance</div>
+          <h2 class="modal-title" id="ts-att-modal-title" style="margin-top: 0.25rem;">Mark Attendance Record</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-student-attendance-modal')">&times;</button>
+      </div>
+
+      <form onsubmit="SmartLearnTeacherStudents.saveStudentAttendance(event)">
+        <input type="hidden" id="ts-att-student-id">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <!-- Attendance Stats Summary -->
+          <div id="ts-att-summary-box" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; background: var(--bg-subtle); padding: 0.85rem; border-radius: 8px; text-align: center;">
+            <div>
+              <div class="font-bold text-lg text-primary" id="ts-att-present-count">0</div>
+              <div class="text-xs text-muted">Present Days</div>
+            </div>
+            <div>
+              <div class="font-bold text-lg text-danger" id="ts-att-absent-count">0</div>
+              <div class="text-xs text-muted">Absent Days</div>
+            </div>
+            <div>
+              <div class="font-bold text-lg text-success" id="ts-att-rate">0%</div>
+              <div class="text-xs text-muted">Attendance Rate</div>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label">Attendance Date *</label>
+              <input type="date" id="ts-att-date" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Attendance Status *</label>
+              <select id="ts-att-status" class="form-control form-select" required>
+                <option value="present">🟢 Present</option>
+                <option value="absent">🔴 Absent</option>
+                <option value="late">🟡 Late</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Remarks / Reason (Optional)</label>
+            <input type="text" id="ts-att-remarks" class="form-control" placeholder="e.g. Medical Leave / Lab Attendance">
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-student-attendance-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">💾 Save Attendance Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Attach Study Material for Student -->
+  <div class="modal-overlay" id="teacher-student-material-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 580px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden;">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-accent">Course Study Materials</div>
+          <h2 class="modal-title" id="ts-mat-modal-title" style="margin-top: 0.25rem;">Attach Study Material for Student</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-student-material-modal')">&times;</button>
+      </div>
+
+      <form onsubmit="SmartLearnTeacherStudents.saveStudentMaterial(event)">
+        <input type="hidden" id="ts-mat-student-id">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <div class="form-group">
+            <label class="form-label">Material Title *</label>
+            <input type="text" id="ts-mat-title" class="form-control" placeholder="e.g. Special Chapter Notes & Practice Problems" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Resource Web Link or Document Name *</label>
+            <input type="text" id="ts-mat-url" class="form-control" placeholder="e.g. https://smartlearn.demo/notes.pdf or Unit_1_Notes.pdf" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject</label>
+            <select id="ts-mat-subject" class="form-control form-select">
+              <option value="Computer Science">Computer Science</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Physics">Physics</option>
+              <option value="Chemistry">Chemistry</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Target Scope</label>
+            <select id="ts-mat-scope" class="form-control form-select">
+              <option value="direct">Direct to Selected Student</option>
+              <option value="class">Entire Class Section</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-student-material-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">📤 Attach & Share Material</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Student Performance Detailed Report -->
+  <div class="modal-overlay" id="tperf-detail-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 650px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <img id="tperf-modal-student-avatar" src="" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-color);">
+          <div>
+            <h2 class="modal-title" id="tperf-modal-student-name">Student Performance Report</h2>
+            <div class="text-xs text-muted" id="tperf-modal-student-id">Student Register ID & Section</div>
+          </div>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('tperf-detail-modal')">&times;</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <div>
+          <h4 class="font-bold text-sm" style="color: var(--text-main); margin-bottom: 0.5rem;">📝 Evaluated Coursework & Quiz Marks</h4>
+          <div id="tperf-modal-grades-list" style="display: flex; flex-direction: column; gap: 0.25rem; max-height: 200px; overflow-y: auto;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-bold text-sm" style="color: var(--text-main); margin-bottom: 0.5rem;">📎 Assignment Submissions Log</h4>
+          <div id="tperf-modal-submissions-list" style="display: flex; flex-direction: column; gap: 0.25rem; max-height: 200px; overflow-y: auto;">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding: 1rem 1.5rem; display: flex; justify-content: flex-end; border-top: 1px solid var(--border-color);">
+        <button class="btn btn-primary" onclick="SmartLearnApp.closeModal('tperf-detail-modal')">Close Report</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Class Coordinator Notice Broadcast Modal -->
+  <div class="modal-overlay" id="coordinator-notice-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">📢 Class Coordinator Announcement</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnTeacherAssignments.postCoordinatorNotice(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 700;">Target Class Section</label>
+            <input type="text" id="coord-modal-class-target" class="form-control" readonly style="background: var(--bg-subtle); font-weight: 700;">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Announcement Title</label>
+            <input type="text" id="coord-modal-notice-title" class="form-control" placeholder="e.g. Mandatory Class Meeting / Project Deadline" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Notice Message Content</label>
+            <textarea id="coord-modal-notice-content" class="form-control" rows="4" placeholder="Enter notice for students of your coordinated class..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Broadcast Notice to Class Students</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Award Points & Badges to Student -->
+  <div class="modal-overlay" id="teacher-award-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 550px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header">
+        <div>
+          <div class="badge badge-primary">Faculty Award Engine</div>
+          <h2 class="modal-title" id="taward-modal-title" style="margin-top: 0.25rem;">Grant Reward Points & Badge</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-award-modal')">&times;</button>
+      </div>
+
+      <form onsubmit="SmartLearnRewards.saveTeacherAward(event)">
+        <input type="hidden" id="taward-student-id">
+        <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem;">
+          
+          <div class="form-group">
+            <label class="form-label">Reward Points to Bonus *</label>
+            <select id="taward-points" class="form-control form-select" required>
+              <option value="25">+25 Points (Class Contribution)</option>
+              <option value="50">+50 Points (Homework / Assignment Bonus)</option>
+              <option value="100" selected>+100 Points (High Exam / Lab Performance)</option>
+              <option value="250">+250 Points (Outstanding Project / Hackathon)</option>
+              <option value="500">+500 Points (Institutional Excellence)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Select Award Badge Preset *</label>
+            <select id="taward-badge-select" class="form-control form-select">
+              <option value="Coding Wizard 🧙‍♂️">Coding Wizard 🧙‍♂️ (Programming Excellence)</option>
+              <option value="Assignment Ace 📚">Assignment Ace 📚 (Flawless Submission)</option>
+              <option value="Quiz Master 🎯">Quiz Master 🎯 (100% Score Streak)</option>
+              <option value="Top Researcher 🔬">Top Researcher 🔬 (Extra Project Work)</option>
+              <option value="Class Champion 🏆">Class Champion 🏆 (Overall Leader)</option>
+              <option value="AI Genius 🤖">AI Genius 🤖 (Creative Doubt Solving)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Or Type Custom Badge Title (Optional)</label>
+            <input type="text" id="taward-custom-badge" class="form-control" placeholder="e.g. Calculus Superstar 📐">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Faculty Commendation Note / Reason</label>
+            <textarea id="taward-note" class="form-control" rows="3" placeholder="Enter praise or comments for student's profile & notification..."></textarea>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-award-modal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">🎁 Grant Points & Award Badge</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/demo-data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = SmartLearnAuth.protectDashboard("Teacher");
+      if (user) {
+        document.getElementById('greeting-text').innerText = `Good Morning, ${user.fullName || user.name} 👋`;
+        document.getElementById('user-display-name').innerText = user.fullName || user.name;
+        document.getElementById('user-display-role').innerText = `Teacher • ${user.subject || 'CS'}`;
+        if (user.avatar) document.getElementById('user-avatar-img').src = user.avatar;
+
+        if (typeof SmartLearnTeacherAssignments !== "undefined" && SmartLearnTeacherAssignments.init) {
+          SmartLearnTeacherAssignments.init();
+        }
+        if (typeof SmartLearnTeacherQuizzes !== "undefined" && SmartLearnTeacherQuizzes.init) {
+          SmartLearnTeacherQuizzes.init();
+        }
+        if (typeof SmartLearnTeacherAttendance !== "undefined" && SmartLearnTeacherAttendance.init) {
+          SmartLearnTeacherAttendance.init();
+        }
+        if (typeof SmartLearnTeacherStudents !== "undefined" && SmartLearnTeacherStudents.init) {
+          SmartLearnTeacherStudents.init();
+        }
+        if (typeof SmartLearnTeacherPerformance !== "undefined" && SmartLearnTeacherPerformance.init) {
+          SmartLearnTeacherPerformance.init();
+        }
+        if (typeof SmartLearnAnnouncements !== "undefined") {
+          SmartLearnAnnouncements.renderTeacherAnnouncements();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

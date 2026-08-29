@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | SmartLearn - Smart Classroom Platform</title>
+  <meta name="description" content="Sign in to SmartLearn EdTech platform for Students, Teachers, Parents, and Administrators.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+</head>
+<body>
+
+  <div class="auth-page-wrapper">
+    
+    <!-- Left Hero Banner -->
+    <div class="auth-left-hero">
+      <div class="auth-hero-orb-1"></div>
+      <div class="auth-hero-orb-2"></div>
+
+      <!-- Brand Header -->
+      <div class="auth-brand">
+        <div class="auth-brand-logo" style="background: transparent; padding: 0;">
+          <img src="assets/logo.png" alt="SmartLearn Logo" style="width: 42px; height: 42px; object-fit: contain;">
+        </div>
+        <div>
+          <span>SmartLearn</span>
+          <div style="font-size: 0.725rem; font-weight: 600; color: #a5b4fc; text-transform: uppercase; letter-spacing: 0.08em;">Connected Classroom</div>
+        </div>
+      </div>
+
+      <!-- Hero Body -->
+      <div class="auth-hero-body">
+        <div class="hero-pill-tag">
+          <span></span> Next-Gen Education Management
+        </div>
+
+        <h1 class="auth-hero-title">Empowering Classrooms with Intelligence</h1>
+        
+        <p class="auth-hero-subtitle">
+          Experience seamless real-time academic sync, interactive AI assistance, attendance tracking, and parent-teacher collaboration in one place.
+        </p>
+
+        <div class="auth-hero-features">
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </div>
+            <div>
+              <div class="auth-feature-title">SmartLearn AI Assistant</div>
+              <div class="auth-feature-desc">Instant 24/7 concept explanations, study summaries, and practice quizzes for students.</div>
+            </div>
+          </div>
+
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div>
+              <div class="auth-feature-title">Live Academic & Attendance Sync</div>
+              <div class="auth-feature-desc">Instant timetable updates, assignment submission tracking, and automated grade cards.</div>
+            </div>
+          </div>
+
+          <div class="auth-feature-item">
+            <div class="auth-feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div>
+              <div class="auth-feature-title">Parent & Teacher Direct Portal</div>
+              <div class="auth-feature-desc">Transparent academic performance insights, exam schedules, and direct advisor messaging.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Footer -->
+      <div class="auth-hero-footer">
+        <span>© 2026 SmartLearn Systems Inc.</span>
+        <span>Privacy & Terms</span>
+      </div>
+    </div>
+
+    <!-- Right Form Section -->
+    <div class="auth-right-panel animate-fade-in">
+      
+      <div class="auth-card-header">
+        <h2 class="auth-card-title">Welcome Back 👋</h2>
+        <p class="auth-card-desc">Sign in to your SmartLearn portal to continue.</p>
+      </div>
+
+      <form id="login-form" onsubmit="handleLoginSubmit(event)">
+        
+        <!-- Segmented Role Selector -->
+        <label class="role-selector-label">I am logging in as:</label>
+        <div class="role-selector-grid">
+          <button type="button" class="role-tab-btn active" data-role="Student" onclick="selectRole('Student')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+            Student
+          </button>
+
+          <button type="button" class="role-tab-btn" data-role="Teacher" onclick="selectRole('Teacher')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Teacher
+          </button>
+
+          <button type="button" class="role-tab-btn" data-role="Parent" onclick="selectRole('Parent')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+            Parent
+          </button>
+
+          <button type="button" class="role-tab-btn" data-role="Administrator" onclick="selectRole('Administrator')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Admin
+          </button>
+        </div>
+
+        <!-- Hidden input for selected role -->
+        <input type="hidden" id="login-role" value="Student">
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="login-email" class="form-label">Email Address</label>
+          <div class="input-icon-wrapper">
+            <input type="email" id="login-email" class="form-control" placeholder="name@smartlearn.demo" required>
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="login-password" class="form-label">Password</label>
+          <div class="input-icon-wrapper">
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('login-password')" title="Toggle Password">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Form Options -->
+        <div class="form-options-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="remember-me" checked>
+            <span>Remember me</span>
+          </label>
+          <a href="#" onclick="SmartLearnApp.showToast('Demo reset link sent to registered email', 'info'); return false;" class="font-semibold">Forgot password?</a>
+        </div>
+
+        <!-- Sign In Button -->
+        <button type="submit" class="btn-auth-submit">
+          <span>Sign In to Dashboard</span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+
+      </form>
+
+      <!-- Quick Demo Credentials Box -->
+      <div class="demo-credentials-box">
+        <div class="demo-credentials-header">
+          <div class="demo-credentials-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Quick Demo Accounts
+          </div>
+          <span class="badge badge-primary">One-Click Test</span>
+        </div>
+        <div class="demo-btn-group">
+          <button type="button" class="demo-quick-btn" onclick="fillDemoCredentials('Student')">
+            <span>🎓 Student</span>
+            <span class="text-xs text-muted">Alex</span>
+          </button>
+          <button type="button" class="demo-quick-btn" onclick="fillDemoCredentials('Teacher')">
+            <span>👩‍🏫 Teacher</span>
+            <span class="text-xs text-muted">Dr. Priya</span>
+          </button>
+          <button type="button" class="demo-quick-btn" onclick="fillDemoCredentials('Parent')">
+            <span>👨‍👩‍👦 Parent</span>
+            <span class="text-xs text-muted">Rajesh</span>
+          </button>
+          <button type="button" class="demo-quick-btn" onclick="fillDemoCredentials('Administrator')">
+            <span>🛡️ Admin</span>
+            <span class="text-xs text-muted">SysAdmin</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer navigation to Register -->
+      <div class="auth-footer-text">
+        Don't have an account yet? 
+        <a href="register.html" class="font-bold">Create Account &rarr;</a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js?v=1.0.2"></script>
+  <script src="js/demo-data.js?v=1.0.2"></script>
+  <script src="js/auth.js?v=1.0.2"></script>
+  <script src="js/app.js?v=1.0.2"></script>
+  <script>
+    function showToastUI(message, type = "info") {
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        SmartLearnApp.showToast(message, type);
+      } else {
+        let container = document.getElementById("toast-container");
+        if (!container) {
+          container = document.createElement("div");
+          container.id = "toast-container";
+          container.className = "toast-container";
+          document.body.appendChild(container);
+        }
+        const toast = document.createElement("div");
+        toast.className = `toast toast-${type}`;
+        toast.innerText = message;
+        container.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+      }
+    }
+
+    function selectRole(role) {
+      document.getElementById('login-role').value = role;
+      document.querySelectorAll('.role-tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-role') === role) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      });
+    }
+
+    function fillDemoCredentials(role) {
+      selectRole(role);
+      const demoAccount = SmartLearnAuth.fillDemoCredentials(role);
+      if (demoAccount) {
+        document.getElementById('login-email').value = demoAccount.email;
+        document.getElementById('login-password').value = demoAccount.password;
+        showToastUI(`Auto-filled ${role} credentials`, 'info');
+      }
+    }
+
+    async function handleLoginSubmit(event) {
+      event.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const role = document.getElementById('login-role').value;
+      
+      const submitBtn = event.target.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      showToastUI("Authenticating credentials...", "info");
+      
+      const result = await SmartLearnAuth.login(email, password, role);
+      if (result.success) {
+        showToastUI(result.message, 'success');
+        setTimeout(() => {
+          window.location.href = result.redirectUrl;
+        }, 800);
+      } else {
+        showToastUI(result.message, 'error');
+        if (submitBtn) submitBtn.disabled = false;
+        
+        if (result.message && result.message.includes("not found")) {
+          showAccountNotFoundHelper(email, role, password);
+        }
+      }
+    }
+
+    function showAccountNotFoundHelper(email, role, password) {
+      let helper = document.getElementById("account-not-found-helper");
+      if (!helper) {
+        helper = document.createElement("div");
+        helper.id = "account-not-found-helper";
+        helper.style.cssText = "margin-top: 1rem; padding: 1rem; background: rgba(79, 70, 229, 0.08); border: 1px dashed #4f46e5; border-radius: 12px; text-align: center; animation: fadeIn 0.3s ease;";
+        const form = document.getElementById("login-form");
+        if (form) form.parentNode.insertBefore(helper, form.nextSibling);
+      }
+      const prefix = email.split('@')[0];
+      const displayName = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+      
+      helper.innerHTML = `
+        <div style="font-weight: 700; color: #4f46e5; font-size: 0.95rem; margin-bottom: 0.35rem;">
+          ✨ Create account for '${email}'?
+        </div>
+        <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.75rem;">
+          This email address is not registered in the system yet. Click below to create your account instantly!
+        </p>
+        <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+          <button type="button" class="btn btn-primary btn-sm" style="padding: 0.4rem 0.85rem; font-size: 0.825rem; font-weight: 600; cursor: pointer;" onclick="quickRegisterAndLogin('${email}', '${password || 'password123'}', '${role}', '${displayName}')">
+            ⚡ Quick Create & Sign In
+          </button>
+          <a href="register.html?email=${encodeURIComponent(email)}&role=${encodeURIComponent(role)}" class="btn btn-outline btn-sm" style="padding: 0.4rem 0.85rem; font-size: 0.825rem; font-weight: 600; text-decoration: none;">
+            📝 Custom Registration Page
+          </a>
+        </div>
+      `;
+    }
+
+    async function quickRegisterAndLogin(email, password, role, name) {
+      showToastUI("Creating account...", "info");
+      const pwd = password && password.length >= 6 ? password : "password123";
+      const regResult = await SmartLearnAuth.register({
+        name: name || "User",
+        email: email,
+        password: pwd,
+        confirmPassword: pwd,
+        role: role || "Student"
+      });
+
+      if (regResult.success) {
+        showToastUI("Account created! Logging in...", "success");
+        const loginResult = await SmartLearnAuth.login(email, pwd, role);
+        if (loginResult.success) {
+          setTimeout(() => {
+            window.location.href = loginResult.redirectUrl;
+          }, 600);
+        }
+      } else {
+        showToastUI(regResult.message, "error");
+      }
+    }
+
+    function togglePasswordVisibility(fieldId) {
+      const field = document.getElementById(fieldId);
+      field.type = field.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+</body>
+</html>

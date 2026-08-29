@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Administration | SmartLearn</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+</head>
+<body>
+
+  <div class="dashboard-layout">
+    
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Sidebar Navigation for Admin -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-header-brand">
+          <div class="auth-brand-logo" style="width:36px; height:36px; background:transparent; padding:0;">
+            <img src="assets/logo.png" alt="SmartLearn Logo" style="width:36px; height:36px; object-fit:contain;">
+          </div>
+          <div>
+            <div class="sidebar-brand-name">SmartLearn</div>
+            <div class="sidebar-brand-sub">Admin Console</div>
+          </div>
+        </div>
+        <button class="sidebar-close-mobile-btn" onclick="document.getElementById('sidebar').classList.remove('active'); document.getElementById('sidebar-overlay').classList.remove('active');">&times;</button>
+      </div>
+
+      <div class="sidebar-menu-wrapper">
+        <div class="sidebar-menu-category">System Admin</div>
+        <a href="#overview" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          Dashboard Overview
+        </a>
+        <a href="#students" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+          Section-Wise Students
+        </a>
+        <a href="#teachers" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Department-Wise Teachers
+        </a>
+        <a href="#users" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+          Credentials & User Master
+        </a>
+        <a href="#classes" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          Classes & Streams
+        </a>
+        <a href="#timetable" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+          Timetable Master
+        </a>
+        <a href="#announcements" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          Announcements
+        </a>
+        <a href="#academic-monitoring" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Academic Analytics
+        </a>
+
+        <div class="sidebar-menu-category">Settings</div>
+        <a href="#settings" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          System Settings
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item logout-link" onclick="SmartLearnAuth.logout(); return false;" style="color: var(--danger);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Logout
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Wrapper -->
+    <div class="main-wrapper">
+      
+      <header class="top-header">
+        <div class="header-left">
+          <button class="sidebar-toggle-btn" id="sidebar-toggle">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          
+          <div class="search-box-header">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" placeholder="Search system users, classes, logs..." oninput="if(typeof SmartLearnAdmin !== 'undefined') SmartLearnAdmin.renderSectionWiseStudents(this.value)">
+          </div>
+        </div>
+
+        <div class="header-right">
+          <button class="icon-circle-btn" id="theme-toggle">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
+          </button>
+
+          <div class="icon-circle-btn">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+            <span class="notification-dot"></span>
+          </div>
+
+          <div class="profile-dropdown-wrapper">
+            <div class="user-card-mini" id="user-profile-btn" style="cursor: pointer;">
+              <img id="user-avatar-img" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=150&q=80" alt="Admin Avatar" class="user-avatar">
+              <div class="user-info-text desktop-only">
+                <div id="user-display-name" class="user-name">System Administrator</div>
+                <div id="user-display-role" class="user-role-badge">Super Admin</div>
+              </div>
+            </div>
+
+            <div class="profile-dropdown-menu" id="user-profile-dropdown">
+              <a href="#settings" class="dropdown-item">System Settings</a>
+              <div style="border-top: 1px solid var(--border-color); margin: 0.25rem 0;"></div>
+              <a href="#" class="dropdown-item" onclick="SmartLearnAuth.logout(); return false;" style="color: var(--danger);">Logout</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="dashboard-container">
+        
+        <!-- Tab 1: Overview Dashboard -->
+        <div id="overview" class="dashboard-tab-content">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">SmartLearn Administration Console</h1>
+              <p class="greeting-sub">Overall institution metrics, user management, and system performance oversight.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('add-user-modal')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add New User
+            </button>
+          </div>
+
+          <!-- Metric Stat Cards (Calculated Live) -->
+          <div class="stats-grid">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-total-students">0</div>
+                <div class="stat-lbl">Total Enrolled Students</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-info" style="background-color: var(--info-light); color: var(--info);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-total-teachers">0</div>
+                <div class="stat-lbl">Faculty & Teachers</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-total-classes">0</div>
+                <div class="stat-lbl">Active Class Sections</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-stat-total-depts">0</div>
+                <div class="stat-lbl">Academic Departments</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Banner -->
+          <div class="card" style="margin-bottom: 2rem;">
+            <div class="section-card-title">Administrative Actions</div>
+            <div class="quick-actions-grid">
+              <button class="action-tile-btn" type="button" onclick="(typeof SmartLearnAdmin !== 'undefined' && SmartLearnAdmin.openCreateClassModal) ? SmartLearnAdmin.openCreateClassModal() : (function(){ const m = document.getElementById('create-class-modal'); if(m){ m.style.display='flex'; m.style.opacity='1'; m.style.visibility='visible'; m.classList.add('active'); } })()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+                <span>Create Class & Stream</span>
+              </button>
+
+              <button class="action-tile-btn" type="button" onclick="(typeof SmartLearnAdmin !== 'undefined' && SmartLearnAdmin.openAssignStudentsModal) ? SmartLearnAdmin.openAssignStudentsModal() : (function(){ const m = document.getElementById('assign-students-modal'); if(m){ m.style.display='flex'; m.style.opacity='1'; m.style.visibility='visible'; m.classList.add('active'); } })()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+                <span>Assign Students</span>
+              </button>
+
+              <button class="action-tile-btn" onclick="SmartLearnApp.openModal('add-user-modal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                <span>Add User Account</span>
+              </button>
+
+              <button class="action-tile-btn" onclick="SmartLearnApp.openModal('admin-notice-modal')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+                <span>Broadcast Notice</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Pending Teacher Registration Approvals -->
+          <div class="card" style="margin-bottom: 2rem; border-left: 4px solid var(--warning, #f59e0b);">
+            <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+              <span>⏳ Pending Teacher Registration Approvals</span>
+              <span class="badge badge-warning" id="admin-pending-teachers-count">0 Pending</span>
+            </div>
+            <div id="admin-pending-teachers-list">
+              <!-- Rendered dynamically via SmartLearnAdmin.renderPendingTeacherApprovals() -->
+            </div>
+          </div>
+
+          <!-- Pending Timetable & Exam Schedule Approvals -->
+          <div class="card" style="margin-bottom: 2rem; border-left: 4px solid #3b82f6;">
+            <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+              <span>📅 Pending Timetable & Exam Schedule Approvals</span>
+              <span class="badge badge-info" id="admin-pending-timetable-count">0 Pending</span>
+            </div>
+            <div id="admin-pending-timetable-list">
+              <!-- Rendered dynamically via SmartLearnAdmin.renderPendingTimetableApprovals() -->
+            </div>
+          </div>
+
+          <!-- Dashboard Content Grid (Dynamically Populated) -->
+          <div class="dashboard-sections-grid">
+            
+            <div class="section-column">
+              <!-- Academic Department Overview (Live Data) -->
+              <div class="card">
+                <div class="section-card-title">Academic Department Overview</div>
+                <div class="assignment-list" id="admin-dept-overview-list">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+
+              <!-- Audit Activity Logs (Live Data) -->
+              <div class="card">
+                <div class="section-card-title">Recent System Audit Logs</div>
+                <div style="display: flex; flex-direction: column; gap: 0.85rem;" id="admin-activity-logs-list">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+            </div>
+
+            <div class="section-column">
+              <!-- User Roles Summary (Live Data) -->
+              <div class="card">
+                <div class="section-card-title">Institution User Base Roster</div>
+                <div id="admin-user-summary-box">
+                  <!-- Rendered dynamically -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Tab 2: Students Management (Section-Wise) -->
+        <div id="students" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Section-Wise Student Directory 🎓</h1>
+              <p class="greeting-sub">Manage student accounts, view credentials (email & password), and monitor class section enrollments.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('add-user-modal')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add New Student
+            </button>
+          </div>
+
+          <!-- Student Filter Bar -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+              <div>
+                <label class="form-label text-xs">Search Students</label>
+                <input type="text" id="admin-student-search" class="form-control" placeholder="🔍 Search student name, ID, or email..." oninput="SmartLearnAdmin.renderSectionWiseStudents(this.value, document.getElementById('admin-student-section-filter').value)">
+              </div>
+              <div>
+                <label class="form-label text-xs">Filter Class / Section</label>
+                <select id="admin-student-section-filter" class="form-control form-select" onchange="SmartLearnAdmin.renderSectionWiseStudents(document.getElementById('admin-student-search').value, this.value)">
+                  <option value="all">All Sections</option>
+                  <option value="B.Tech CSE-A">B.Tech CSE - Section A</option>
+                  <option value="B.Tech CSE-B">B.Tech CSE - Section B</option>
+                  <option value="B.Tech ECE-A">B.Tech ECE - Section A</option>
+                  <option value="B.Tech MECH-A">B.Tech MECH - Section A</option>
+                  <option value="B.Tech IT-A">B.Tech IT - Section A</option>
+                  <option value="B.Tech BIOTECH-A">B.Tech BIOTECH - Section A</option>
+                  <option value="B.Tech EEE-A">B.Tech EEE - Section A</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Container for Dynamic Section-Wise Student Group Cards -->
+          <div id="admin-students-section-container">
+            <!-- Dynamic Section Cards Rendered Here -->
+          </div>
+        </div>
+
+        <!-- Tab 3: Teachers Directory (Department-Wise) -->
+        <div id="teachers" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Department-Wise Faculty Directory 🔬</h1>
+              <p class="greeting-sub">Manage faculty accounts, view credentials (email & password), and monitor department assignments.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('add-user-modal')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add New Faculty
+            </button>
+          </div>
+
+          <!-- Teacher Filter Bar -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem;">
+              <div>
+                <label class="form-label text-xs">Search Faculty</label>
+                <input type="text" id="admin-teacher-search" class="form-control" placeholder="🔍 Search teacher name, Emp ID, or email..." oninput="SmartLearnAdmin.renderDepartmentWiseTeachers(this.value, document.getElementById('admin-teacher-dept-filter').value)">
+              </div>
+              <div>
+                <label class="form-label text-xs">Filter Department</label>
+                <select id="admin-teacher-dept-filter" class="form-control form-select" onchange="SmartLearnAdmin.renderDepartmentWiseTeachers(document.getElementById('admin-teacher-search').value, this.value)">
+                  <option value="all">All Departments</option>
+                  <option value="Computer Science & Engineering">Computer Science & Engineering</option>
+                  <option value="Mathematics Department">Mathematics Department</option>
+                  <option value="Physical Sciences">Physical Sciences</option>
+                  <option value="English & Humanities">English & Humanities</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Container for Dynamic Department-Wise Teacher Group Cards -->
+          <div id="admin-teachers-department-container">
+            <!-- Dynamic Department Cards Rendered Here -->
+          </div>
+        </div>
+
+        <!-- Tab 4: User Roles & Credentials Master -->
+        <div id="users" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">User Account Master & Credentials Roster 🛡️</h1>
+              <p class="greeting-sub">Master administrative index of all logins, passwords, roles, sections, and departments across the institution.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('add-user-modal')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Create Account
+            </button>
+          </div>
+
+          <!-- Container for Master Credentials Roster -->
+          <div id="admin-users-master-container">
+            <!-- Rendered Dynamically -->
+          </div>
+        </div>
+
+        <!-- Tab 5: Classes & Streams -->
+        <div id="classes" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Classes, Streams & Class Coordinators 🏫</h1>
+              <p class="greeting-sub">Create new classes/streams, assign students, and nominate faculty Class Coordinators with instant system-wide sync.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" type="button" onclick="(typeof SmartLearnAdmin !== 'undefined' && SmartLearnAdmin.openCreateClassModal) ? SmartLearnAdmin.openCreateClassModal() : (function(){ const m = document.getElementById('create-class-modal'); if(m){ m.style.display='flex'; m.style.opacity='1'; m.style.visibility='visible'; m.classList.add('active'); } })()">
+                ➕ Create New Class & Stream
+              </button>
+              <button class="btn btn-outline" type="button" onclick="(typeof SmartLearnAdmin !== 'undefined' && SmartLearnAdmin.openAssignStudentsModal) ? SmartLearnAdmin.openAssignStudentsModal() : (function(){ const m = document.getElementById('assign-students-modal'); if(m){ m.style.display='flex'; m.style.opacity='1'; m.style.visibility='visible'; m.classList.add('active'); } })()">
+                👥 Add / Assign Students
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-card-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+              <span>Active Class Sections & Nominated Coordinators</span>
+              <span class="badge badge-primary" id="admin-class-count-badge">0 Active Classes</span>
+            </div>
+            <div id="admin-classes-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+              <!-- Rendered dynamically via SmartLearnAdmin.renderClassesAndStreams() -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 6: Timetable Master -->
+        <div id="timetable" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Institutional Timetable Master 🗓️</h1>
+              <p class="greeting-sub">Edit & publish master 8-period weekly timetables across all classes and departments with instant system-wide updates.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <span class="badge badge-success">🔒 Admin Master Access</span>
+            </div>
+          </div>
+
+          <!-- Class, Section, and Day Filter Card -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; align-items: center;">
+              <div>
+                <label class="form-label" style="font-weight: 700;">Select Department / Class</label>
+                <select id="admin-tt-class-select" class="form-control form-select" onchange="SmartLearnAdmin.renderAdminTimetableMasterEditor()">
+                  <option value="B.Tech CSE">B.Tech CSE (Computer Science)</option>
+                  <option value="B.Tech ECE">B.Tech ECE (Electronics & Comm)</option>
+                  <option value="B.Tech MECH">B.Tech MECH (Mechanical Engg)</option>
+                  <option value="B.Tech IT">B.Tech IT (Information Tech)</option>
+                  <option value="B.Tech EEE">B.Tech EEE (Electrical Engg)</option>
+                  <option value="B.Tech BIOTECH">B.Tech BIOTECH (Biotechnology)</option>
+                  <option value="B.Sc Physics">B.Sc Physics</option>
+                  <option value="B.Sc Maths">B.Sc Mathematics</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label" style="font-weight: 700;">Select Section</label>
+                <select id="admin-tt-section-select" class="form-control form-select" onchange="SmartLearnAdmin.renderAdminTimetableMasterEditor()">
+                  <option value="A">Section A</option>
+                  <option value="B">Section B</option>
+                  <option value="C">Section C</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="form-label" style="font-weight: 700;">Select Day</label>
+                <select id="admin-tt-day-select" class="form-control form-select" onchange="SmartLearnAdmin.renderAdminTimetableMasterEditor()">
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8-Period Interactive Editor Table -->
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.25rem;">
+              <div>
+                <div class="section-card-title" style="margin-bottom: 0.2rem;">⚡ Daily 8-Period Timetable Editor</div>
+                <div class="text-xs text-muted">Directly modify subjects, time slots, instructors, and rooms. Changes update instantly across Student, Parent, and Teacher portals.</div>
+              </div>
+              <button class="btn btn-primary" onclick="SmartLearnAdmin.saveAdminTimetableMaster()">
+                💾 Save & Publish Timetable (Direct Admin Override)
+              </button>
+            </div>
+
+            <div style="overflow-x: auto;">
+              <table class="data-table" style="width: 100%;">
+                <thead>
+                  <tr>
+                    <th style="width: 90px; text-align: center;">Period</th>
+                    <th style="width: 170px;">Start / End Time</th>
+                    <th>Subject Name</th>
+                    <th>Faculty Instructor</th>
+                    <th>Room / Lab</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-timetable-editor-body">
+                  <!-- Rendered dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 1.25rem;">
+              <button class="btn btn-primary" onclick="SmartLearnAdmin.saveAdminTimetableMaster()">
+                💾 Save & Publish Timetable (Direct Admin Override)
+              </button>
+            </div>
+          </div>
+
+          <!-- 5-Day Weekly Matrix Preview -->
+          <div class="card">
+            <div class="section-card-title" style="margin-bottom: 1rem;">🗓️ 5-Day Weekly Published Schedule Matrix Preview</div>
+            <div id="admin-timetable-5day-preview" style="overflow-x: auto;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Tab 7: Announcements -->
+        <div id="announcements" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Global Broadcast Notices 📢</h1>
+              <p class="greeting-sub">Publish institutional notices to students, teachers, and parents.</p>
+            </div>
+            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('admin-notice-modal')">
+              Broadcast Notice
+            </button>
+          </div>
+          <div class="card">
+            <div class="section-card-title" style="margin-bottom: 1rem;">Active Broadcasts</div>
+            <div id="admin-announcements-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 8: Academic Analytics -->
+        <div id="academic-monitoring" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Academic Analytics & Institution Performance 📊</h1>
+              <p class="greeting-sub">Track real-time student performance, assignment turn-in rates, and faculty progress.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-card-title" style="margin-bottom: 1rem;">Performance Analytics Matrix</div>
+            <div id="admin-analytics-container">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab 9: System Settings -->
+        <div id="settings" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">System Settings & Security ⚙️</h1>
+              <p class="greeting-sub">Institution branding, authentication policies, and data management.</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-card-title">Institution Profile</div>
+            <div class="form-group">
+              <label class="form-label">Institution Name</label>
+              <input type="text" class="form-control" value="SmartLearn Institute of Technology" readonly style="background: var(--bg-subtle);">
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Admin Add User Modal -->
+  <div class="modal-overlay" id="add-user-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">Add New System User</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnAdmin.addUserFromModal(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" placeholder="Full Name" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-control" placeholder="email@smartlearn.demo" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" placeholder="Set Password" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Select User Role</label>
+            <select class="form-control form-select">
+              <option>Student</option>
+              <option>Teacher</option>
+              <option>Parent</option>
+              <option>Administrator</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Create User Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Notice Broadcast Modal -->
+  <div class="modal-overlay" id="admin-notice-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">Broadcast Global Announcement</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnAdmin.addNoticeFromModal(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Announcement Title</label>
+            <input type="text" id="admin-notice-title-input" class="form-control" placeholder="e.g. Mid-Term Examination Schedule" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Target Audience</label>
+            <select id="admin-notice-target-select" class="form-control form-select">
+              <option value="All Users">All Users (Students, Teachers, Parents)</option>
+              <option value="Students Only">Students Only</option>
+              <option value="Teachers Only">Teachers Only</option>
+              <option value="Parents Only">Parents Only</option>
+              <option value="Students & Parents">Both Students and Parents</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Content</label>
+            <textarea id="admin-notice-content-textarea" class="form-control" rows="3" placeholder="Enter announcement content..." required></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Broadcast Notice</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Create New Class & Stream Modal -->
+  <div class="modal-overlay" id="create-class-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">🏫 Create New Class Section & Stream</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnAdmin.createClassFromModal(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Class / Degree Name</label>
+            <input type="text" id="modal-class-name" class="form-control" placeholder="e.g. B.Tech CSE, B.Tech ECE, M.Tech AI" required>
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label">Academic Department / Stream</label>
+              <select id="modal-class-dept" class="form-control form-select">
+                <option value="CSE">CSE (Computer Science & Engg)</option>
+                <option value="ECE">ECE (Electronics & Comm)</option>
+                <option value="IT">IT (Information Technology)</option>
+                <option value="MECH">MECH (Mechanical Engg)</option>
+                <option value="EEE">EEE (Electrical Engg)</option>
+                <option value="BIOTECH">BIOTECH (Biotechnology)</option>
+                <option value="MATH">MATH (Mathematics Dept)</option>
+                <option value="PHY">PHY (Physical Sciences)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Section</label>
+              <select id="modal-class-section" class="form-control form-select">
+                <option value="A">Section A</option>
+                <option value="B">Section B</option>
+                <option value="C">Section C</option>
+                <option value="D">Section D</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Academic Year / Batch</label>
+            <input type="text" id="modal-class-year" class="form-control" placeholder="e.g. Year 1, Year 2, 2026 Batch" value="Year 2" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nominate Faculty Class Coordinator (Optional)</label>
+            <select id="modal-class-coordinator" class="form-control form-select">
+              <option value="">-- Select Teacher as Class Coordinator --</option>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Create Class Section</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Add / Assign Students to Class Modal -->
+  <div class="modal-overlay" id="assign-students-modal">
+    <div class="modal-container" style="max-width: 650px;">
+      <div class="modal-header">
+        <div class="modal-title">👥 Add & Assign Students to Class Section</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnAdmin.assignStudentsFromModal(event)">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 700;">Target Class Section</label>
+            <select id="modal-assign-target-class" class="form-control form-select" required>
+              <option value="">-- Select Class Section --</option>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 700;">Select Students to Assign</label>
+            <div class="text-xs text-muted" style="margin-bottom: 0.5rem;">Check students you wish to assign to this class. Their course details, section, and department will update automatically.</div>
+            <div id="modal-assign-students-list" style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem; background: var(--bg-subtle);">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Save & Assign Selected Students</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Admin Nominate Class Coordinator Modal -->
+  <div class="modal-overlay" id="nominate-coordinator-modal">
+    <div class="modal-container">
+      <div class="modal-header">
+        <div class="modal-title">👨‍🏫 Nominate Faculty Class Coordinator</div>
+        <button class="modal-close-btn" data-close-modal>&times;</button>
+      </div>
+      <form onsubmit="SmartLearnAdmin.nominateCoordinatorFromModal(event)">
+        <input type="hidden" id="modal-nominate-class-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 700;">Class Section</label>
+            <input type="text" id="modal-nominate-class-display" class="form-control" readonly style="background: var(--bg-subtle); font-weight: 700;">
+          </div>
+          <div class="form-group">
+            <label class="form-label" style="font-weight: 700;">Select Faculty Teacher</label>
+            <select id="modal-nominate-teacher-select" class="form-control form-select" required>
+              <option value="">-- Select Teacher --</option>
+              <!-- Populated dynamically -->
+            </select>
+            <div class="text-xs text-muted" style="margin-top: 0.35rem;">
+              The nominated teacher will receive Class Coordinator privileges on their dashboard to view class members and broadcast notices.
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" data-close-modal>Cancel</button>
+          <button type="submit" class="btn btn-primary">Nominate Class Coordinator</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs (v10 Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/demo-data.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const user = SmartLearnAuth.protectDashboard("Administrator");
+      if (user) {
+        if (typeof SmartLearnAdmin !== "undefined") SmartLearnAdmin.init();
+        if (user.fullName || user.name) {
+          const nameEl = document.getElementById('user-display-name');
+          if (nameEl) nameEl.innerText = user.fullName || user.name;
+        }
+        if (user.avatar) {
+          const avatarEl = document.getElementById('user-avatar-img');
+          if (avatarEl) avatarEl.src = user.avatar;
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartLearn | Smart Learning. Connected Classroom.</title>
+  <meta name="description" content="SmartLearn is a Smart Classroom Management System connecting Students, Teachers, Parents, and Administrators through Academics, Attendance, Communication, AI, and Analytics.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/auth.css">
+  <link rel="icon" href="assets/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4f46e5">
+</head>
+<body>
+
+  <div class="splash-container">
+    <div class="splash-background-glow"></div>
+    
+    <div class="splash-content">
+      <div class="splash-logo-box" style="background: transparent; box-shadow: none;">
+        <img src="assets/logo.png" alt="SmartLearn Logo" style="width: 100px; height: 100px; object-fit: contain;">
+      </div>
+
+      <h1 class="splash-title">SmartLearn</h1>
+      <p class="splash-tagline">Smart Learning. Connected Classroom.</p>
+
+      <div class="splash-loader-bar">
+        <div class="splash-loader-fill"></div>
+      </div>
+
+      <a href="login.html" class="splash-skip-btn">Continue to Login &rarr;</a>
+    </div>
+  </div>
+
+  <script>
+    // Automatic redirect to login.html after 2.5 seconds
+    setTimeout(() => {
+      window.location.href = "login.html";
+    }, 2500);
+  </script>
+</body>
+</html>
