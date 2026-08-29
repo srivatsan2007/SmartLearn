@@ -345,7 +345,7 @@ const SmartLearnAuth = {
         const fbResult = await SmartLearnFirebase.registerUser(cleanEmail, password, profileData);
         if (fbResult && fbResult.user) {
           const users = this.getUsers();
-          const userWithPassword = { ...fbResult.user, password: password };
+          const userWithPassword = { ...profileData, ...fbResult.user, password: password, status: isTeacher ? "pending" : "approved", isApproved: !isTeacher, approved: !isTeacher };
           const existingIdx = users.findIndex(u => u.email && u.email.toLowerCase() === cleanEmail);
           if (existingIdx >= 0) {
             users[existingIdx] = userWithPassword;

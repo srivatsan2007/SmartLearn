@@ -83,6 +83,7 @@ const SmartLearnFirebase = {
       const uid = userCredential.user.uid;
 
       // Prepare user document for Firestore
+      const isTeacherRole = (profileData.role === "Teacher" || profileData.role === "teacher");
       const userDocData = {
         id: uid,
         uid: uid,
@@ -98,6 +99,9 @@ const SmartLearnFirebase = {
         employeeId: profileData.employeeId || "",
         subject: profileData.subject || "",
         department: profileData.department || "",
+        status: profileData.status || (isTeacherRole ? "pending" : "approved"),
+        isApproved: profileData.isApproved !== undefined ? profileData.isApproved : (!isTeacherRole),
+        approved: profileData.approved !== undefined ? profileData.approved : (!isTeacherRole),
         childStudentId: profileData.childStudentId || "",
         childUserId: profileData.childUserId || "",
         childName: profileData.childName || "",

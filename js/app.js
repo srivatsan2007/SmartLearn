@@ -7326,17 +7326,42 @@ const SmartLearnAdmin = {
     if (typeof SmartLearnParent !== "undefined") SmartLearnParent.renderParentExams();
   },
 
-  renderPendingTeacherApprovals() {
+  async renderPendingTeacherApprovals() {
     const listContainer = document.getElementById("admin-pending-teachers-list");
     const countBadge = document.getElementById("admin-pending-teachers-count");
 
     if (!listContainer) return;
 
-    const users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
-    const pendingTeachers = users.filter(u =>
-      (u.role === "Teacher" || u.role === "teacher") &&
-      (u.status === "pending" || u.isApproved === false || u.approved === false)
-    );
+    let users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
+
+    // Sync cloud users from Firebase Firestore if configured
+    if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured) {
+      try {
+        const fbUsers = await SmartLearnFirebase.fetchCollection("users");
+        if (fbUsers && fbUsers.length > 0) {
+          fbUsers.forEach(fbu => {
+            const idx = users.findIndex(u => (u.id && u.id === fbu.id) || (u.uid && u.uid === fbu.id) || (u.email && fbu.email && u.email.toLowerCase() === fbu.email.toLowerCase()));
+            if (idx >= 0) {
+              users[idx] = { ...users[idx], ...fbu };
+            } else {
+              users.push(fbu);
+            }
+          });
+          SmartLearnStorage.set(STORAGE_KEYS.USERS, users);
+          localStorage.setItem("classoraUsers", JSON.stringify(users));
+          localStorage.setItem("smartlearn_users", JSON.stringify(users));
+        }
+      } catch (e) {
+        console.warn("Could not sync cloud users from Firebase:", e);
+      }
+    }
+
+    const pendingTeachers = users.filter(u => {
+      const roleLower = (u.role || "").toLowerCase();
+      if (roleLower !== "teacher") return false;
+      if (u.status === "approved" || u.isApproved === true || u.approved === true) return false;
+      return true;
+    });
 
     if (countBadge) countBadge.innerText = `${pendingTeachers.length} Pending`;
 
@@ -7374,10 +7399,10 @@ const SmartLearnAdmin = {
                 <td style="padding: 0.6rem 0.75rem; font-size: 0.75rem;" class="text-muted">${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'Just now'}</td>
                 <td style="padding: 0.6rem 0.75rem; text-align: right;">
                   <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                    <button class="btn btn-success btn-sm" onclick="SmartLearnAdmin.approveTeacher('${t.id}')">
+                    <button class="btn btn-success btn-sm" onclick="SmartLearnAdmin.approveTeacher('${t.id || t.uid}')">
                       ✅ Approve
                     </button>
-                    <button class="btn btn-danger btn-sm" onclick="SmartLearnAdmin.rejectTeacher('${t.id}')">
+                    <button class="btn btn-danger btn-sm" onclick="SmartLearnAdmin.rejectTeacher('${t.id || t.uid}')">
                       ❌ Reject
                     </button>
                   </div>
@@ -7392,7 +7417,7 @@ const SmartLearnAdmin = {
 
   approveTeacher(userId) {
     const users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
-    const teacherIndex = users.findIndex(u => u.id === userId);
+    const teacherIndex = users.findIndex(u => u.id === userId || u.uid === userId);
     if (teacherIndex === -1) return;
 
     users[teacherIndex].status = "approved";
@@ -7402,6 +7427,11 @@ const SmartLearnAdmin = {
     SmartLearnStorage.set(STORAGE_KEYS.USERS, users);
     localStorage.setItem("classoraUsers", JSON.stringify(users));
     localStorage.setItem("smartlearn_users", JSON.stringify(users));
+
+    if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured) {
+      const targetId = users[teacherIndex].uid || users[teacherIndex].id || userId;
+      SmartLearnFirebase.saveDoc("users", targetId, { status: "approved", isApproved: true, approved: true });
+    }
 
     if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
       SmartLearnApp.showToast(`🎉 Teacher '${users[teacherIndex].fullName || users[teacherIndex].name}' approved successfully! They can now log in.`, "success");
@@ -7413,7 +7443,7 @@ const SmartLearnAdmin = {
   rejectTeacher(userId) {
     if (!confirm("Are you sure you want to reject and delete this teacher registration request?")) return;
     const users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
-    const updated = users.filter(u => u.id !== userId);
+    const updated = users.filter(u => u.id !== userId && u.uid !== userId);
 
     SmartLearnStorage.set(STORAGE_KEYS.USERS, updated);
     localStorage.setItem("classoraUsers", JSON.stringify(updated));
@@ -8879,7 +8909,9 @@ const SmartLearnAdmin = {
             </thead>
             <tbody>
               ${grouped[deptKey].map(t => {
-      const isPending = (t.status === "pending" || t.isApproved === false || t.approved === false);
+      const isApproved = (t.status === "approved" || t.isApproved === true || t.approved === true);
+      const isPending = !isApproved;
+      const tId = t.id || t.uid;
       return `
                   <tr style="border-bottom: 1px solid var(--border-color);">
                     <td style="padding: 0.5rem 0.75rem;" class="font-semibold">${t.fullName || t.name}</td>
@@ -8887,8 +8919,8 @@ const SmartLearnAdmin = {
                     <td style="padding: 0.5rem 0.75rem;">${t.email}</td>
                     <td style="padding: 0.5rem 0.75rem;">
                       <div style="display: flex; align-items: center; gap: 0.3rem;">
-                        <input type="password" readonly value="${t.password || 'teacher123'}" class="form-control form-control-sm" id="pwd-m-tch-${t.id}" style="max-width: 100px; font-family: monospace; font-size: 0.75rem; padding: 0.15rem 0.3rem; min-height: 24px;">
-                        <button type="button" class="btn btn-outline btn-sm" onclick="SmartLearnAdmin.togglePasswordVisibility('pwd-m-tch-${t.id}')" style="padding: 0.1rem 0.3rem; font-size: 0.7rem;">👁️</button>
+                        <input type="password" readonly value="${t.password || 'teacher123'}" class="form-control form-control-sm" id="pwd-m-tch-${tId}" style="max-width: 100px; font-family: monospace; font-size: 0.75rem; padding: 0.15rem 0.3rem; min-height: 24px;">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="SmartLearnAdmin.togglePasswordVisibility('pwd-m-tch-${tId}')" style="padding: 0.1rem 0.3rem; font-size: 0.7rem;">👁️</button>
                       </div>
                     </td>
                     <td style="padding: 0.5rem 0.75rem;"><span class="badge badge-primary">${t.department || 'CSE'}</span></td>
@@ -8896,7 +8928,7 @@ const SmartLearnAdmin = {
                       ${isPending ? '<span class="badge badge-warning">⏳ Pending</span>' : '<span class="badge badge-success">✅ Approved</span>'}
                     </td>
                     <td style="padding: 0.5rem 0.75rem; text-align: right;">
-                      ${isPending ? `<button class="btn btn-success btn-sm" onclick="SmartLearnAdmin.approveTeacher('${t.id}')" style="padding:0.2rem 0.4rem; font-size:0.75rem;">Approve</button>` : `<button class="btn btn-danger btn-sm" onclick="SmartLearnAdmin.deleteUser('${t.id}')" style="padding:0.2rem 0.4rem; font-size:0.75rem;">Remove</button>`}
+                      ${isPending ? `<button class="btn btn-success btn-sm" onclick="SmartLearnAdmin.approveTeacher('${tId}')" style="padding:0.2rem 0.4rem; font-size:0.75rem;">Approve</button>` : `<button class="btn btn-danger btn-sm" onclick="SmartLearnAdmin.deleteUser('${tId}')" style="padding:0.2rem 0.4rem; font-size:0.75rem;">Remove</button>`}
                     </td>
                   </tr>
                 `;
