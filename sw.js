@@ -1,7 +1,8 @@
 /**
  * SmartLearn Service Worker - PWA & APK Web Application Cache
+ * Network-First for JS and HTML assets to ensure instant zero-latency updates.
  */
-const CACHE_NAME = "smartlearn-cache-v1";
+const CACHE_NAME = "smartlearn-cache-v2";
 const ASSETS_TO_CACHE = [
   "./",
   "./index.html",
@@ -15,20 +16,19 @@ const ASSETS_TO_CACHE = [
   "./quizzes.html",
   "./css/style.css",
   "./css/dashboard.css",
-  "./js/app.js",
-  "./js/auth.js",
-  "./js/demo-data.js",
-  "./assets/logo.png",
-  "./assets/icon-192.png",
-  "./assets/icon-512.png",
+  "./js/app.js?v=2.0.1",
+  "./js/auth.js?v=2.0.1",
+  "./js/demo-data.js?v=2.0.1",
+  "./js/firebase-config.js?v=2.0.1",
   "./manifest.json"
 ];
 
 self.addEventListener("install", (event) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    }).then(() => self.skipWaiting())
+      return cache.addAll(ASSETS_TO_CACHE).catch(err => console.warn("PWA pre-cache warning:", err));
+    })
   );
 });
 
@@ -38,6 +38,7 @@ self.addEventListener("activate", (event) => {
       return Promise.all(
         keys.map((key) => {
           if (key !== CACHE_NAME) {
+            console.log("Cleaning up old PWA cache:", key);
             return caches.delete(key);
           }
         })
@@ -47,6 +48,23 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
+  // Always fetch fresh network copy for HTML and JS assets when online
+  if (event.request.mode === "navigate" || event.request.url.includes(".js") || event.request.url.includes(".html")) {
+    event.respondWith(
+      fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, responseClone));
+        }
+        return networkResponse;
+      }).catch(() => {
+        return caches.match(event.request);
+      })
+    );
+    return;
+  }
+
+  // Cache first for static images and styles
   event.respondWith(
     caches.match(event.request).then((response) => {
       return response || fetch(event.request);

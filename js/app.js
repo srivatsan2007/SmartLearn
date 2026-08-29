@@ -10449,11 +10449,12 @@ document.addEventListener("DOMContentLoaded", () => {
     try { SmartLearnTeacherStudents.init(); } catch (e) { console.warn("Teacher Students init warning:", e); }
   }
 
-  // Register PWA & APK Service Worker
+  // Register PWA & APK Service Worker with force update
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').then(reg => {
         console.log('SmartLearn PWA Service Worker registered:', reg.scope);
+        if (reg.update) reg.update();
       }).catch(err => {
         console.log('SW registration note:', err);
       });
