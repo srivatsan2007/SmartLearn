@@ -2,7 +2,7 @@
  * SmartLearn Service Worker - PWA & APK Web Application Cache
  * Network-First for JS and HTML assets to ensure instant zero-latency updates.
  */
-const CACHE_NAME = "smartlearn-cache-v2";
+const CACHE_NAME = "smartlearn-cache-v3";
 const ASSETS_TO_CACHE = [
   "./",
   "./index.html",
@@ -16,10 +16,10 @@ const ASSETS_TO_CACHE = [
   "./quizzes.html",
   "./css/style.css",
   "./css/dashboard.css",
-  "./js/app.js?v=2.0.1",
-  "./js/auth.js?v=2.0.1",
-  "./js/demo-data.js?v=2.0.1",
-  "./js/firebase-config.js?v=2.0.1",
+  "./js/app.js?v=3.0.0",
+  "./js/auth.js?v=3.0.0",
+  "./js/demo-data.js?v=3.0.0",
+  "./js/firebase-config.js?v=3.0.0",
   "./manifest.json"
 ];
 

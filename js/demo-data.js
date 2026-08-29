@@ -1150,7 +1150,7 @@ const SmartLearnStorage = {
     }
 
     // 13. Saved Materials Initial Seed
-    if (!localStorage.getItem(STORAGE_KEYS.SAVED_MATERIALS)) {
+    if (isKeyEmpty(STORAGE_KEYS.SAVED_MATERIALS)) {
       const defaultSaved = [
         { studentId: "usr_student_01", materialId: "mat_01", savedAt: "2026-08-26T12:00:00Z" },
         { studentId: "usr_student_01", materialId: "mat_04", savedAt: "2026-08-26T14:30:00Z" }
@@ -1159,7 +1159,7 @@ const SmartLearnStorage = {
     }
 
     // 14. Views Initial Seed
-    if (!localStorage.getItem(STORAGE_KEYS.MATERIAL_VIEWS)) {
+    if (isKeyEmpty(STORAGE_KEYS.MATERIAL_VIEWS)) {
       const defaultViews = [
         { studentId: "usr_student_01", materialId: "mat_01", viewedAt: "2026-08-26T15:00:00Z" }
       ];

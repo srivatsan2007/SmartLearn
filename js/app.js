@@ -10449,8 +10449,16 @@ document.addEventListener("DOMContentLoaded", () => {
     try { SmartLearnTeacherStudents.init(); } catch (e) { console.warn("Teacher Students init warning:", e); }
   }
 
-  // Register PWA & APK Service Worker with force update
+  // Register PWA & APK Service Worker with force update & controllerchange auto-reload
   if ('serviceWorker' in navigator) {
+    let swRefreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!swRefreshing) {
+        swRefreshing = true;
+        window.location.reload();
+      }
+    });
+
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('./sw.js').then(reg => {
         console.log('SmartLearn PWA Service Worker registered:', reg.scope);
