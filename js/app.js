@@ -7149,17 +7149,6 @@ const SmartLearnTeacherTimetable = {
  */
 const SmartLearnAdmin = {
   init() {
-    if (!this._storageListenerAdded && typeof window !== "undefined") {
-      this._storageListenerAdded = true;
-      window.addEventListener("storage", () => {
-        try {
-          this.renderPendingTeacherApprovals();
-          this.renderDepartmentWiseTeachers();
-        } catch (e) {}
-      });
-    }
-
-    this.renderPendingTeacherApprovals();
     this.renderPendingTimetableApprovals();
     this.renderMetrics();
     this.renderSectionWiseStudents();
@@ -7336,190 +7325,8 @@ const SmartLearnAdmin = {
     if (typeof SmartLearnParent !== "undefined") SmartLearnParent.renderParentExams();
   },
 
-  async renderPendingTeacherApprovals() {
-    const listContainer = document.getElementById("admin-pending-teachers-list");
-    const countBadge = document.getElementById("admin-pending-teachers-count");
-
-    if (!listContainer) return;
-
-    let users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
-
-    // Sync cloud users from Firebase Firestore if configured
-    if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured) {
-      try {
-        const fbUsers = await SmartLearnFirebase.fetchCollection("users");
-        if (fbUsers && fbUsers.length > 0) {
-          fbUsers.forEach(fbu => {
-            const idx = users.findIndex(u => (u.id && u.id === fbu.id) || (u.uid && u.uid === fbu.id) || (u.email && fbu.email && u.email.toLowerCase() === fbu.email.toLowerCase()));
-            if (idx >= 0) {
-              users[idx] = { ...users[idx], ...fbu };
-            } else {
-              users.push(fbu);
-            }
-          });
-          SmartLearnStorage.set(STORAGE_KEYS.USERS, users);
-          localStorage.setItem("classoraUsers", JSON.stringify(users));
-          localStorage.setItem("smartlearn_users", JSON.stringify(users));
-        }
-      } catch (e) {
-        console.warn("Could not sync cloud users from Firebase:", e);
-      }
-    }
-
-    const pendingTeachers = users.filter(u => {
-      const roleLower = (u.role || "").toLowerCase();
-      if (roleLower !== "teacher") return false;
-      if (u.status === "approved" || u.isApproved === true || u.approved === true) return false;
-      return true;
-    });
-
-    if (countBadge) countBadge.innerText = `${pendingTeachers.length} Pending`;
-
-    if (pendingTeachers.length === 0) {
-      listContainer.innerHTML = `
-        <div style="padding: 1.25rem; text-align: center; color: var(--text-muted); font-size: 0.875rem;">
-          <div style="margin-bottom: 0.75rem;">✅ All registered teacher accounts are approved. No pending registration requests.</div>
-          <div style="display: flex; gap: 0.5rem; justify-content: center; align-items: center; max-width: 480px; margin: 0 auto; background: var(--bg-subtle, #f8fafc); padding: 0.6rem; border-radius: 8px; border: 1px dashed var(--border-color, #cbd5e1);">
-            <input type="email" id="admin-manual-teacher-email" class="form-control form-control-sm" placeholder="Enter teacher email to force approve..." style="font-size: 0.8rem; background: var(--bg-surface, #ffffff);">
-            <button class="btn btn-primary btn-sm" onclick="SmartLearnAdmin.approveTeacherByEmail()" style="white-space: nowrap; font-size: 0.8rem; font-weight: 600;">⚡ Approve Email</button>
-          </div>
-        </div>
-      `;
-      return;
-    }
-
-    listContainer.innerHTML = `
-      <div style="overflow-x: auto;">
-        <table class="table" style="width: 100%; font-size: 0.85rem; border-collapse: collapse;">
-          <thead>
-            <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
-              <th style="padding: 0.6rem 0.75rem;">Teacher Name</th>
-              <th style="padding: 0.6rem 0.75rem;">Email Address</th>
-              <th style="padding: 0.6rem 0.75rem;">Employee ID</th>
-              <th style="padding: 0.6rem 0.75rem;">Department</th>
-              <th style="padding: 0.6rem 0.75rem;">Subject</th>
-              <th style="padding: 0.6rem 0.75rem;">Registration Date</th>
-              <th style="padding: 0.6rem 0.75rem; text-align: right;">Approval Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${pendingTeachers.map(t => `
-              <tr style="border-bottom: 1px solid var(--border-color);">
-                <td style="padding: 0.6rem 0.75rem;" class="font-semibold">${t.fullName || t.name}</td>
-                <td style="padding: 0.6rem 0.75rem;">${t.email}</td>
-                <td style="padding: 0.6rem 0.75rem;" class="text-primary font-bold">${t.employeeId || 'TCH-NEW'}</td>
-                <td style="padding: 0.6rem 0.75rem;"><span class="badge badge-primary">${t.department || 'CSE'}</span></td>
-                <td style="padding: 0.6rem 0.75rem;">${t.subject || 'N/A'}</td>
-                <td style="padding: 0.6rem 0.75rem; font-size: 0.75rem;" class="text-muted">${t.createdAt ? new Date(t.createdAt).toLocaleDateString() : 'Just now'}</td>
-                <td style="padding: 0.6rem 0.75rem; text-align: right;">
-                  <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
-                    <button class="btn btn-success btn-sm" onclick="SmartLearnAdmin.approveTeacher('${t.id || t.uid}')">
-                      ✅ Approve
-                    </button>
-                    <button class="btn btn-danger btn-sm" onclick="SmartLearnAdmin.rejectTeacher('${t.id || t.uid}')">
-                      ❌ Reject
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            `).join("")}
-          </tbody>
-        </table>
-      </div>
-    `;
-  },
-
-  approveTeacherByEmail() {
-    const input = document.getElementById("admin-manual-teacher-email");
-    const email = input ? input.value.trim().toLowerCase() : "";
-    if (!email) {
-      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
-        SmartLearnApp.showToast("Please enter a teacher email address.", "warning");
-      }
-      return;
-    }
-
-    const users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
-    const teacherIndex = users.findIndex(u => u.email && u.email.toLowerCase() === email);
-
-    if (teacherIndex >= 0) {
-      users[teacherIndex].status = "approved";
-      users[teacherIndex].isApproved = true;
-      users[teacherIndex].approved = true;
-    } else {
-      const prefix = email.split('@')[0];
-      const teacherName = prefix.charAt(0).toUpperCase() + prefix.slice(1);
-      users.push({
-        id: "usr_" + Date.now(),
-        email: email,
-        fullName: teacherName,
-        name: teacherName,
-        password: "teacher123",
-        role: "Teacher",
-        status: "approved",
-        isApproved: true,
-        approved: true,
-        department: "Computer Science & Engineering",
-        subject: "Computer Science"
-      });
-    }
-
-    SmartLearnStorage.set(STORAGE_KEYS.USERS, users);
-    localStorage.setItem("classoraUsers", JSON.stringify(users));
-    localStorage.setItem("smartlearn_users", JSON.stringify(users));
-
-    if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured) {
-      const matched = users.find(u => u.email && u.email.toLowerCase() === email);
-      const targetId = matched ? (matched.uid || matched.id) : email;
-      SmartLearnFirebase.saveDoc("users", targetId, { status: "approved", isApproved: true, approved: true });
-    }
-
-    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
-      SmartLearnApp.showToast(`🎉 Teacher '${email}' approved successfully! They can now log in.`, "success");
-    }
-
-    this.init();
-  },
-
-  approveTeacher(userId) {
-    const users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
-    const teacherIndex = users.findIndex(u => u.id === userId || u.uid === userId);
-    if (teacherIndex === -1) return;
-
-    users[teacherIndex].status = "approved";
-    users[teacherIndex].isApproved = true;
-    users[teacherIndex].approved = true;
-
-    SmartLearnStorage.set(STORAGE_KEYS.USERS, users);
-    localStorage.setItem("classoraUsers", JSON.stringify(users));
-    localStorage.setItem("smartlearn_users", JSON.stringify(users));
-
-    if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured) {
-      const targetId = users[teacherIndex].uid || users[teacherIndex].id || userId;
-      SmartLearnFirebase.saveDoc("users", targetId, { status: "approved", isApproved: true, approved: true });
-    }
-
-    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
-      SmartLearnApp.showToast(`🎉 Teacher '${users[teacherIndex].fullName || users[teacherIndex].name}' approved successfully! They can now log in.`, "success");
-    }
-
-    this.init();
-  },
-
-  rejectTeacher(userId) {
-    if (!confirm("Are you sure you want to reject and delete this teacher registration request?")) return;
-    const users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
-    const updated = users.filter(u => u.id !== userId && u.uid !== userId);
-
-    SmartLearnStorage.set(STORAGE_KEYS.USERS, updated);
-    localStorage.setItem("classoraUsers", JSON.stringify(updated));
-    localStorage.setItem("smartlearn_users", JSON.stringify(updated));
-
-    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
-      SmartLearnApp.showToast("Teacher registration request rejected and removed.", "info");
-    }
-
-    this.init();
+  renderPendingTeacherApprovals() {
+    // Teacher registration approval system removed - all accounts auto-approved on registration
   },
 
   renderMetrics() {
@@ -8969,14 +8776,12 @@ const SmartLearnAdmin = {
                 <th style="padding: 0.5rem 0.75rem;">Login Email</th>
                 <th style="padding: 0.5rem 0.75rem;">Login Password</th>
                 <th style="padding: 0.5rem 0.75rem;">Department</th>
-                <th style="padding: 0.5rem 0.75rem;">Approval Status</th>
+                <th style="padding: 0.5rem 0.75rem;">Account Status</th>
                 <th style="padding: 0.5rem 0.75rem; text-align: right;">Actions</th>
               </tr>
             </thead>
             <tbody>
               ${grouped[deptKey].map(t => {
-      const isApproved = (t.status === "approved" || t.isApproved === true || t.approved === true);
-      const isPending = !isApproved;
       const tId = t.id || t.uid;
       return `
                   <tr style="border-bottom: 1px solid var(--border-color);">
@@ -8991,10 +8796,10 @@ const SmartLearnAdmin = {
                     </td>
                     <td style="padding: 0.5rem 0.75rem;"><span class="badge badge-primary">${t.department || 'CSE'}</span></td>
                     <td style="padding: 0.5rem 0.75rem;">
-                      ${isPending ? '<span class="badge badge-warning">⏳ Pending</span>' : '<span class="badge badge-success">✅ Approved</span>'}
+                      <span class="badge badge-success">✅ Active</span>
                     </td>
                     <td style="padding: 0.5rem 0.75rem; text-align: right;">
-                      ${isPending ? `<button class="btn btn-success btn-sm" onclick="SmartLearnAdmin.approveTeacher('${tId}')" style="padding:0.2rem 0.4rem; font-size:0.75rem;">Approve</button>` : `<button class="btn btn-danger btn-sm" onclick="SmartLearnAdmin.deleteUser('${tId}')" style="padding:0.2rem 0.4rem; font-size:0.75rem;">Remove</button>`}
+                      <button class="btn btn-danger btn-sm" onclick="SmartLearnAdmin.deleteUser('${tId}')" style="padding:0.2rem 0.4rem; font-size:0.75rem;">Remove</button>
                     </td>
                   </tr>
                 `;
