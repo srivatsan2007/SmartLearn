@@ -1148,7 +1148,6 @@ const SmartLearnStorage = {
       ];
       localStorage.setItem(STORAGE_KEYS.REWARDS_LOG, JSON.stringify(initialLogs));
     }
-  },
 
     // 13. Saved Materials Initial Seed
     if (!localStorage.getItem(STORAGE_KEYS.SAVED_MATERIALS)) {
