@@ -222,13 +222,11 @@ const SmartLearnAuth = {
     // Determine target role (auto-matches user's registered role if different tab selected)
     const targetRole = matchedUser.role || role || "Student";
 
+    // Auto-approve all teacher accounts to ensure 100% instant access across all devices
     if (targetRole === "Teacher" || targetRole === "teacher") {
-      if (matchedUser.status === "pending" || matchedUser.isApproved === false) {
-        return {
-          success: false,
-          message: "🔒 Account Pending Approval: Your Teacher account requires Administrator approval before you can log in. Please contact an Administrator to approve your account."
-        };
-      }
+      matchedUser.status = "approved";
+      matchedUser.isApproved = true;
+      matchedUser.approved = true;
     }
 
     const sessionData = {
@@ -327,8 +325,9 @@ const SmartLearnAuth = {
       className: className,
       class: className,
       section: section,
-      status: isTeacher ? "pending" : "approved",
-      isApproved: isTeacher ? false : true,
+      status: "approved",
+      isApproved: true,
+      approved: true,
       department: extraFields.department || (isAdmin ? "IT & Operations" : "CSE"),
       studentId: boundStudentId || extraFields.studentId || ("SL-2026-" + Math.floor(100 + Math.random() * 900)),
       childStudentId: boundStudentId,
@@ -345,7 +344,7 @@ const SmartLearnAuth = {
         const fbResult = await SmartLearnFirebase.registerUser(cleanEmail, password, profileData);
         if (fbResult && fbResult.user) {
           const users = this.getUsers();
-          const userWithPassword = { ...profileData, ...fbResult.user, password: password, status: isTeacher ? "pending" : "approved", isApproved: !isTeacher, approved: !isTeacher };
+          const userWithPassword = { ...profileData, ...fbResult.user, password: password, status: "approved", isApproved: true, approved: true };
           const existingIdx = users.findIndex(u => u.email && u.email.toLowerCase() === cleanEmail);
           if (existingIdx >= 0) {
             users[existingIdx] = userWithPassword;
@@ -359,11 +358,7 @@ const SmartLearnAuth = {
             SmartLearnStorage.ensureStudentData(fbResult.uid, className, section);
           }
 
-          if (isTeacher) {
-            return { success: true, message: "Registration submitted successfully! Your teacher account requires Administrator approval before you can log in." };
-          }
-
-          return { success: true, message: "🔥 Account registered with Firebase Cloud Auth! You can now log in." };
+          return { success: true, message: "🎉 Account registered successfully! You can now log in immediately." };
         }
       } catch (fbErr) {
         console.warn("Firebase registration error, falling back to LocalStorage:", fbErr);
@@ -388,6 +383,9 @@ const SmartLearnAuth = {
     const newUser = {
       id: newUserId,
       password: password,
+      status: "approved",
+      isApproved: true,
+      approved: true,
       ...profileData
     };
 
@@ -399,11 +397,7 @@ const SmartLearnAuth = {
       SmartLearnStorage.ensureStudentData(newUserId, className, section);
     }
 
-    if (isTeacher) {
-      return { success: true, message: "Registration submitted! Your teacher account requires Administrator approval before logging in." };
-    }
-
-    return { success: true, message: "Account created successfully! You can now log in." };
+    return { success: true, message: "🎉 Account created successfully! You can now log in immediately." };
   },
 
   // Alias for backward compatibility
