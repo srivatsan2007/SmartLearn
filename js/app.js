@@ -7149,6 +7149,16 @@ const SmartLearnTeacherTimetable = {
  */
 const SmartLearnAdmin = {
   init() {
+    if (!this._storageListenerAdded && typeof window !== "undefined") {
+      this._storageListenerAdded = true;
+      window.addEventListener("storage", () => {
+        try {
+          this.renderPendingTeacherApprovals();
+          this.renderDepartmentWiseTeachers();
+        } catch (e) {}
+      });
+    }
+
     this.renderPendingTeacherApprovals();
     this.renderPendingTimetableApprovals();
     this.renderMetrics();
@@ -7368,7 +7378,11 @@ const SmartLearnAdmin = {
     if (pendingTeachers.length === 0) {
       listContainer.innerHTML = `
         <div style="padding: 1.25rem; text-align: center; color: var(--text-muted); font-size: 0.875rem;">
-          ✅ All registered teacher accounts are approved. No pending registration requests.
+          <div style="margin-bottom: 0.75rem;">✅ All registered teacher accounts are approved. No pending registration requests.</div>
+          <div style="display: flex; gap: 0.5rem; justify-content: center; align-items: center; max-width: 480px; margin: 0 auto; background: var(--bg-subtle, #f8fafc); padding: 0.6rem; border-radius: 8px; border: 1px dashed var(--border-color, #cbd5e1);">
+            <input type="email" id="admin-manual-teacher-email" class="form-control form-control-sm" placeholder="Enter teacher email to force approve..." style="font-size: 0.8rem; background: var(--bg-surface, #ffffff);">
+            <button class="btn btn-primary btn-sm" onclick="SmartLearnAdmin.approveTeacherByEmail()" style="white-space: nowrap; font-size: 0.8rem; font-weight: 600;">⚡ Approve Email</button>
+          </div>
         </div>
       `;
       return;
@@ -7413,6 +7427,58 @@ const SmartLearnAdmin = {
         </table>
       </div>
     `;
+  },
+
+  approveTeacherByEmail() {
+    const input = document.getElementById("admin-manual-teacher-email");
+    const email = input ? input.value.trim().toLowerCase() : "";
+    if (!email) {
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        SmartLearnApp.showToast("Please enter a teacher email address.", "warning");
+      }
+      return;
+    }
+
+    const users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
+    const teacherIndex = users.findIndex(u => u.email && u.email.toLowerCase() === email);
+
+    if (teacherIndex >= 0) {
+      users[teacherIndex].status = "approved";
+      users[teacherIndex].isApproved = true;
+      users[teacherIndex].approved = true;
+    } else {
+      const prefix = email.split('@')[0];
+      const teacherName = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+      users.push({
+        id: "usr_" + Date.now(),
+        email: email,
+        fullName: teacherName,
+        name: teacherName,
+        password: "teacher123",
+        role: "Teacher",
+        status: "approved",
+        isApproved: true,
+        approved: true,
+        department: "Computer Science & Engineering",
+        subject: "Computer Science"
+      });
+    }
+
+    SmartLearnStorage.set(STORAGE_KEYS.USERS, users);
+    localStorage.setItem("classoraUsers", JSON.stringify(users));
+    localStorage.setItem("smartlearn_users", JSON.stringify(users));
+
+    if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured) {
+      const matched = users.find(u => u.email && u.email.toLowerCase() === email);
+      const targetId = matched ? (matched.uid || matched.id) : email;
+      SmartLearnFirebase.saveDoc("users", targetId, { status: "approved", isApproved: true, approved: true });
+    }
+
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast(`🎉 Teacher '${email}' approved successfully! They can now log in.`, "success");
+    }
+
+    this.init();
   },
 
   approveTeacher(userId) {
