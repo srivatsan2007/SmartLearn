@@ -627,10 +627,12 @@ const SmartLearnDashboard = {
     const userSection = (user.section || "A").toUpperCase();
     const allAssignments = SmartLearnStorage.get(STORAGE_KEYS.ASSIGNMENTS) || [];
     let assignments = allAssignments.filter(a => {
-      if (a.studentId && (a.studentId === user.id || a.studentId === "usr_student_01")) return true;
-      const aClass = (a.className || a.class || "").toLowerCase();
-      const aSec = (a.section || "").toUpperCase();
-      return !aClass || aClass === userClass || aClass.includes("cse");
+      if (a.studentId && (a.studentId === user.id || a.studentId === user.uid || a.studentId === "usr_student_01")) return true;
+      const aClass = (a.className || a.class || a.classId || "").toLowerCase();
+      const aSec = (a.section || "ALL").toUpperCase();
+      const sectionMatches = (aSec === "ALL" || aSec === userSection || !aSec);
+      const classMatches = !aClass || userClass.includes(aClass) || aClass.includes(userClass) || (userClass.includes("cse") && aClass.includes("cse")) || (userClass.includes("it") && aClass.includes("it")) || (userClass.includes("ece") && aClass.includes("ece"));
+      return sectionMatches && classMatches;
     });
     if (assignments.length === 0) assignments = allAssignments;
 
@@ -2287,8 +2289,7 @@ const SmartLearnTeacherAssignments = {
 
   publishAssignment(e) {
     if (e) e.preventDefault();
-    const user = SmartLearnAuth.getCurrentUser();
-    if (!user) return;
+    const user = SmartLearnAuth.getCurrentUser() || { id: "usr_teacher_01", fullName: "Faculty Instructor", role: "Teacher" };
 
     const title = document.getElementById("asgn-title")?.value.trim();
     const subject = document.getElementById("asgn-subject")?.value.trim() || (user.subject || "Computer Science");
@@ -2299,12 +2300,14 @@ const SmartLearnTeacherAssignments = {
     const desc = document.getElementById("asgn-desc")?.value.trim() || "";
 
     if (!title) {
-      SmartLearnApp.showToast("Please enter an assignment title!", "warning");
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        SmartLearnApp.showToast("Please enter an assignment title!", "warning");
+      }
       return;
     }
 
     const teacherFullName = user.fullName || user.name || "Faculty Instructor";
-    const teacherUserId = user.id || user.uid || "";
+    const teacherUserId = user.id || user.uid || "usr_teacher_01";
 
     const assignments = SmartLearnStorage.get(STORAGE_KEYS.ASSIGNMENTS) || [];
     const newAsgn = {
@@ -2327,13 +2330,25 @@ const SmartLearnTeacherAssignments = {
     assignments.unshift(newAsgn);
     SmartLearnStorage.set(STORAGE_KEYS.ASSIGNMENTS, assignments);
 
-    sendNotificationToSection(classId, section, "New Assignment Published 📘", `${teacherFullName} published assignment '${title}' (${subject}) for ${classId} - ${section === 'ALL' ? 'All Sections' : 'Sec ' + section}. Due: ${dueDate}.`);
+    if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured) {
+      SmartLearnFirebase.saveDoc("assignments", newAsgn.id, newAsgn);
+    }
 
-    SmartLearnApp.showToast(`Assignment '${title}' published for ${classId} ${section === 'ALL' ? 'All Sections' : 'Sec ' + section}! 🎉`, "success");
-    SmartLearnApp.closeModal("create-assignment-modal");
+    try {
+      if (typeof sendNotificationToSection === "function") {
+        sendNotificationToSection(classId, section, "New Assignment Published 📘", `${teacherFullName} published assignment '${title}' (${subject}) for ${classId} - ${section === 'ALL' ? 'All Sections' : 'Sec ' + section}. Due: ${dueDate}.`);
+      }
+    } catch (err) {}
+
+    if (typeof SmartLearnApp !== "undefined") {
+      SmartLearnApp.showToast(`Assignment '${title}' published for ${classId} ${section === 'ALL' ? 'All Sections' : 'Sec ' + section}! 🎉`, "success");
+      SmartLearnApp.closeModal("create-assignment-modal");
+    }
 
     if (document.getElementById("asgn-title")) document.getElementById("asgn-title").value = "";
     if (document.getElementById("asgn-desc")) document.getElementById("asgn-desc").value = "";
+
+    try { window.dispatchEvent(new Event("storage")); } catch (err) {}
 
     if (this.renderTeacherDashboard) this.renderTeacherDashboard();
   },

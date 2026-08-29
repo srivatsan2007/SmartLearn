@@ -2349,6 +2349,11 @@
   <script src="js/app.js"></script>
   <script>
     document.addEventListener("DOMContentLoaded", () => {
+      const dueInput = document.getElementById("asgn-duedate");
+      if (dueInput && !dueInput.value) {
+        dueInput.value = new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0];
+      }
+
       const user = SmartLearnAuth.protectDashboard("Teacher");
       if (user) {
         document.getElementById('greeting-text').innerText = `Good Morning, ${user.fullName || user.name} 👋`;
