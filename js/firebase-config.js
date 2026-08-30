@@ -208,6 +208,18 @@ const SmartLearnFirebase = {
       console.error(`Error fetching collection ${collectionName} from Firestore:`, e);
       return [];
     }
+  },
+
+  // 7. Firestore Document Deletion
+  async deleteDoc(collectionName, docId) {
+    if (!this.isConfigured || !docId) return false;
+    try {
+      await this.db.collection(collectionName).doc(String(docId)).delete();
+      return true;
+    } catch (e) {
+      console.error(`Error deleting doc ${docId} from Firestore collection ${collectionName}:`, e);
+      return false;
+    }
   }
 };
 

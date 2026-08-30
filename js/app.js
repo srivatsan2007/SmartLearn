@@ -1680,9 +1680,13 @@ const SmartLearnNotifications = {
   clearAll(userId) {
     if (!confirm("Clear notification history for your account?")) return;
     let notifications = SmartLearnStorage.get(STORAGE_KEYS.NOTIFICATIONS) || [];
+    const userNotifs = notifications.filter(n => n.userId === userId);
+    userNotifs.forEach(n => {
+      if (n && n.id) SmartLearnStorage.markItemAsDeleted(n.id);
+    });
     notifications = notifications.filter(n => n.userId !== userId);
     SmartLearnStorage.set(STORAGE_KEYS.NOTIFICATIONS, notifications);
-    SmartLearnApp.showToast("Notification history cleared.", "info");
+    SmartLearnApp.showToast("Notification history cleared permanently.", "info");
     const user = SmartLearnAuth.getCurrentUser();
     this.renderNotificationCenter(user, "all");
   },
@@ -2350,6 +2354,16 @@ const SmartLearnTeacherAssignments = {
 
     try { window.dispatchEvent(new Event("storage")); } catch (err) {}
 
+    if (this.renderTeacherDashboard) this.renderTeacherDashboard();
+  },
+
+  deleteAssignment(assignmentId) {
+    if (!confirm("Are you sure you want to permanently delete this assignment?")) return;
+    SmartLearnStorage.deleteItem(STORAGE_KEYS.ASSIGNMENTS, assignmentId);
+    if (typeof SmartLearnApp !== "undefined") {
+      SmartLearnApp.showToast("Assignment deleted permanently.", "info");
+    }
+    try { window.dispatchEvent(new Event("storage")); } catch (err) {}
     if (this.renderTeacherDashboard) this.renderTeacherDashboard();
   },
 
@@ -3105,6 +3119,19 @@ const SmartLearnStudyMaterials = {
     this.populateSubjectDropdown();
     this.renderStudyMaterialsModule(user);
     this.bindEvents();
+  },
+
+  deleteMaterial(materialId) {
+    if (!confirm("Are you sure you want to permanently delete this study material resource?")) return;
+    SmartLearnStorage.deleteItem(STORAGE_KEYS.STUDY_MATERIALS, materialId);
+    if (typeof SmartLearnApp !== "undefined") {
+      SmartLearnApp.showToast("Study material deleted permanently.", "info");
+    }
+    this.renderStudyMaterialsModule();
+    const curr = SmartLearnAuth.getCurrentUser();
+    if (curr && typeof SmartLearnDashboard !== "undefined") {
+      SmartLearnDashboard.renderStudyMaterials(curr);
+    }
   },
 
   renderHeader(user) {
@@ -4662,13 +4689,11 @@ const SmartLearnTeacherQuizzes = {
   },
 
   deleteQuiz(quizId) {
-    if (!confirm("Are you sure you want to delete this quiz? All student attempt records for this quiz will remain archived.")) return;
+    if (!confirm("Are you sure you want to delete this quiz permanently? All student attempt records for this quiz will remain archived.")) return;
 
-    let quizzes = SmartLearnStorage.getQuizzes();
-    quizzes = quizzes.filter(q => q.id !== quizId);
-    SmartLearnStorage.saveQuizzes(quizzes);
+    SmartLearnStorage.deleteItem(STORAGE_KEYS.QUIZZES, quizId);
 
-    SmartLearnApp.showToast("Quiz deleted successfully.", "info");
+    SmartLearnApp.showToast("Quiz deleted permanently.", "info");
     this.renderTeacherQuizzes();
   },
 
@@ -6897,13 +6922,11 @@ const SmartLearnTeacherExamTimetable = {
   },
 
   deleteExam(examId) {
-    if (!confirm("Are you sure you want to delete this scheduled examination?")) return;
+    if (!confirm("Are you sure you want to delete this scheduled examination permanently?")) return;
 
-    let exams = SmartLearnStorage.get(STORAGE_KEYS.EXAMS) || [];
-    exams = exams.filter(e => e.id !== examId);
-    SmartLearnStorage.set(STORAGE_KEYS.EXAMS, exams);
+    SmartLearnStorage.deleteItem(STORAGE_KEYS.EXAMS, examId);
 
-    SmartLearnApp.showToast("Exam schedule deleted successfully.", "info");
+    SmartLearnApp.showToast("Exam schedule deleted permanently.", "info");
     this.renderExamTable();
 
     if (typeof SmartLearnStudentExamTimetable !== "undefined") {
@@ -7996,13 +8019,11 @@ const SmartLearnAdmin = {
   },
 
   deleteClass(classId) {
-    if (!confirm("Are you sure you want to delete this class section? Students currently in this section will remain in the database.")) return;
+    if (!confirm("Are you sure you want to delete this class section permanently? Students currently in this section will remain in the database.")) return;
 
-    let classes = SmartLearnStorage.getClasses();
-    classes = classes.filter(c => c.id !== classId);
-    SmartLearnStorage.saveClasses(classes);
+    SmartLearnStorage.deleteItem(STORAGE_KEYS.CLASSES, classId);
 
-    SmartLearnApp.showToast("Class section removed.", "info");
+    SmartLearnApp.showToast("Class section deleted permanently.", "info");
     this.renderClassesAndStreams();
     this.renderMetrics();
   },
@@ -8242,13 +8263,11 @@ const SmartLearnAdmin = {
   },
 
   deleteNotice(noticeId) {
-    if (!confirm("Are you sure you want to delete this broadcast announcement?")) return;
+    if (!confirm("Are you sure you want to delete this broadcast announcement permanently?")) return;
 
-    let announcements = SmartLearnStorage.get(STORAGE_KEYS.ANNOUNCEMENTS) || [];
-    announcements = announcements.filter(a => a.id !== noticeId);
-    SmartLearnStorage.set(STORAGE_KEYS.ANNOUNCEMENTS, announcements);
+    SmartLearnStorage.deleteItem(STORAGE_KEYS.ANNOUNCEMENTS, noticeId);
 
-    if (typeof SmartLearnApp !== "undefined") SmartLearnApp.showToast("Notice deleted successfully.", "info");
+    if (typeof SmartLearnApp !== "undefined") SmartLearnApp.showToast("Notice deleted permanently.", "info");
 
     this.renderAnnouncements();
     if (typeof SmartLearnAnnouncements !== "undefined") {
@@ -8838,12 +8857,10 @@ const SmartLearnAdmin = {
   },
 
   deleteUser(userId) {
-    if (!confirm("Are you sure you want to delete this user account?")) return;
-    const users = SmartLearnStorage.get(STORAGE_KEYS.USERS) || [];
-    const updated = users.filter(u => u.id !== userId);
-    SmartLearnStorage.set(STORAGE_KEYS.USERS, updated);
+    if (!confirm("Are you sure you want to delete this user account permanently?")) return;
+    SmartLearnStorage.deleteItem(STORAGE_KEYS.USERS, userId);
     if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
-      SmartLearnApp.showToast("User account deleted successfully.", "success");
+      SmartLearnApp.showToast("User account deleted permanently.", "success");
     }
     this.init();
   }

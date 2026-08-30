@@ -28,7 +28,8 @@ const STORAGE_KEYS = {
   GRADES: "classoraGrades",
   TIMETABLE: "classoraTimetable",
   GAMIFICATION: "classoraGamification",
-  REWARDS_LOG: "classoraRewardsLog"
+  REWARDS_LOG: "classoraRewardsLog",
+  DELETED_IDS: "smartlearn_deleted_ids"
 };
 
 // Initial Seed Exam Timetable
@@ -924,13 +925,8 @@ const SmartLearnStorage = {
   init() {
     function isKeyEmpty(key) {
       const val = localStorage.getItem(key);
-      if (!val) return true;
-      try {
-        const parsed = JSON.parse(val);
-        return !Array.isArray(parsed) || parsed.length === 0;
-      } catch (e) {
-        return true;
-      }
+      if (val === null || val === undefined) return true;
+      return false;
     }
 
     // 1. Users
@@ -1256,11 +1252,11 @@ const SmartLearnStorage = {
   },
   getClasses() {
     let classes = this.get(STORAGE_KEYS.CLASSES);
-    if (!classes || !Array.isArray(classes) || classes.length === 0) {
+    if (localStorage.getItem(STORAGE_KEYS.CLASSES) === null) {
       classes = typeof INITIAL_CLASSES !== "undefined" ? INITIAL_CLASSES : [];
       this.set(STORAGE_KEYS.CLASSES, classes);
     }
-    return classes;
+    return classes || [];
   },
   saveClasses(classes) {
     this.set(STORAGE_KEYS.CLASSES, classes);
@@ -1379,14 +1375,11 @@ const SmartLearnStorage = {
   // Quiz Data Access Layer
   getQuizzes() {
     let quizzes = this.get(STORAGE_KEYS.QUIZZES);
-    const validFullQuizzes = Array.isArray(quizzes) ? quizzes.filter(q => q && q.questions && Array.isArray(q.questions) && q.questions.length > 0) : [];
-    if (validFullQuizzes.length === 0) {
+    if (localStorage.getItem(STORAGE_KEYS.QUIZZES) === null) {
       quizzes = INITIAL_QUIZZES;
       this.set(STORAGE_KEYS.QUIZZES, INITIAL_QUIZZES);
-    } else {
-      quizzes = validFullQuizzes;
     }
-    return quizzes;
+    return quizzes || [];
   },
   saveQuizzes(quizzes) {
     this.set(STORAGE_KEYS.QUIZZES, quizzes);
@@ -1422,6 +1415,89 @@ const SmartLearnStorage = {
     return isBookmarked;
   },
 
+  // Permanent Deletion Registry Helpers
+  getDeletedIds() {
+    try {
+      const val = localStorage.getItem(STORAGE_KEYS.DELETED_IDS);
+      return val ? JSON.parse(val) : [];
+    } catch (e) {
+      return [];
+    }
+  },
+
+  isItemDeleted(itemId) {
+    if (!itemId) return false;
+    const deleted = this.getDeletedIds();
+    return deleted.includes(String(itemId));
+  },
+
+  markItemAsDeleted(itemId) {
+    if (!itemId) return;
+    const strId = String(itemId);
+    const deleted = this.getDeletedIds();
+    if (!deleted.includes(strId)) {
+      deleted.push(strId);
+      localStorage.setItem(STORAGE_KEYS.DELETED_IDS, JSON.stringify(deleted));
+    }
+  },
+
+  deleteItem(key, itemId) {
+    if (!key || !itemId) return false;
+    const strId = String(itemId);
+    this.markItemAsDeleted(strId);
+
+    // 1. Filter out from local array under storage key
+    let items = this.get(key) || [];
+    if (Array.isArray(items)) {
+      const updated = items.filter(item => {
+        if (!item) return false;
+        const id = String(item.id || item.uid || item.studentId || item.quizId || item.noticeId || item.examId || item.materialId || "");
+        return id !== strId;
+      });
+      localStorage.setItem(key, JSON.stringify(updated));
+    }
+
+    // 2. If USERS key, clean up auxiliary user keys
+    if (key === STORAGE_KEYS.USERS) {
+      ["classoraUsers", "smartlearn_users"].forEach(k => {
+        try {
+          const uStr = localStorage.getItem(k);
+          if (uStr) {
+            let uArr = JSON.parse(uStr);
+            if (Array.isArray(uArr)) {
+              uArr = uArr.filter(u => u && String(u.id || u.uid) !== strId);
+              localStorage.setItem(k, JSON.stringify(uArr));
+            }
+          }
+        } catch (e) {}
+      });
+    }
+
+    // 3. Purge from Firestore remote collection if configured
+    if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured && SmartLearnFirebase.deleteDoc) {
+      const collectionMap = {
+        [STORAGE_KEYS.USERS]: "users",
+        [STORAGE_KEYS.ASSIGNMENTS]: "assignments",
+        [STORAGE_KEYS.SUBMISSIONS]: "submissions",
+        [STORAGE_KEYS.ATTENDANCE]: "attendance",
+        [STORAGE_KEYS.QUIZZES]: "quizzes",
+        [STORAGE_KEYS.QUIZ_ATTEMPTS]: "quiz_attempts",
+        [STORAGE_KEYS.STUDY_MATERIALS]: "study_materials",
+        [STORAGE_KEYS.ANNOUNCEMENTS]: "announcements",
+        [STORAGE_KEYS.GRADES]: "grades",
+        [STORAGE_KEYS.NOTIFICATIONS]: "notifications",
+        [STORAGE_KEYS.EXAMS]: "exams",
+        [STORAGE_KEYS.CLASSES]: "classes"
+      };
+      const colName = collectionMap[key];
+      if (colName) {
+        SmartLearnFirebase.deleteDoc(colName, strId);
+      }
+    }
+
+    return true;
+  },
+
   // Generic Get/Set Storage Helpers
   get(key) {
     if (!key) return [];
@@ -1429,7 +1505,14 @@ const SmartLearnStorage = {
       const val = localStorage.getItem(key);
       if (!val || val === "null" || val === "undefined") return [];
       const parsed = JSON.parse(val);
-      return Array.isArray(parsed) ? parsed : (parsed || []);
+      if (!Array.isArray(parsed)) return parsed || [];
+      const deletedIds = this.getDeletedIds();
+      if (deletedIds.length === 0) return parsed;
+      return parsed.filter(item => {
+        if (!item) return false;
+        const id = String(item.id || item.uid || item.studentId || item.quizId || item.noticeId || item.examId || item.materialId || "");
+        return !id || !deletedIds.includes(id);
+      });
     } catch (e) {
       console.error(`Error reading ${key} from storage:`, e);
       return [];
@@ -1453,13 +1536,18 @@ const SmartLearnStorage = {
           [STORAGE_KEYS.ANNOUNCEMENTS]: "announcements",
           [STORAGE_KEYS.GRADES]: "grades",
           [STORAGE_KEYS.NOTIFICATIONS]: "notifications",
-          [STORAGE_KEYS.EXAMS]: "exams"
+          [STORAGE_KEYS.EXAMS]: "exams",
+          [STORAGE_KEYS.CLASSES]: "classes"
         };
         const collectionName = collectionMap[key];
         if (collectionName && Array.isArray(value)) {
+          const deletedIds = this.getDeletedIds();
           value.forEach(item => {
             if (item && (item.id || item.uid)) {
-              SmartLearnFirebase.saveDoc(collectionName, String(item.id || item.uid), item);
+              const id = String(item.id || item.uid);
+              if (!deletedIds.includes(id)) {
+                SmartLearnFirebase.saveDoc(collectionName, id, item);
+              }
             }
           });
         }
@@ -1471,7 +1559,7 @@ const SmartLearnStorage = {
 
   async syncWithFirestore() {
     if (typeof SmartLearnFirebase !== "undefined" && SmartLearnFirebase.isConfigured) {
-      const collections = ["users", "assignments", "submissions", "attendance", "quizzes", "quiz_attempts", "study_materials", "announcements", "grades", "notifications", "exams"];
+      const collections = ["users", "assignments", "submissions", "attendance", "quizzes", "quiz_attempts", "study_materials", "announcements", "grades", "notifications", "exams", "classes"];
       const keyMap = {
         "users": STORAGE_KEYS.USERS,
         "assignments": STORAGE_KEYS.ASSIGNMENTS,
@@ -1483,8 +1571,11 @@ const SmartLearnStorage = {
         "announcements": STORAGE_KEYS.ANNOUNCEMENTS,
         "grades": STORAGE_KEYS.GRADES,
         "notifications": STORAGE_KEYS.NOTIFICATIONS,
-        "exams": STORAGE_KEYS.EXAMS
+        "exams": STORAGE_KEYS.EXAMS,
+        "classes": STORAGE_KEYS.CLASSES
       };
+
+      const deletedIds = this.getDeletedIds();
 
       for (const col of collections) {
         try {
@@ -1494,8 +1585,25 @@ const SmartLearnStorage = {
             if (storageKey) {
               const localData = this.get(storageKey) || [];
               const mergedMap = new Map();
-              localData.forEach(item => mergedMap.set(String(item.id || item.uid), item));
-              remoteData.forEach(item => mergedMap.set(String(item.id || item.uid), item));
+
+              localData.forEach(item => {
+                const id = String(item.id || item.uid || item.studentId || item.quizId || item.noticeId || item.examId || item.materialId || "");
+                if (!id || !deletedIds.includes(id)) {
+                  mergedMap.set(id || Math.random(), item);
+                }
+              });
+
+              remoteData.forEach(item => {
+                const id = String(item.id || item.uid || item.studentId || item.quizId || item.noticeId || item.examId || item.materialId || "");
+                if (deletedIds.includes(id)) {
+                  if (SmartLearnFirebase.deleteDoc) {
+                    SmartLearnFirebase.deleteDoc(col, id);
+                  }
+                } else if (id) {
+                  mergedMap.set(id, item);
+                }
+              });
+
               const mergedList = Array.from(mergedMap.values());
               localStorage.setItem(storageKey, JSON.stringify(mergedList));
             }
