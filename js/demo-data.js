@@ -11,6 +11,8 @@ const STORAGE_KEYS = {
   CURRENT_USER: "classoraCurrentUser",
   ASSIGNMENTS: "classoraAssignments",
   SUBMISSIONS: "classoraSubmissions",
+  LABS: "smartlearn_labs",
+  LAB_SUBMISSIONS: "smartlearn_lab_submissions",
   SUBJECTS: "classoraSubjects",
   CLASSES: "classoraClasses",
   ATTENDANCE: "classoraAttendance",
@@ -78,6 +80,76 @@ const INITIAL_EXAMS = [
     createdByName: "Dr. Ananya Verma",
     createdAt: "2026-08-26T09:30:00Z",
     status: "approved"
+  }
+];
+
+// Initial Seed Practical Labs
+const INITIAL_LABS = [
+  {
+    id: "lab_cs101_01",
+    title: "Binary Search Tree Operations & Visualizer",
+    subject: "Computer Science",
+    className: "B.Tech CSE",
+    section: "A",
+    dueDate: "2026-09-25",
+    totalMarks: 50,
+    softwareRequired: "Python 3.10 / VS Code / GCC",
+    description: "Implement binary search tree operations including node insertion, deletion, and inorder/preorder/postorder traversals. Calculate tree height and execution runtime.",
+    objectives: "1. Implement dynamic binary node allocation.\n2. Handle edge cases for deletion with 2 sub-children.\n3. Benchmark lookup speed vs linear array searching.",
+    teacherId: "usr_teacher_01",
+    teacherName: "Dr. Priya Sharma",
+    createdAt: "2026-09-10T10:00:00Z",
+    status: "published"
+  },
+  {
+    id: "lab_web201_02",
+    title: "Dynamic Local Storage Task Dashboard",
+    subject: "Web Development",
+    className: "B.Tech CSE",
+    section: "A",
+    dueDate: "2026-09-28",
+    totalMarks: 50,
+    softwareRequired: "Chrome Browser / VS Code / Node.js",
+    description: "Build a responsive web dashboard with interactive DOM manipulation, JSON serialization, and local storage data persistence.",
+    objectives: "1. Event Delegation and Event Bubbling in JavaScript DOM.\n2. State management with localStorage API.\n3. Mobile responsive CSS Flexbox/Grid layout.",
+    teacherId: "usr_teacher_01",
+    teacherName: "Prof. S. Das",
+    createdAt: "2026-09-12T11:30:00Z",
+    status: "published"
+  },
+  {
+    id: "lab_db301_03",
+    title: "Complex SQL Joins & Query Plan Optimization",
+    subject: "Database Systems",
+    className: "B.Tech CSE",
+    section: "A",
+    dueDate: "2026-10-02",
+    totalMarks: 100,
+    softwareRequired: "MySQL Workbench / PostgreSQL / DBeaver",
+    description: "Construct complex multi-table SQL JOIN queries, create B-Tree indexes, and analyze Execution Plans using EXPLAIN statements.",
+    objectives: "1. Write optimized INNER JOIN, LEFT OUTER JOIN, and GROUP BY aggregations.\n2. Compare index lookup cost against full table scan.\n3. Design normalized 3NF schemas.",
+    teacherId: "usr_teacher_01",
+    teacherName: "Dr. Priya Sharma",
+    createdAt: "2026-09-14T09:00:00Z",
+    status: "published"
+  }
+];
+
+// Initial Seed Lab Submissions
+const INITIAL_LAB_SUBMISSIONS = [
+  {
+    id: "lab_subm_01",
+    labId: "lab_cs101_01",
+    studentId: "usr_student_01",
+    studentName: "Alex Kumar",
+    submittedAt: "2026-09-13T16:00:00Z",
+    codeSnippet: "class Node:\n    def __init__(self, key):\n        self.left = None\n        self.right = None\n        self.val = key\n\ndef insert(root, key):\n    if root is None:\n        return Node(key)\n    if root.val < key:\n        root.right = insert(root.right, key)\n    else:\n        root.left = insert(root.left, key)\n    return root\n\ndef inorder(root):\n    if root:\n        inorder(root.left)\n        print(root.val, end=' ')\n        inorder(root.right)",
+    fileAttachment: "AlexKumar_BST_Lab1.py",
+    notes: "Completed all binary tree operations with edge cases for root deletion and tested output with 100 random integers.",
+    status: "graded",
+    marks: 48,
+    teacherFeedback: "Outstanding implementation of BST traversal and node balance checks! Code structure is clean.",
+    gradedAt: "2026-09-14T10:00:00Z"
   }
 ];
 
@@ -1068,6 +1140,15 @@ const SmartLearnStorage = {
       localStorage.setItem(STORAGE_KEYS.CLASSES, JSON.stringify(INITIAL_CLASSES));
     }
 
+    // 12c. Labs & Lab Submissions Seed
+    if (isKeyEmpty(STORAGE_KEYS.LABS)) {
+      localStorage.setItem(STORAGE_KEYS.LABS, JSON.stringify(INITIAL_LABS));
+    }
+
+    if (isKeyEmpty(STORAGE_KEYS.LAB_SUBMISSIONS)) {
+      localStorage.setItem(STORAGE_KEYS.LAB_SUBMISSIONS, JSON.stringify(INITIAL_LAB_SUBMISSIONS));
+    }
+
     // 13. Gamification & Leaderboard Seed
     if (isKeyEmpty(STORAGE_KEYS.GAMIFICATION)) {
       const initialGamification = [
@@ -1529,6 +1610,8 @@ const SmartLearnStorage = {
           [STORAGE_KEYS.USERS]: "users",
           [STORAGE_KEYS.ASSIGNMENTS]: "assignments",
           [STORAGE_KEYS.SUBMISSIONS]: "submissions",
+          [STORAGE_KEYS.LABS]: "labs",
+          [STORAGE_KEYS.LAB_SUBMISSIONS]: "lab_submissions",
           [STORAGE_KEYS.ATTENDANCE]: "attendance",
           [STORAGE_KEYS.QUIZZES]: "quizzes",
           [STORAGE_KEYS.QUIZ_ATTEMPTS]: "quiz_attempts",

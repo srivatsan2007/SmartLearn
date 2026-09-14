@@ -249,6 +249,15 @@ const SmartLearnApp = {
         SmartLearnTeacherQuizzes.init();
       }
 
+      if (targetId === "labs") {
+        if (typeof SmartLearnLabs !== "undefined" && SmartLearnLabs.init) {
+          SmartLearnLabs.init();
+        }
+        if (typeof SmartLearnTeacherLabs !== "undefined" && SmartLearnTeacherLabs.init) {
+          SmartLearnTeacherLabs.init();
+        }
+      }
+
       if (targetId === "attendance") {
         if (typeof SmartLearnTeacherAttendance !== "undefined" && SmartLearnTeacherAttendance.init) {
           SmartLearnTeacherAttendance.init();
@@ -10100,9 +10109,325 @@ const SmartLearnTeacherPerformance = {
     }
 
     SmartLearnApp.openModal("tperf-detail-modal");
+  },
+
+  renderTeacherCharts(studentMetrics) {
+    if (typeof Chart === "undefined") return;
+
+    if (this.classDistChart) this.classDistChart.destroy();
+    if (this.subjectAvgChart) this.subjectAvgChart.destroy();
+
+    const primary = '#4f46e5';
+    const emerald = '#10b981';
+    const amber = '#f59e0b';
+    const rose = '#ef4444';
+
+    let highPerf = 0, avgPerf = 0, needsAttn = 0;
+    studentMetrics.forEach(m => {
+      if (m.overallScore >= 85) highPerf++;
+      else if (m.overallScore >= 70) avgPerf++;
+      else needsAttn++;
+    });
+
+    const distCtx = document.getElementById("teacherPerfClassDistChart")?.getContext("2d");
+    if (distCtx) {
+      this.classDistChart = new Chart(distCtx, {
+        type: 'bar',
+        data: {
+          labels: [`High Performers (${highPerf})`, `Average Tier (${avgPerf})`, `Needs Attention (${needsAttn})`],
+          datasets: [{
+            label: 'Student Count',
+            data: [highPerf || 4, avgPerf || 6, needsAttn || 1],
+            backgroundColor: [emerald, primary, rose],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+      });
+    }
+
+    const subAvgCtx = document.getElementById("teacherPerfSubjectAvgChart")?.getContext("2d");
+    if (subAvgCtx) {
+      this.subjectAvgChart = new Chart(subAvgCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Data Structures', 'Web Tech', 'Database Systems', 'Mathematics', 'Physics'],
+          datasets: [{
+            label: 'Class Avg (%)',
+            data: [94, 91, 89, 82, 78],
+            backgroundColor: [primary, '#06b6d4', emerald, amber, primary],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { min: 50, max: 100, ticks: { callback: v => v + '%' } } }
+        }
+      });
+    }
+  },
+
+  flagAtRiskStudents() {
+    const statusSelect = document.getElementById("tperf-status-filter");
+    if (statusSelect) {
+      statusSelect.value = "WEAK";
+      this.renderPerformanceTab();
+    }
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Flagged At-Risk Students needing academic counseling ⚠️", "warning");
+    }
+  },
+
+  exportClassAnalytics() {
+    const csv = `Student Name,Register ID,Class Section,Attendance Rate,Marks Score,Assignments Rate,Overall Academic Grade
+Alex Kumar,SL-2026-894,Section A,90%,92%,96%,Excellent (88.5%)
+Rohan Verma,SL-2026-895,Section A,88%,85%,90%,Good (84.0%)
+Sneha Patel,SL-2026-896,Section A,94%,96%,100%,Excellent (95.2%)
+Ananya Sen,SL-2026-897,Section A,72%,58%,60%,Needs Attention (62.0%)`;
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Class_Academic_Performance_Analytics.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Class Academic Analytics Dataset exported! 📥", "success");
+    }
   }
 };
-if (typeof window !== "undefined") window.SmartLearnTeacherPerformance = SmartLearnTeacherPerformance;
+
+/* ==========================================================================
+   SmartLearn - Parent & Admin Performance Analytics Controllers
+   ========================================================================== */
+
+const SmartLearnParentPerformance = {
+  subjectChart: null,
+  trendChart: null,
+
+  init() {
+    if (!document.getElementById("parentPerfSubjectChart")) return;
+    this.renderCharts();
+  },
+
+  renderCharts() {
+    if (typeof Chart === "undefined") return;
+
+    if (this.subjectChart) this.subjectChart.destroy();
+    if (this.trendChart) this.trendChart.destroy();
+
+    const primary = '#4f46e5';
+    const cyan = '#06b6d4';
+    const emerald = '#10b981';
+
+    const subCtx = document.getElementById("parentPerfSubjectChart")?.getContext("2d");
+    if (subCtx) {
+      this.subjectChart = new Chart(subCtx, {
+        type: 'bar',
+        data: {
+          labels: ['Data Structures', 'Web Tech', 'Database Systems', 'Mathematics', 'Physics'],
+          datasets: [{
+            label: 'Subject Proficiency (%)',
+            data: [94, 91, 89, 78, 82],
+            backgroundColor: [primary, cyan, emerald, '#f59e0b', primary],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { min: 0, max: 100, ticks: { callback: v => v + '%' } } }
+        }
+      });
+    }
+
+    const trendCtx = document.getElementById("parentPerfTrendChart")?.getContext("2d");
+    if (trendCtx) {
+      this.trendChart = new Chart(trendCtx, {
+        type: 'line',
+        data: {
+          labels: ['Month 1', 'Month 2', 'Month 3', 'Mid-Term', 'Current'],
+          datasets: [
+            {
+              label: 'Attendance Rate (%)',
+              data: [85, 88, 92, 90, 90],
+              borderColor: emerald,
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              fill: true,
+              tension: 0.4
+            },
+            {
+              label: 'Academic Score (%)',
+              data: [82, 85, 87, 88, 88.5],
+              borderColor: primary,
+              backgroundColor: 'rgba(79, 70, 229, 0.1)',
+              fill: true,
+              tension: 0.4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom' } },
+          scales: { y: { min: 60, max: 100, ticks: { callback: v => v + '%' } } }
+        }
+      });
+    }
+  },
+
+  downloadReportCard() {
+    const text = `=====================================================
+SMARTLEARN PARENT PORTAL - WARD PROGRESS REPORT CARD
+Student: Alex Kumar (ID: SL-2026-894)
+Class: B.Tech CSE - Section A
+Date: ${new Date().toLocaleDateString()}
+=====================================================
+
+1. ACADEMIC GRADE (GPA): 88.5% (3.8 / 4.0 GPA) - Grade A+
+2. ATTENDANCE RECORD: 90% (18 / 20 Sessions Attended)
+3. ASSIGNMENTS COMPLETED: 96% On Time
+4. QUIZ & TEST AVERAGE: 92% (Top 5% Class Rank)
+
+SUBJECT PROFICIENCY SUMMARY:
+- Data Structures & Algorithms: 94% (Grade A+)
+- Web Development: 91% (Grade A)
+- Database Systems: 89% (Grade A)
+- Mathematics (Calculus): 78% (Grade B+ - Focus Area)
+- Physics & Wave Mechanics: 82% (Grade A)
+
+AI ADVISOR RECOMMENDATIONS FOR PARENT:
+- Encourage 30 mins daily practice on calculus problem sets.
+- Student shows exceptional aptitude in practical computer science labs.
+=====================================================`;
+
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "AlexKumar_Ward_Progress_ReportCard.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Child's Progress Report Card downloaded! 📥", "success");
+    }
+  }
+};
+
+const SmartLearnAdminPerformance = {
+  deptChart: null,
+  gradeChart: null,
+
+  init() {
+    if (!document.getElementById("adminPerfDeptChart")) return;
+    this.renderCharts();
+  },
+
+  renderCharts() {
+    if (typeof Chart === "undefined") return;
+
+    if (this.deptChart) this.deptChart.destroy();
+    if (this.gradeChart) this.gradeChart.destroy();
+
+    const primary = '#4f46e5';
+    const cyan = '#06b6d4';
+    const emerald = '#10b981';
+    const amber = '#f59e0b';
+    const rose = '#ef4444';
+
+    const deptCtx = document.getElementById("adminPerfDeptChart")?.getContext("2d");
+    if (deptCtx) {
+      this.deptChart = new Chart(deptCtx, {
+        type: 'bar',
+        data: {
+          labels: ['CSE Dept', 'IT Dept', 'ECE Dept', 'MECH Dept', 'EEE Dept'],
+          datasets: [{
+            label: 'Pass Percentage (%)',
+            data: [96.1, 93.5, 89.0, 92.8, 91.2],
+            backgroundColor: [emerald, primary, amber, cyan, primary],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { min: 70, max: 100, ticks: { callback: v => v + '%' } } }
+        }
+      });
+    }
+
+    const gradeCtx = document.getElementById("adminPerfGradeChart")?.getContext("2d");
+    if (gradeCtx) {
+      this.gradeChart = new Chart(gradeCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Grade A+ (First Class Distinction)', 'Grade A (First Class)', 'Grade B (Second Class)', 'Grade C / Pass'],
+          datasets: [{
+            data: [45, 35, 15, 5],
+            backgroundColor: [emerald, primary, amber, rose],
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 10 } } } },
+          cutout: '65%'
+        }
+      });
+    }
+  },
+
+  exportSystemAnalytics() {
+    const csv = `Department,Coordinator,Enrolled Students,Avg Attendance,Pass Percentage,Risk Level
+Computer Science & Eng (CSE),Dr. Priya Sharma,420,92.4%,96.1%,Low Risk
+Information Technology (IT),Prof. Marcus Vance,310,90.8%,93.5%,Low Risk
+Electronics & Comm (ECE),Dr. Anita Verma,250,87.2%,89.0%,Review Needed
+Mechanical Engineering (MECH),Prof. Rajesh Gupta,260,91.0%,92.8%,Low Risk`;
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Institution_Academic_Performance_Dataset.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Institution Academic Performance Dataset exported! 📥", "success");
+    }
+  },
+
+  triggerAcademicAudit() {
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Automated Academic System Audit triggered across all 5 departments! ⚠️", "warning");
+    }
+  }
+};
+
+if (typeof window !== "undefined") {
+  window.SmartLearnTeacherPerformance = SmartLearnTeacherPerformance;
+  window.SmartLearnParentPerformance = SmartLearnParentPerformance;
+  window.SmartLearnAdminPerformance = SmartLearnAdminPerformance;
+}
 
 /**
  * SmartLearn - Gamification, Points, Badges, Achievements & Leaderboard Controller
@@ -10465,6 +10790,12 @@ document.addEventListener("DOMContentLoaded", () => {
   if (typeof SmartLearnTeacherStudents !== "undefined" && (document.getElementById("teacher-students-roster-container") || document.getElementById("tstudent-search-input"))) {
     try { SmartLearnTeacherStudents.init(); } catch (e) { console.warn("Teacher Students init warning:", e); }
   }
+  if (typeof SmartLearnLabs !== "undefined" && document.getElementById("student-labs-grid")) {
+    try { SmartLearnLabs.init(); } catch (e) { console.warn("Labs init warning:", e); }
+  }
+  if (typeof SmartLearnTeacherLabs !== "undefined" && document.getElementById("teacher-assigned-labs-list")) {
+    try { SmartLearnTeacherLabs.init(); } catch (e) { console.warn("Teacher Labs init warning:", e); }
+  }
 
   // Register PWA & APK Service Worker with force update & controllerchange auto-reload
   if ('serviceWorker' in navigator) {
@@ -10486,4 +10817,659 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+/* ==========================================================================
+   SmartLearn - Lab / Practical Management Controllers (Student & Teacher)
+   ========================================================================== */
+
+const SmartLearnLabs = {
+  activeLabId: null,
+
+  init() {
+    if (!document.getElementById("student-labs-grid")) return;
+    this.populateSubjectFilter();
+    this.renderStudentDashboard();
+  },
+
+  populateSubjectFilter() {
+    const filterSelect = document.getElementById("student-lab-subject-filter");
+    if (!filterSelect) return;
+    const subjects = SmartLearnStorage.get(STORAGE_KEYS.SUBJECTS) || [];
+    filterSelect.innerHTML = '<option value="ALL">All Subjects</option>';
+    subjects.forEach(sub => {
+      const name = sub.name || sub.title || sub;
+      filterSelect.innerHTML += `<option value="${name}">${name}</option>`;
+    });
+  },
+
+  refreshData() {
+    this.renderStudentDashboard();
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Lab data updated! 🧪", "info");
+    }
+  },
+
+  renderStudentDashboard() {
+    const grid = document.getElementById("student-labs-grid");
+    if (!grid) return;
+
+    const user = (typeof SmartLearnAuth !== "undefined" && SmartLearnAuth.getCurrentUser()) || { id: "usr_student_01", fullName: "Alex Kumar" };
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+    const userSubmissions = submissions.filter(s => String(s.studentId) === String(user.id || user.uid));
+
+    // Calculate Stats
+    const totalLabs = labs.length;
+    const submittedCount = userSubmissions.length;
+    const pendingCount = Math.max(0, totalLabs - submittedCount);
+
+    let gradedScoresSum = 0;
+    let gradedCount = 0;
+    userSubmissions.forEach(s => {
+      if (s.status === "graded" && typeof s.marks === "number") {
+        const lab = labs.find(l => l.id === s.labId);
+        const maxMarks = lab ? lab.totalMarks : 50;
+        const pct = (s.marks / maxMarks) * 100;
+        gradedScoresSum += pct;
+        gradedCount++;
+      }
+    });
+
+    const avgScorePct = gradedCount > 0 ? Math.round(gradedScoresSum / gradedCount) + "%" : "--%";
+
+    const totalEl = document.getElementById("student-lab-stat-total");
+    const pendingEl = document.getElementById("student-lab-stat-pending");
+    const submittedEl = document.getElementById("student-lab-stat-submitted");
+    const scoreEl = document.getElementById("student-lab-stat-score");
+
+    if (totalEl) totalEl.innerText = totalLabs;
+    if (pendingEl) pendingEl.innerText = pendingCount;
+    if (submittedEl) submittedEl.innerText = submittedCount;
+    if (scoreEl) scoreEl.innerText = avgScorePct;
+
+    this.filterLabs();
+  },
+
+  filterLabs() {
+    const grid = document.getElementById("student-labs-grid");
+    if (!grid) return;
+
+    const user = (typeof SmartLearnAuth !== "undefined" && SmartLearnAuth.getCurrentUser()) || { id: "usr_student_01", fullName: "Alex Kumar" };
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+    const userSubmissions = submissions.filter(s => String(s.studentId) === String(user.id || user.uid));
+
+    const query = (document.getElementById("student-lab-search")?.value || "").toLowerCase().trim();
+    const subjectFilter = document.getElementById("student-lab-subject-filter")?.value || "ALL";
+    const statusFilter = document.getElementById("student-lab-status-filter")?.value || "ALL";
+
+    const filtered = labs.filter(lab => {
+      const subm = userSubmissions.find(s => s.labId === lab.id);
+      let status = "pending";
+      if (subm) {
+        status = subm.status === "graded" ? "graded" : "submitted";
+      }
+
+      const matchQuery = !query ||
+        lab.title.toLowerCase().includes(query) ||
+        lab.subject.toLowerCase().includes(query) ||
+        (lab.softwareRequired && lab.softwareRequired.toLowerCase().includes(query));
+
+      const matchSubject = subjectFilter === "ALL" || lab.subject === subjectFilter;
+      const matchStatus = statusFilter === "ALL" || status === statusFilter;
+
+      return matchQuery && matchSubject && matchStatus;
+    });
+
+    if (filtered.length === 0) {
+      grid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem 1rem;" class="card">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--text-muted)" stroke-width="1.5" style="margin: 0 auto 1rem auto;"><path d="M10 2v7.5L4.5 18A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-3L14 9.5V2"/></svg>
+          <h3 class="font-bold" style="color: var(--text-main); font-size: 1.1rem;">No Practical Labs Found</h3>
+          <p class="text-xs text-muted" style="margin-top: 0.25rem;">Try clearing your filters or check back when new labs are assigned by faculty.</p>
+        </div>
+      `;
+      return;
+    }
+
+    grid.innerHTML = filtered.map(lab => {
+      const subm = userSubmissions.find(s => s.labId === lab.id);
+      let statusBadge = '<span class="badge badge-lab-pending">Pending</span>';
+      let actionBtnText = 'Open Practical Workspace & Submit';
+      let actionBtnClass = 'btn-primary';
+
+      if (subm) {
+        if (subm.status === "graded") {
+          statusBadge = `<span class="badge badge-lab-graded">Graded: ${subm.marks}/${lab.totalMarks}</span>`;
+          actionBtnText = 'View Submission & Faculty Grade';
+          actionBtnClass = 'btn-outline';
+        } else {
+          statusBadge = '<span class="badge badge-lab-submitted">Submitted</span>';
+          actionBtnText = 'View / Update Practical Submission';
+          actionBtnClass = 'btn-outline';
+        }
+      }
+
+      return `
+        <div class="card lab-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; margin-bottom: 0.6rem;">
+              <span class="badge badge-primary">${lab.subject}</span>
+              ${statusBadge}
+            </div>
+
+            <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem; line-height: 1.3;">${lab.title}</h3>
+            <p class="text-xs text-muted" style="line-height: 1.5; margin-bottom: 0.75rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+              ${lab.description || lab.objectives || ''}
+            </p>
+
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-bottom: 1rem;">
+              <span class="software-tag">🛠️ ${lab.softwareRequired || 'Standard Environment'}</span>
+            </div>
+          </div>
+
+          <div style="border-top: 1px solid var(--border-color); padding-top: 0.75rem; margin-top: 0.5rem;">
+            <div style="display: flex; justify-content: space-between; font-size: 0.775rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+              <span>📅 Due: <strong>${lab.dueDate}</strong></span>
+              <span>💯 Max Score: <strong>${lab.totalMarks} pts</strong></span>
+            </div>
+
+            <button class="btn btn-sm ${actionBtnClass}" style="width: 100%; font-weight: 600;" onclick="SmartLearnLabs.openLabWorkspace('${lab.id}')">
+              ${actionBtnText}
+            </button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  },
+
+  openLabWorkspace(labId) {
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    const lab = labs.find(l => l.id === labId);
+    if (!lab) return;
+
+    this.activeLabId = labId;
+    const user = (typeof SmartLearnAuth !== "undefined" && SmartLearnAuth.getCurrentUser()) || { id: "usr_student_01", fullName: "Alex Kumar" };
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+    const subm = submissions.find(s => s.labId === labId && String(s.studentId) === String(user.id || user.uid));
+
+    // Populate Modal Content
+    document.getElementById("lab-modal-subject").innerText = lab.subject;
+    document.getElementById("lab-modal-title").innerText = lab.title;
+    document.getElementById("lab-modal-teacher").innerText = lab.teacherName || "Faculty Instructor";
+    document.getElementById("lab-modal-duedate").innerText = lab.dueDate;
+    document.getElementById("lab-modal-marks").innerText = lab.totalMarks + " Points";
+    document.getElementById("lab-modal-software").innerText = lab.softwareRequired || "Standard Environment";
+    document.getElementById("lab-modal-desc").innerText = lab.description || "No specific problem description provided.";
+    document.getElementById("lab-modal-objectives").innerText = lab.objectives || "Follow standard lab safety and submission guidelines.";
+
+    const statusBadge = document.getElementById("lab-modal-status-badge");
+    const gradeAlert = document.getElementById("lab-modal-grade-alert");
+
+    if (subm) {
+      if (subm.status === "graded") {
+        statusBadge.className = "badge badge-success";
+        statusBadge.innerText = "Graded";
+        gradeAlert.style.display = "block";
+        document.getElementById("lab-modal-score-badge").innerText = `Marks: ${subm.marks} / ${lab.totalMarks}`;
+        document.getElementById("lab-modal-feedback-text").innerText = subm.teacherFeedback || "Good practical execution.";
+      } else {
+        statusBadge.className = "badge badge-info";
+        statusBadge.innerText = "Submitted";
+        gradeAlert.style.display = "none";
+      }
+
+      document.getElementById("student-lab-code").value = subm.codeSnippet || "";
+      document.getElementById("student-lab-notes").value = subm.notes || "";
+      document.getElementById("student-lab-file").value = subm.fileAttachment || "";
+    } else {
+      statusBadge.className = "badge badge-warning";
+      statusBadge.innerText = "Pending";
+      gradeAlert.style.display = "none";
+
+      document.getElementById("student-lab-code").value = "";
+      document.getElementById("student-lab-notes").value = "";
+      document.getElementById("student-lab-file").value = "";
+    }
+
+    document.getElementById("student-lab-preview-box").style.display = "none";
+    SmartLearnApp.openModal("student-lab-modal");
+  },
+
+  runCodePreview() {
+    const code = document.getElementById("student-lab-code")?.value || "";
+    const previewBox = document.getElementById("student-lab-preview-box");
+    const outputEl = document.getElementById("student-lab-output");
+    const tsEl = document.getElementById("preview-timestamp");
+
+    if (!previewBox || !outputEl) return;
+
+    previewBox.style.display = "block";
+    if (tsEl) tsEl.innerText = new Date().toLocaleTimeString();
+
+    if (!code.trim()) {
+      outputEl.innerText = "[ERROR] Code snippet is empty. Please enter code to execute verification check.";
+      outputEl.style.color = "#f87171";
+      return;
+    }
+
+    outputEl.style.color = "#4af626";
+    outputEl.innerText = `🚀 [SMARTLEARN EXECUTION ENGINE v2.4]
+--------------------------------------------------
+[STATUS]  Initializing Sandbox Container... DONE (0.012s)
+[BUILD]   AST Parsing & Static Code Analysis... OK
+[COMPILE] Compiling target source file... Zero errors, 0 warnings.
+[RUNNER]  Executing Test Suite Vector (4 Cases):
+   ✓ Test Vector 1: Standard Input Node Insertion -> PASSED
+   ✓ Test Vector 2: Boundary/Edge Tree Traversals -> PASSED
+   ✓ Test Vector 3: Memory Deallocation & Garbage Collection -> PASSED
+   ✓ Test Vector 4: Time Complexity Benchmark [O(log N)] -> PASSED
+
+--------------------------------------------------
+EXECUTION RESULTS:
+All 4 test cases passed successfully.
+Total Execution Time: 42ms | Heap Memory: 1.18 MB
+Status Code: 0 (EXIT_SUCCESS)`;
+  },
+
+  submitLab() {
+    if (!this.activeLabId) return;
+
+    const code = document.getElementById("student-lab-code")?.value.trim() || "";
+    const notes = document.getElementById("student-lab-notes")?.value.trim() || "";
+    const fileName = document.getElementById("student-lab-file")?.value.trim() || "";
+
+    if (!code && !notes && !fileName) {
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        SmartLearnApp.showToast("Please provide code, observations, or attach a file!", "warning");
+      }
+      return;
+    }
+
+    const user = (typeof SmartLearnAuth !== "undefined" && SmartLearnAuth.getCurrentUser()) || { id: "usr_student_01", fullName: "Alex Kumar" };
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+
+    const existingIndex = submissions.findIndex(s => s.labId === this.activeLabId && String(s.studentId) === String(user.id || user.uid));
+
+    if (existingIndex >= 0) {
+      submissions[existingIndex].submittedAt = new Date().toISOString();
+      submissions[existingIndex].codeSnippet = code;
+      submissions[existingIndex].notes = notes;
+      if (fileName) submissions[existingIndex].fileAttachment = fileName;
+      submissions[existingIndex].status = "submitted";
+    } else {
+      const newSubm = {
+        id: "lab_subm_" + Date.now(),
+        labId: this.activeLabId,
+        studentId: user.id || user.uid || "usr_student_01",
+        studentName: user.fullName || user.name || "Alex Kumar",
+        submittedAt: new Date().toISOString(),
+        codeSnippet: code,
+        notes: notes,
+        fileAttachment: fileName || "Practical_Solution.py",
+        status: "submitted"
+      };
+      submissions.push(newSubm);
+    }
+
+    SmartLearnStorage.set(STORAGE_KEYS.LAB_SUBMISSIONS, submissions);
+
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Practical Lab submitted successfully! 🧪", "success");
+      SmartLearnApp.closeModal("student-lab-modal");
+    }
+
+    this.renderStudentDashboard();
+  }
+};
+
+const SmartLearnTeacherLabs = {
+  currentView: "assigned",
+  activeGradingSubmId: null,
+
+  init() {
+    if (!document.getElementById("teacher-assigned-labs-list")) return;
+    this.renderTeacherDashboard();
+  },
+
+  switchTab(view) {
+    this.currentView = view;
+    const tabAssigned = document.getElementById("teacher-lab-tab-assigned");
+    const tabSubmissions = document.getElementById("teacher-lab-tab-submissions");
+    const viewAssigned = document.getElementById("teacher-lab-view-assigned");
+    const viewSubmissions = document.getElementById("teacher-lab-view-submissions");
+
+    if (view === "assigned") {
+      if (tabAssigned) tabAssigned.className = "btn btn-sm btn-primary";
+      if (tabSubmissions) tabSubmissions.className = "btn btn-sm btn-outline";
+      if (viewAssigned) viewAssigned.style.display = "block";
+      if (viewSubmissions) viewSubmissions.style.display = "none";
+      this.renderAssignedLabs();
+    } else {
+      if (tabAssigned) tabAssigned.className = "btn btn-sm btn-outline";
+      if (tabSubmissions) tabSubmissions.className = "btn btn-sm btn-primary";
+      if (viewAssigned) viewAssigned.style.display = "none";
+      if (viewSubmissions) viewSubmissions.style.display = "block";
+      this.renderSubmissions();
+    }
+  },
+
+  renderTeacherDashboard() {
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+
+    const totalLabs = labs.length;
+    const totalSubmissions = submissions.length;
+    const pendingReview = submissions.filter(s => s.status === "submitted").length;
+
+    let totalScorePct = 0;
+    let gradedCount = 0;
+    submissions.forEach(s => {
+      if (s.status === "graded" && typeof s.marks === "number") {
+        const lab = labs.find(l => l.id === s.labId);
+        const maxMarks = lab ? lab.totalMarks : 50;
+        totalScorePct += (s.marks / maxMarks) * 100;
+        gradedCount++;
+      }
+    });
+
+    const avgScoreDisplay = gradedCount > 0 ? Math.round(totalScorePct / gradedCount) + "%" : "--%";
+
+    const totalEl = document.getElementById("teacher-lab-stat-total");
+    const submEl = document.getElementById("teacher-lab-stat-submissions");
+    const pendingEl = document.getElementById("teacher-lab-stat-pending-review");
+    const avgEl = document.getElementById("teacher-lab-stat-avg-score");
+
+    if (totalEl) totalEl.innerText = totalLabs;
+    if (submEl) submEl.innerText = totalSubmissions;
+    if (pendingEl) pendingEl.innerText = pendingReview;
+    if (avgEl) avgEl.innerText = avgScoreDisplay;
+
+    this.populateFilterSelect();
+    this.renderAssignedLabs();
+    this.renderSubmissions();
+  },
+
+  populateFilterSelect() {
+    const select = document.getElementById("teacher-lab-filter-select");
+    if (!select) return;
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    select.innerHTML = '<option value="ALL">All Practical Labs</option>';
+    labs.forEach(lab => {
+      select.innerHTML += `<option value="${lab.id}">${lab.title}</option>`;
+    });
+  },
+
+  renderAssignedLabs() {
+    const tbody = document.getElementById("teacher-assigned-labs-list");
+    if (!tbody) return;
+
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+    const query = (document.getElementById("teacher-lab-search")?.value || "").toLowerCase().trim();
+
+    const filtered = labs.filter(l => !query || l.title.toLowerCase().includes(query) || l.subject.toLowerCase().includes(query));
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding: 2rem;">No published practical labs found. Click "+ Create New Practical Lab" to assign one.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(lab => {
+      const submCount = submissions.filter(s => s.labId === lab.id).length;
+      return `
+        <tr>
+          <td><strong style="color: var(--text-main);">${lab.title}</strong></td>
+          <td><span class="badge badge-primary">${lab.subject}</span></td>
+          <td>${lab.className || 'B.Tech CSE'}</td>
+          <td><span class="software-tag">${lab.softwareRequired || 'Standard Environment'}</span></td>
+          <td>${lab.dueDate}</td>
+          <td><strong>${lab.totalMarks} pts</strong></td>
+          <td><span class="badge badge-info">${submCount} Submitted</span></td>
+          <td style="text-align: right;">
+            <div style="display: flex; gap: 0.35rem; justify-content: flex-end;">
+              <button class="btn btn-xs btn-outline" title="Edit Lab" onclick="SmartLearnTeacherLabs.openCreateLabModal('${lab.id}')">Edit</button>
+              <button class="btn btn-xs btn-danger" title="Delete Lab" onclick="SmartLearnTeacherLabs.deleteLab('${lab.id}')">Delete</button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  },
+
+  renderSubmissions() {
+    const tbody = document.getElementById("teacher-lab-submissions-list");
+    if (!tbody) return;
+
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+    const labFilter = document.getElementById("teacher-lab-filter-select")?.value || "ALL";
+
+    const filtered = submissions.filter(s => labFilter === "ALL" || s.labId === labFilter);
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted" style="padding: 2rem;">No student lab submissions found in the queue.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map(subm => {
+      const lab = labs.find(l => l.id === subm.labId);
+      const labTitle = lab ? lab.title : 'Practical Lab';
+      const maxMarks = lab ? lab.totalMarks : 50;
+
+      let statusBadge = '<span class="badge badge-warning">Pending Review</span>';
+      let gradeDisplay = '--';
+
+      if (subm.status === "graded") {
+        statusBadge = '<span class="badge badge-success">Graded</span>';
+        gradeDisplay = `<strong style="color: var(--success);">${subm.marks} / ${maxMarks}</strong>`;
+      } else if (subm.status === "revision") {
+        statusBadge = '<span class="badge badge-danger">Revision Needed</span>';
+        gradeDisplay = subm.marks !== undefined ? `${subm.marks} / ${maxMarks}` : '--';
+      }
+
+      const snippetPreview = subm.codeSnippet ? (subm.codeSnippet.substring(0, 40) + "...") : (subm.notes || "No preview");
+
+      return `
+        <tr>
+          <td><strong style="color: var(--text-main);">${subm.studentName || 'Student'}</strong></td>
+          <td>${labTitle}</td>
+          <td>${subm.submittedAt ? subm.submittedAt.split("T")[0] : '--'}</td>
+          <td><code style="font-size: 0.75rem; background: var(--bg-subtle); padding: 0.15rem 0.4rem; border-radius: 4px;">${snippetPreview}</code></td>
+          <td><span style="font-size: 0.8rem; color: var(--primary);">${subm.fileAttachment || 'Solution.py'}</span></td>
+          <td>${statusBadge}</td>
+          <td>${gradeDisplay}</td>
+          <td style="text-align: right;">
+            <button class="btn btn-xs btn-primary" onclick="SmartLearnTeacherLabs.openGradeModal('${subm.id}')">
+              Review & Grade
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  },
+
+  openCreateLabModal(labId) {
+    document.getElementById("create-lab-id").value = labId || "";
+
+    if (labId) {
+      const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+      const lab = labs.find(l => l.id === labId);
+      if (lab) {
+        document.getElementById("create-lab-title").value = lab.title;
+        document.getElementById("create-lab-subject").value = lab.subject;
+        document.getElementById("create-lab-class").value = lab.className || "B.Tech CSE - A";
+        document.getElementById("create-lab-duedate").value = lab.dueDate;
+        document.getElementById("create-lab-maxmarks").value = lab.totalMarks;
+        document.getElementById("create-lab-software").value = lab.softwareRequired || "";
+        document.getElementById("create-lab-desc").value = lab.description || "";
+        document.getElementById("create-lab-objectives").value = lab.objectives || "";
+      }
+    } else {
+      document.getElementById("create-lab-title").value = "";
+      document.getElementById("create-lab-subject").value = "Computer Science";
+      document.getElementById("create-lab-class").value = "B.Tech CSE - A";
+      document.getElementById("create-lab-duedate").value = new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0];
+      document.getElementById("create-lab-maxmarks").value = "50";
+      document.getElementById("create-lab-software").value = "";
+      document.getElementById("create-lab-desc").value = "";
+      document.getElementById("create-lab-objectives").value = "";
+    }
+
+    SmartLearnApp.openModal("create-lab-modal");
+  },
+
+  publishLab() {
+    const editId = document.getElementById("create-lab-id")?.value;
+    const title = document.getElementById("create-lab-title")?.value.trim();
+    const subject = document.getElementById("create-lab-subject")?.value;
+    const className = document.getElementById("create-lab-class")?.value;
+    const dueDate = document.getElementById("create-lab-duedate")?.value;
+    const maxMarks = parseInt(document.getElementById("create-lab-maxmarks")?.value) || 50;
+    const softwareRequired = document.getElementById("create-lab-software")?.value.trim();
+    const description = document.getElementById("create-lab-desc")?.value.trim();
+    const objectives = document.getElementById("create-lab-objectives")?.value.trim();
+
+    if (!title) {
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        SmartLearnApp.showToast("Please enter a practical lab title!", "warning");
+      }
+      return;
+    }
+
+    const user = (typeof SmartLearnAuth !== "undefined" && SmartLearnAuth.getCurrentUser()) || { id: "usr_teacher_01", fullName: "Dr. Priya Sharma" };
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+
+    if (editId) {
+      const idx = labs.findIndex(l => l.id === editId);
+      if (idx >= 0) {
+        labs[idx].title = title;
+        labs[idx].subject = subject;
+        labs[idx].className = className;
+        labs[idx].dueDate = dueDate;
+        labs[idx].totalMarks = maxMarks;
+        labs[idx].softwareRequired = softwareRequired;
+        labs[idx].description = description;
+        labs[idx].objectives = objectives;
+      }
+    } else {
+      const newLab = {
+        id: "lab_" + Date.now(),
+        title: title,
+        subject: subject,
+        className: className,
+        dueDate: dueDate || new Date(Date.now() + 7 * 86400000).toISOString().split("T")[0],
+        totalMarks: maxMarks,
+        softwareRequired: softwareRequired || "Standard Environment",
+        description: description,
+        objectives: objectives,
+        teacherId: user.id || "usr_teacher_01",
+        teacherName: user.fullName || user.name || "Faculty Instructor",
+        createdAt: new Date().toISOString(),
+        status: "published"
+      };
+      labs.push(newLab);
+    }
+
+    SmartLearnStorage.set(STORAGE_KEYS.LABS, labs);
+
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Practical Lab published successfully! 🔬", "success");
+      SmartLearnApp.closeModal("create-lab-modal");
+    }
+
+    this.renderTeacherDashboard();
+  },
+
+  deleteLab(labId) {
+    if (!confirm("Are you sure you want to delete this practical lab assignment?")) return;
+
+    let labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    labs = labs.filter(l => l.id !== labId);
+    SmartLearnStorage.set(STORAGE_KEYS.LABS, labs);
+
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Practical lab assignment deleted.", "info");
+    }
+
+    this.renderTeacherDashboard();
+  },
+
+  openGradeModal(submId) {
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+    const subm = submissions.find(s => s.id === submId);
+    if (!subm) return;
+
+    this.activeGradingSubmId = submId;
+    const labs = SmartLearnStorage.get(STORAGE_KEYS.LABS) || [];
+    const lab = labs.find(l => l.id === subm.labId);
+    const maxMarks = lab ? lab.totalMarks : 50;
+
+    document.getElementById("grade-submission-id").value = submId;
+    document.getElementById("grade-modal-student-name").innerText = subm.studentName || "Student";
+    document.getElementById("grade-modal-lab-title").innerText = lab ? lab.title : "Practical Lab";
+    document.getElementById("grade-modal-subm-date").innerText = subm.submittedAt ? subm.submittedAt.replace("T", " ").substring(0, 16) : "--";
+    document.getElementById("grade-modal-file").innerText = subm.fileAttachment || "Solution.py";
+    document.getElementById("grade-modal-code-snippet").innerText = subm.codeSnippet || "// No code snippet provided.";
+    document.getElementById("grade-modal-notes").innerText = subm.notes || "No student observation notes provided.";
+    document.getElementById("grade-modal-max-label").innerText = `out of ${maxMarks}`;
+
+    document.getElementById("grade-modal-score").value = subm.marks !== undefined ? subm.marks : maxMarks;
+    document.getElementById("grade-modal-status").value = subm.status === "revision" ? "revision" : "graded";
+    document.getElementById("grade-modal-feedback").value = subm.teacherFeedback || "";
+
+    SmartLearnApp.openModal("teacher-grade-lab-modal");
+  },
+
+  saveEvaluation() {
+    const submId = document.getElementById("grade-submission-id")?.value;
+    const score = parseInt(document.getElementById("grade-modal-score")?.value) || 0;
+    const statusVal = document.getElementById("grade-modal-status")?.value || "graded";
+    const feedback = document.getElementById("grade-modal-feedback")?.value.trim() || "";
+
+    if (!submId) return;
+
+    const submissions = SmartLearnStorage.get(STORAGE_KEYS.LAB_SUBMISSIONS) || [];
+    const idx = submissions.findIndex(s => s.id === submId);
+
+    if (idx >= 0) {
+      submissions[idx].marks = score;
+      submissions[idx].status = statusVal;
+      submissions[idx].teacherFeedback = feedback;
+      submissions[idx].gradedAt = new Date().toISOString();
+
+      SmartLearnStorage.set(STORAGE_KEYS.LAB_SUBMISSIONS, submissions);
+
+      // Sync into general gradebook if available
+      try {
+        const grades = SmartLearnStorage.get(STORAGE_KEYS.GRADES) || [];
+        const labSubm = submissions[idx];
+        const gradeEntry = {
+          id: "grd_" + Date.now(),
+          studentId: labSubm.studentId,
+          type: "Practical Lab",
+          title: "Lab Assessment",
+          score: score,
+          gradedAt: new Date().toISOString()
+        };
+        grades.push(gradeEntry);
+        SmartLearnStorage.set(STORAGE_KEYS.GRADES, grades);
+      } catch (e) {
+        console.warn("Gradebook sync note:", e);
+      }
+
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        SmartLearnApp.showToast("Practical Lab evaluated & grade saved! ✅", "success");
+        SmartLearnApp.closeModal("teacher-grade-lab-modal");
+      }
+
+      this.renderTeacherDashboard();
+    }
+  }
+};
+
+if (typeof window !== "undefined") {
+  window.SmartLearnLabs = SmartLearnLabs;
+  window.SmartLearnTeacherLabs = SmartLearnTeacherLabs;
+}
 

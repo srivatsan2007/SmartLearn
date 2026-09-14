@@ -6,6 +6,7 @@
   <title>System Administration | SmartLearn</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="icon" href="./assets/logo.png" type="image/png">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <link rel="manifest" href="manifest.json">
@@ -65,6 +66,10 @@
         <a href="#academic-monitoring" class="nav-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
           Academic Analytics
+        </a>
+        <a href="#performance" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          Performance Analytics 📊
         </a>
 
         <div class="sidebar-menu-category">Settings</div>
@@ -509,6 +514,149 @@
             <div class="section-card-title" style="margin-bottom: 1rem;">Performance Analytics Matrix</div>
             <div id="admin-analytics-container">
               <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Institution Performance Analytics & System Risk -->
+        <div id="performance" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Institution Performance Analytics 📊</h1>
+              <p class="greeting-sub">Comprehensive department pass rates, system-wide grade distribution, academic risk flags, and audit reports.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-warning" onclick="SmartLearnAdminPerformance.triggerAcademicAudit()">
+                ⚠️ Trigger Academic Audit
+              </button>
+              <button class="btn btn-outline" onclick="SmartLearnAdminPerformance.exportSystemAnalytics()">
+                📥 Export System Dataset
+              </button>
+              <button class="btn btn-primary" onclick="SmartLearnAdminPerformance.init()">
+                🔄 Refresh Analytics
+              </button>
+            </div>
+          </div>
+
+          <!-- Institution Key Performance Indicators -->
+          <div class="stats-overview-grid mb-6">
+            <div class="card stat-card" style="border-left: 4px solid var(--primary);">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-3-3.87"/><path d="M9 21v-2a4 4 0 0 1 3-3.87"/><circle cx="9" cy="7" r="4"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-perf-total-students">1,240</div>
+                <div class="stat-lbl">Enrolled Students</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Active Accounts</div>
+              </div>
+            </div>
+
+            <div class="card stat-card" style="border-left: 4px solid var(--success);">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-perf-pass-rate">94.2%</div>
+                <div class="stat-lbl">Institution Pass Rate</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">+2.4% vs Last Term</div>
+              </div>
+            </div>
+
+            <div class="card stat-card" style="border-left: 4px solid var(--warning);">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-perf-avg-att">91.8%</div>
+                <div class="stat-lbl">Dept Avg Attendance</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Campus Benchmark</div>
+              </div>
+            </div>
+
+            <div class="card stat-card" style="border-left: 4px solid var(--accent);">
+              <div class="stat-icon-wrapper stat-icon-accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="admin-perf-risk-index">Low</div>
+                <div class="stat-lbl">System Academic Risk</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">98.5% Low Risk</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="card">
+              <h3 class="section-card-title mb-4">📊 Department-Wise Academic Pass Rates (%)</h3>
+              <div style="height: 250px; position: relative;">
+                <canvas id="adminPerfDeptChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-card-title mb-4">🍰 Institution Grade Distribution</h3>
+              <div style="height: 250px; position: relative;">
+                <canvas id="adminPerfGradeChart"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Department Academic Performance & Audit Matrix -->
+          <div class="card mb-6">
+            <div class="section-card-title mb-4">🏛️ Department Academic Oversight & Audit Table</div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Department Stream</th>
+                    <th>Head of Dept / Coordinator</th>
+                    <th>Enrolled Students</th>
+                    <th>Avg Attendance</th>
+                    <th>Avg Pass Rate</th>
+                    <th>Status</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-dept-performance-body">
+                  <tr>
+                    <td><strong style="color:var(--text-main);">Computer Science & Eng (CSE)</strong></td>
+                    <td>Dr. Priya Sharma</td>
+                    <td>420</td>
+                    <td><span class="badge badge-success">92.4%</span></td>
+                    <td><strong style="color:var(--success);">96.1%</strong></td>
+                    <td><span class="badge badge-success">Top Performing</span></td>
+                    <td style="text-align: right;"><button class="btn btn-xs btn-outline" onclick="SmartLearnApp.showToast('Inspecting CSE Department records...', 'info')">Inspect</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:var(--text-main);">Information Technology (IT)</strong></td>
+                    <td>Prof. Marcus Vance</td>
+                    <td>310</td>
+                    <td><span class="badge badge-primary">90.8%</span></td>
+                    <td><strong style="color:var(--primary);">93.5%</strong></td>
+                    <td><span class="badge badge-primary">Good</span></td>
+                    <td style="text-align: right;"><button class="btn btn-xs btn-outline" onclick="SmartLearnApp.showToast('Inspecting IT Department records...', 'info')">Inspect</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:var(--text-main);">Electronics & Comm (ECE)</strong></td>
+                    <td>Dr. Anita Verma</td>
+                    <td>250</td>
+                    <td><span class="badge badge-warning">87.2%</span></td>
+                    <td><strong style="color:var(--warning);">89.0%</strong></td>
+                    <td><span class="badge badge-warning">Review Needed</span></td>
+                    <td style="text-align: right;"><button class="btn btn-xs btn-outline" onclick="SmartLearnApp.showToast('Inspecting ECE Department records...', 'info')">Inspect</button></td>
+                  </tr>
+                  <tr>
+                    <td><strong style="color:var(--text-main);">Mechanical Engineering (MECH)</strong></td>
+                    <td>Prof. Rajesh Gupta</td>
+                    <td>260</td>
+                    <td><span class="badge badge-primary">91.0%</span></td>
+                    <td><strong style="color:var(--primary);">92.8%</strong></td>
+                    <td><span class="badge badge-primary">Good</span></td>
+                    <td style="text-align: right;"><button class="btn btn-xs btn-outline" onclick="SmartLearnApp.showToast('Inspecting MECH Department records...', 'info')">Inspect</button></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

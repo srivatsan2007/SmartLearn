@@ -6,6 +6,7 @@
   <title>Teacher Dashboard | SmartLearn</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link rel="icon" href="./assets/logo.png" type="image/png">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <link rel="manifest" href="manifest.json">
@@ -41,6 +42,10 @@
         <a href="#assignments" class="nav-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
           Assignments
+        </a>
+        <a href="#labs" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.5L4.5 18A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-3L14 9.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+          Lab & Practical Manager
         </a>
         <a href="#resources" class="nav-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -441,6 +446,141 @@
           </div>
         </div>
 
+        <!-- Tab: Lab & Practical Manager -->
+        <div id="labs" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Lab & Practical Manager 🔬</h1>
+              <p class="greeting-sub">Assign new practical labs, define software requirements, review student code submissions, and grade practical work.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button class="btn btn-primary" onclick="SmartLearnTeacherLabs.openCreateLabModal()">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                + Create New Practical Lab
+              </button>
+            </div>
+          </div>
+
+          <!-- Teacher Lab Overview Stats Grid -->
+          <div class="stats-overview-grid mb-6">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.5L4.5 18A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-3L14 9.5V2"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-lab-stat-total">0</div>
+                <div class="stat-lbl">Active Practical Labs</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Published Labs</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-info">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-lab-stat-submissions">0</div>
+                <div class="stat-lbl">Total Submissions</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Received Solutions</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-lab-stat-pending-review">0</div>
+                <div class="stat-lbl">Pending Evaluation</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Needs Grading</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="teacher-lab-stat-avg-score">--%</div>
+                <div class="stat-lbl">Class Avg Score</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Evaluated Submissions</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section View Tabs: Assigned Labs vs Student Submissions -->
+          <div style="display: flex; gap: 0.5rem; border-bottom: 2px solid var(--border-color); margin-bottom: 1.5rem;">
+            <button id="teacher-lab-tab-assigned" class="btn btn-sm btn-primary" onclick="SmartLearnTeacherLabs.switchTab('assigned')">
+              📋 Assigned Practical Labs
+            </button>
+            <button id="teacher-lab-tab-submissions" class="btn btn-sm btn-outline" onclick="SmartLearnTeacherLabs.switchTab('submissions')">
+              📥 Student Submissions & Grading Queue
+            </button>
+          </div>
+
+          <!-- View 1: Assigned Practical Labs Table -->
+          <div id="teacher-lab-view-assigned" class="card mb-6">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <h3 class="section-card-title" style="margin: 0;">Published Practical Assignments</h3>
+              <div style="display: flex; gap: 0.5rem;">
+                <input type="text" id="teacher-lab-search" class="form-control" style="width: 220px;" placeholder="Search lab..." oninput="SmartLearnTeacherLabs.renderAssignedLabs()">
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Practical Lab</th>
+                    <th>Subject</th>
+                    <th>Class & Section</th>
+                    <th>Software Required</th>
+                    <th>Due Date</th>
+                    <th>Max Score</th>
+                    <th>Submissions</th>
+                    <th style="text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="teacher-assigned-labs-list">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- View 2: Submissions & Evaluation Queue -->
+          <div id="teacher-lab-view-submissions" class="card mb-6" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+              <h3 class="section-card-title" style="margin: 0;">Student Submissions & Evaluation Queue</h3>
+              <div style="display: flex; gap: 0.5rem;">
+                <select id="teacher-lab-filter-select" class="form-control" style="width: 220px;" onchange="SmartLearnTeacherLabs.renderSubmissions()">
+                  <option value="ALL">All Practical Labs</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Practical Lab</th>
+                    <th>Submission Date</th>
+                    <th>Submitted Solution</th>
+                    <th>Attachment</th>
+                    <th>Status</th>
+                    <th>Grade</th>
+                    <th style="text-align: right;">Evaluation</th>
+                  </tr>
+                </thead>
+                <tbody id="teacher-lab-submissions-list">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
         <!-- Tab 3: Resources & Study Materials Page -->
         <div id="resources" class="dashboard-tab-content" style="display: none;">
           <div class="dashboard-page-header">
@@ -731,7 +871,13 @@
               <p class="greeting-sub">Track attendance percentage, coursework & quiz marks, and assignment completion rates for all enrolled department students.</p>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <button class="btn btn-outline" onclick="SmartLearnTeacherPerformance.renderPerformanceTab()">
+              <button class="btn btn-warning" onclick="SmartLearnTeacherPerformance.flagAtRiskStudents()">
+                ⚠️ Flag At-Risk Students
+              </button>
+              <button class="btn btn-outline" onclick="SmartLearnTeacherPerformance.exportClassAnalytics()">
+                📥 Export Class Analytics
+              </button>
+              <button class="btn btn-primary" onclick="SmartLearnTeacherPerformance.renderPerformanceTab()">
                 🔄 Refresh Metrics
               </button>
             </div>
@@ -776,6 +922,23 @@
               <div>
                 <div class="stat-val" id="tperf-avg-asgn">--</div>
                 <div class="stat-lbl">Assignment Submission Rate</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Teacher Analytical Charts Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="card">
+              <h3 class="section-card-title mb-4">📊 Class Performance Score Distribution</h3>
+              <div style="height: 250px; position: relative;">
+                <canvas id="teacherPerfClassDistChart"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3 class="section-card-title mb-4">📈 Subject-Wise Average Marks</h3>
+              <div style="height: 250px; position: relative;">
+                <canvas id="teacherPerfSubjectAvgChart"></canvas>
               </div>
             </div>
           </div>
@@ -2336,6 +2499,152 @@
           <button type="submit" class="btn btn-primary">🎁 Grant Points & Award Badge</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- Modal: Create / Edit Practical Lab Assignment -->
+  <div class="modal-overlay" id="create-lab-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 680px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border-bottom: 1px solid var(--border-color);">
+        <h2 class="modal-title" style="margin: 0; font-size: 1.25rem;">🔬 Publish Practical Lab Assignment</h2>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('create-lab-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem; max-height: 75vh; overflow-y: auto;">
+        <input type="hidden" id="create-lab-id">
+
+        <div class="form-group mb-0">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">Practical Lab Title *</label>
+          <input type="text" id="create-lab-title" class="form-control" placeholder="e.g. Binary Search Tree Operations & Visualizer" required>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div class="form-group mb-0">
+            <label class="form-label" style="font-weight:600; font-size:0.85rem;">Subject *</label>
+            <select id="create-lab-subject" class="form-control">
+              <option value="Computer Science">Computer Science</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Database Systems">Database Systems</option>
+              <option value="Mathematics">Mathematics</option>
+              <option value="Physics">Physics</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-0">
+            <label class="form-label" style="font-weight:600; font-size:0.85rem;">Target Class & Section</label>
+            <select id="create-lab-class" class="form-control">
+              <option value="B.Tech CSE - A">B.Tech CSE - Section A</option>
+              <option value="B.Tech CSE - B">B.Tech CSE - Section B</option>
+              <option value="B.Tech IT - A">B.Tech IT - Section A</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div class="form-group mb-0">
+            <label class="form-label" style="font-weight:600; font-size:0.85rem;">Submission Due Date *</label>
+            <input type="date" id="create-lab-duedate" class="form-control" required>
+          </div>
+
+          <div class="form-group mb-0">
+            <label class="form-label" style="font-weight:600; font-size:0.85rem;">Max Marks / Score *</label>
+            <input type="number" id="create-lab-maxmarks" class="form-control" value="50" min="1" max="500">
+          </div>
+        </div>
+
+        <div class="form-group mb-0">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">Software & Tools Required</label>
+          <input type="text" id="create-lab-software" class="form-control" placeholder="e.g. Python 3.10 / VS Code / MySQL Workbench">
+        </div>
+
+        <div class="form-group mb-0">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">Problem Statement & Description</label>
+          <textarea id="create-lab-desc" class="form-control" rows="4" placeholder="Detailed explanation of the practical task, input requirements, expected output format..."></textarea>
+        </div>
+
+        <div class="form-group mb-0">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">Objectives & Evaluation Criteria</label>
+          <textarea id="create-lab-objectives" class="form-control" rows="3" placeholder="1. Correct algorithm logic&#10;2. Edge cases handling&#10;3. Code comments & formatting"></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 1rem 1.25rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button class="btn btn-outline" onclick="SmartLearnApp.closeModal('create-lab-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="SmartLearnTeacherLabs.publishLab()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Publish Practical Lab
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Grade & Evaluate Student Practical Submission -->
+  <div class="modal-overlay" id="teacher-grade-lab-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 720px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 1.25rem; border-bottom: 1px solid var(--border-color);">
+        <div>
+          <span class="badge badge-info" id="grade-modal-student-name">Student</span>
+          <h2 class="modal-title" id="grade-modal-lab-title" style="margin: 0.25rem 0 0 0; font-size: 1.2rem;">Lab Submission Review</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('teacher-grade-lab-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 1.15rem; max-height: 75vh; overflow-y: auto;">
+        <input type="hidden" id="grade-submission-id">
+
+        <!-- Submission Details Card -->
+        <div class="card" style="background: var(--bg-subtle); padding: 0.85rem 1rem; border: 1px solid var(--border-color);">
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; font-size: 0.85rem;">
+            <div><strong style="color:var(--text-main);">Submitted At:</strong> <span id="grade-modal-subm-date" style="color:var(--text-muted);">--</span></div>
+            <div><strong style="color:var(--text-main);">Attached File:</strong> <span id="grade-modal-file" style="color:var(--primary); font-weight:600;">--</span></div>
+          </div>
+        </div>
+
+        <!-- Student Code Snippet -->
+        <div>
+          <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.35rem; color:var(--text-main);">💻 Submitted Code Solution:</h4>
+          <pre id="grade-modal-code-snippet" style="background:#0f172a; color:#f8fafc; padding:0.85rem; border-radius:var(--radius-md); font-family:monospace; font-size:0.825rem; max-height:220px; overflow-y:auto; white-space:pre-wrap; margin:0;"></pre>
+        </div>
+
+        <!-- Student Notes -->
+        <div>
+          <h4 style="font-size:0.9rem; font-weight:700; margin-bottom:0.35rem; color:var(--text-main);">📝 Student Observations & Notes:</h4>
+          <div id="grade-modal-notes" style="background:var(--bg-main); padding:0.75rem; border-radius:var(--radius-md); border:1px solid var(--border-color); font-size:0.85rem; color:var(--text-muted);"></div>
+        </div>
+
+        <hr style="border-top:1px solid var(--border-color); margin: 0.25rem 0;">
+
+        <!-- Faculty Evaluation Controls -->
+        <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.25rem; color:var(--text-main);">⭐ Faculty Evaluation & Feedback</h4>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+          <div class="form-group mb-0">
+            <label class="form-label" style="font-weight:600; font-size:0.85rem;">Score Awarded (<span id="grade-modal-max-label">out of 50</span>) *</label>
+            <input type="number" id="grade-modal-score" class="form-control" min="0" required>
+          </div>
+
+          <div class="form-group mb-0">
+            <label class="form-label" style="font-weight:600; font-size:0.85rem;">Evaluation Status *</label>
+            <select id="grade-modal-status" class="form-control">
+              <option value="graded">Graded / Approved ✅</option>
+              <option value="revision">Revision Required ⚠️</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group mb-0">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">Faculty Remarks & Feedback</label>
+          <textarea id="grade-modal-feedback" class="form-control" rows="3" placeholder="Provide feedback on code quality, correctness, and performance..."></textarea>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 1rem 1.25rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button class="btn btn-outline" onclick="SmartLearnApp.closeModal('teacher-grade-lab-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="SmartLearnTeacherLabs.saveEvaluation()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+          Save Evaluation & Sync Gradebook
+        </button>
+      </div>
     </div>
   </div>
 

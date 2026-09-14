@@ -52,6 +52,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           Quizzes
         </a>
+        <a href="#labs" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.5L4.5 18A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-3L14 9.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/><line x1="9" y1="12" x2="15" y2="12"/></svg>
+          Lab / Practical Management
+        </a>
         <a href="#attendance" class="nav-item">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
           Attendance
@@ -571,6 +575,97 @@
           </div>
         </div>
 
+        <!-- Tab: Lab / Practical Management -->
+        <div id="labs" class="dashboard-tab-content" style="display: none;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Lab / Practical Management 🧪</h1>
+              <p class="greeting-sub">View assigned practical labs, test code, submit lab reports, and review faculty scores.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button class="btn btn-outline" onclick="SmartLearnLabs.refreshData()">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                Refresh Labs
+              </button>
+            </div>
+          </div>
+
+          <!-- Lab Overview Stats Grid -->
+          <div class="stats-overview-grid mb-6">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 2v7.5L4.5 18A2 2 0 0 0 6.2 21h11.6a2 2 0 0 0 1.7-3L14 9.5V2"/><line x1="8.5" y1="2" x2="15.5" y2="2"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="student-lab-stat-total">0</div>
+                <div class="stat-lbl">Total Practical Labs</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Enrolled Practicals</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="student-lab-stat-pending">0</div>
+                <div class="stat-lbl">Pending Submission</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Requires Action</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="student-lab-stat-submitted">0</div>
+                <div class="stat-lbl">Submitted / Graded</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Completed Works</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="student-lab-stat-score">--%</div>
+                <div class="stat-lbl">Average Score</div>
+                <div class="text-xs text-muted" style="margin-top: 0.2rem;">Practical Grade</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters & Search Toolbar -->
+          <div class="card mb-6" style="padding: 1rem 1.25rem;">
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; flex: 1;">
+                <div class="search-box" style="flex: 1; min-width: 220px; margin: 0;">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <input type="text" id="student-lab-search" placeholder="Search lab by title, subject or software..." oninput="SmartLearnLabs.filterLabs()">
+                </div>
+                
+                <select id="student-lab-subject-filter" class="form-control" style="width: auto; min-width: 160px;" onchange="SmartLearnLabs.filterLabs()">
+                  <option value="ALL">All Subjects</option>
+                </select>
+
+                <select id="student-lab-status-filter" class="form-control" style="width: auto; min-width: 150px;" onchange="SmartLearnLabs.filterLabs()">
+                  <option value="ALL">All Statuses</option>
+                  <option value="pending">Pending</option>
+                  <option value="submitted">Submitted</option>
+                  <option value="graded">Graded</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Practical Labs Grid Container -->
+          <div id="student-labs-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Lab Cards Rendered Dynamically -->
+          </div>
+        </div>
+
         <!-- Tab 5: Student Attendance & QR Attendance Module -->
         <div id="attendance" class="dashboard-tab-content" style="display: none;">
 
@@ -972,7 +1067,10 @@
               <p class="greeting-sub">Track subject-wise proficiency, exam scores, attendance breakdown, and AI learning recommendations.</p>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-              <button class="btn btn-outline" onclick="SmartLearnApp.showToast('Generating official performance PDF report...', 'info')">
+              <button class="btn btn-outline" onclick="SmartLearnPerformanceCharts.openTargetGoalModal()">
+                🎯 Set Target Goal
+              </button>
+              <button class="btn btn-outline" onclick="SmartLearnPerformanceCharts.exportReport()">
                 📥 Export Report
               </button>
               <button class="btn btn-primary" onclick="SmartLearnPerformanceCharts.init()">
@@ -1779,6 +1877,132 @@
     </div>
   </div>
 
+  <!-- Modal: Set Academic Target Goal -->
+  <div class="modal-overlay" id="perf-goal-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 520px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem; border-bottom: 1px solid var(--border-color);">
+        <h2 class="modal-title" style="margin: 0; font-size: 1.2rem;">🎯 Set Target Academic GPA Goal</h2>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('perf-goal-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 1rem;">
+        <div class="form-group mb-0">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">Target Grade Percentage (%) *</label>
+          <input type="number" id="perf-goal-input" class="form-control" value="92" min="50" max="100" placeholder="e.g. 92%">
+        </div>
+
+        <div class="form-group mb-0">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">Target Semester / Term</label>
+          <select id="perf-goal-term" class="form-control">
+            <option value="Term 1 Final">Term 1 Final</option>
+            <option value="Term 2 Comprehensive">Term 2 Comprehensive</option>
+            <option value="Annual Board Exam">Annual Board Exam</option>
+          </select>
+        </div>
+
+        <!-- AI Advice Box -->
+        <div id="perf-goal-advice-box" style="display:none; background: var(--bg-subtle); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--primary); font-size: 0.85rem; line-height: 1.5; color: var(--text-main);">
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 1rem 1.25rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button class="btn btn-outline" onclick="SmartLearnApp.closeModal('perf-goal-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="SmartLearnPerformanceCharts.saveTargetGoal()">
+          🎯 Save Target & Get AI Study Plan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Student Practical Workspace & Submission -->
+  <div class="modal-overlay" id="student-lab-modal" style="display: none;">
+    <div class="modal-card" style="max-width: 780px; width: 95%; background: var(--bg-surface); border-radius: var(--radius-xl); border: 1px solid var(--border-color); overflow: hidden; box-shadow: var(--shadow-lg);">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: flex-start; padding: 1.25rem;">
+        <div>
+          <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom: 0.25rem;">
+            <span class="badge badge-primary" id="lab-modal-subject">Computer Science</span>
+            <span class="badge badge-warning" id="lab-modal-status-badge">Pending</span>
+          </div>
+          <h2 class="modal-title" id="lab-modal-title" style="margin: 0; font-size: 1.25rem;">Lab Title</h2>
+        </div>
+        <button class="modal-close-btn" onclick="SmartLearnApp.closeModal('student-lab-modal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.25rem; display: flex; flex-direction: column; gap: 1.15rem; max-height: 75vh; overflow-y: auto;">
+        <!-- Lab Specs Banner -->
+        <div class="card" style="background: var(--bg-subtle); border: 1px solid var(--border-color); padding: 1rem;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 0.85rem; font-size: 0.875rem;">
+            <div><strong style="color:var(--text-main);">Faculty:</strong> <span id="lab-modal-teacher" style="color:var(--text-muted);">--</span></div>
+            <div><strong style="color:var(--text-main);">Due Date:</strong> <span id="lab-modal-duedate" style="color:var(--text-muted);">--</span></div>
+            <div><strong style="color:var(--text-main);">Max Marks:</strong> <span id="lab-modal-marks" style="color:var(--text-muted);">--</span></div>
+            <div><strong style="color:var(--text-main);">Software Tools:</strong> <span class="badge badge-secondary" id="lab-modal-software">--</span></div>
+          </div>
+        </div>
+
+        <!-- Problem Statement & Objectives -->
+        <div>
+          <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.4rem; color:var(--text-main);">📋 Practical Problem Statement</h4>
+          <div id="lab-modal-desc" style="color:var(--text-muted); font-size:0.875rem; line-height:1.6; white-space:pre-line; background: var(--bg-main); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);"></div>
+        </div>
+
+        <div>
+          <h4 style="font-size:0.95rem; font-weight:700; margin-bottom:0.4rem; color:var(--text-main);">🎯 Key Objectives & Guidelines</h4>
+          <div id="lab-modal-objectives" style="color:var(--text-muted); font-size:0.875rem; line-height:1.6; white-space:pre-line; background: var(--bg-main); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-color);"></div>
+        </div>
+
+        <!-- Grade Result & Feedback Banner -->
+        <div id="lab-modal-grade-alert" class="card" style="display:none; background:rgba(16, 185, 129, 0.1); border:1px solid var(--success); padding: 1rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+            <h4 style="color:var(--success); margin:0; font-size:0.95rem; font-weight:700;">✅ Faculty Evaluation & Grade Result</h4>
+            <span id="lab-modal-score-badge" class="badge badge-success" style="font-size:0.85rem;">Marks: -- / --</span>
+          </div>
+          <p id="lab-modal-feedback-text" style="color:var(--text-main); font-size:0.875rem; margin:0; line-height:1.5;"></p>
+        </div>
+
+        <!-- Student Workspace Area -->
+        <hr style="border-top:1px solid var(--border-color); margin: 0.5rem 0;">
+        <h4 style="font-size:1rem; font-weight:700; margin-bottom:0.25rem; color:var(--text-main);">💻 Practical Code Editor & Submission</h4>
+
+        <div class="form-group mb-2">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.35rem;">
+            <label class="form-label mb-0" style="font-weight:600; font-size:0.85rem;">Code / Solution Snippet:</label>
+            <button type="button" class="btn btn-xs btn-outline" onclick="SmartLearnLabs.runCodePreview()">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Run Code Check
+            </button>
+          </div>
+          <textarea id="student-lab-code" class="form-control" rows="7" style="font-family: monospace; font-size: 0.85rem; background: #0f172a; color: #f8fafc; line-height:1.5;" placeholder="Write or paste your practical code here (Python, C++, Java, JS, SQL)..."></textarea>
+        </div>
+
+        <!-- Code Preview Console -->
+        <div id="student-lab-preview-box" style="display:none; background: #1e1e1e; color: #4af626; font-family: monospace; font-size: 0.825rem; padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid #333;">
+          <div style="display:flex; justify-content:space-between; color:#94a3b8; font-size:0.75rem; border-bottom:1px solid #334155; padding-bottom:0.25rem; margin-bottom:0.5rem;">
+            <span>EXECUTION OUTPUT CONSOLE</span>
+            <span id="preview-timestamp">--</span>
+          </div>
+          <pre id="student-lab-output" style="margin:0; white-space:pre-wrap; font-family:monospace;"></pre>
+        </div>
+
+        <div class="form-group mb-2">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">Observations & Notes:</label>
+          <textarea id="student-lab-notes" class="form-control" rows="3" placeholder="State your observations, execution runtime, or results..."></textarea>
+        </div>
+
+        <div class="form-group mb-0">
+          <label class="form-label" style="font-weight:600; font-size:0.85rem;">File Attachment (Optional Code/PDF File):</label>
+          <input type="text" id="student-lab-file" class="form-control" placeholder="Filename e.g. Solution_Lab1.py">
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding: 1rem 1.25rem; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 0.75rem;">
+        <button class="btn btn-outline" onclick="SmartLearnApp.closeModal('student-lab-modal')">Cancel</button>
+        <button class="btn btn-primary" id="student-lab-submit-btn" onclick="SmartLearnLabs.submitLab()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Submit Practical
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDKs (v10 Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
@@ -2147,6 +2371,92 @@
               }
             }
           });
+        }
+      },
+
+      openTargetGoalModal() {
+        if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.openModal) {
+          SmartLearnApp.openModal("perf-goal-modal");
+        }
+      },
+
+      saveTargetGoal() {
+        const targetVal = parseFloat(document.getElementById("perf-goal-input")?.value) || 92;
+        const termVal = document.getElementById("perf-goal-term")?.value || "Term 1 Final";
+        const adviceBox = document.getElementById("perf-goal-advice-box");
+
+        const currentGpa = 88.5;
+        const gap = (targetVal - currentGpa).toFixed(1);
+
+        if (adviceBox) {
+          adviceBox.style.display = "block";
+          if (gap > 0) {
+            adviceBox.innerHTML = `
+              <strong>🎯 Target Goal Analysis for ${termVal}:</strong><br>
+              Target: <strong>${targetVal}%</strong> | Current GPA: <strong>${currentGpa}%</strong> (Gap: <span style="color: var(--primary); font-weight:700;">+${gap}%</span>)<br><br>
+              <strong>🤖 SmartLearn AI Recommendation:</strong>
+              <ul style="margin: 0.3rem 0 0 1.2rem; padding: 0;">
+                <li>Increase <strong>Mathematics (Calculus)</strong> quiz scores from 78% to 88% (+10 points needed).</li>
+                <li>Complete all remaining practical lab assignments with 95%+ score.</li>
+                <li>Maintain 90%+ attendance in physics lectures.</li>
+              </ul>
+            `;
+          } else {
+            adviceBox.innerHTML = `
+              <strong>🎉 Exceptional Work!</strong><br>
+              Your current GPA (${currentGpa}%) already exceeds your target goal of ${targetVal}%. Keep up the top performance!
+            `;
+          }
+        }
+
+        const cumulativeGpaEl = document.getElementById("perf-cumulative-gpa");
+        if (cumulativeGpaEl) {
+          cumulativeGpaEl.innerText = `${currentGpa}% (Target: ${targetVal}%)`;
+        }
+
+        if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+          SmartLearnApp.showToast(`Target goal of ${targetVal}% set for ${termVal}! 🎯`, "success");
+        }
+      },
+
+      exportReport() {
+        const reportText = `=====================================================
+SMARTLEARN ACADEMIC PERFORMANCE REPORT CARD
+Student: Alex Kumar (ID: SL-2026-894)
+Class: B.Tech CSE - Section A
+Date: ${new Date().toLocaleDateString()}
+=====================================================
+
+1. CUMULATIVE GPA: 88.5% (GPA 3.8 / 4.0) - Grade A+
+2. ATTENDANCE RATE: 90% (18 Present / 20 Total Sessions)
+3. QUIZ & ASSESSMENT AVG: 92% (Top 5% Class Rank)
+4. PRACTICAL LAB AVG: 96% (Evaluated Works)
+
+SUBJECT PROFICIENCY BREAKDOWN:
+-----------------------------------------------------
+- Data Structures: 95% (Assignments: 95%, Quizzes: 90%, Exams: 92%)
+- Computer Science: 94% (Assignments: 96%, Quizzes: 92%, Exams: 94%)
+- Mathematics: 85.6% (Assignments: 88%, Quizzes: 85%, Exams: 84%)
+- Physics: 78% (Assignments: 80%, Quizzes: 76%, Exams: 78%)
+- English Literature: 90% (Assignments: 92%, Quizzes: 88%, Exams: 90%)
+
+FACULTY ADVISOR REMARKS:
+Outstanding technical proficiency in BST operations and algorithms.
+Advised to increase revision time on Physics & Calculus problem sets.
+=====================================================`;
+
+        const blob = new Blob([reportText], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "AlexKumar_Academic_Performance_Report.txt";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+          SmartLearnApp.showToast("Academic Performance Report downloaded! 📥", "success");
         }
       }
     };
