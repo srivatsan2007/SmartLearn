@@ -120,9 +120,9 @@
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/></svg>
           </button>
 
-          <div class="icon-circle-btn" title="Notifications">
-            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
-            <span class="notification-dot"></span>
+          <div class="icon-circle-btn" title="Notifications" onclick="SmartLearnApp.openModal('notifications-modal')" style="position: relative;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span id="unread-count-badge" class="notification-badge-count" style="display:none;">0</span>
           </div>
 
           <div class="profile-dropdown-wrapper">
@@ -164,6 +164,9 @@
               </button>
             </div>
           </div>
+
+          <!-- Smart Warning System Alert Container -->
+          <div id="smart-warning-banner-container" class="smart-warning-container"></div>
 
           <!-- Metric Stat Cards -->
           <div class="stats-grid">
@@ -2644,6 +2647,37 @@
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
           Save Evaluation & Sync Gradebook
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Smart Notification Hub -->
+  <div class="modal-overlay" id="notifications-modal">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div class="modal-title">Smart Notification Hub 🔔</div>
+          <span id="notif-unread-count-badge" class="badge badge-primary" style="font-size:0.75rem;">0 Unread</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal onclick="SmartLearnApp.closeModal('notifications-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="notif-filter-tabs">
+          <button class="notif-filter-btn active" onclick="SmartLearnNotifications.filterNotifications('all', this)">All</button>
+          <button class="notif-filter-btn" onclick="SmartLearnNotifications.filterNotifications('unread', this)">Unread</button>
+          <button class="notif-filter-btn" onclick="SmartLearnNotifications.filterNotifications('warning', this)">Warnings & Alerts</button>
+          <button class="notif-filter-btn" onclick="SmartLearnNotifications.filterNotifications('academic', this)">Academic</button>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+          <span class="text-xs text-muted">Real-time alerts and system updates</span>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-sm btn-subtle" onclick="SmartLearnNotifications.markAllRead()" style="font-size:0.75rem;">Mark All as Read</button>
+            <button class="btn btn-sm btn-subtle" onclick="SmartLearnNotifications.clearAll()" style="font-size:0.75rem; color:var(--danger);">Clear</button>
+          </div>
+        </div>
+        <div id="notifications-list" style="display:flex; flex-direction:column; gap:0.6rem; max-height: 400px; overflow-y: auto;">
+          <div class="empty-state-text">Loading notifications...</div>
+        </div>
       </div>
     </div>
   </div>

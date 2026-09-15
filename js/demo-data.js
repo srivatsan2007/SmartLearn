@@ -31,8 +31,156 @@ const STORAGE_KEYS = {
   TIMETABLE: "classoraTimetable",
   GAMIFICATION: "classoraGamification",
   REWARDS_LOG: "classoraRewardsLog",
-  DELETED_IDS: "smartlearn_deleted_ids"
+  DELETED_IDS: "smartlearn_deleted_ids",
+  TODOS: "smartlearn_todos"
 };
+
+// Seed Smart Notifications Across All Roles
+const INITIAL_NOTIFICATIONS = [
+  {
+    id: "notif_01",
+    role: "student",
+    userId: "usr_student_01",
+    title: "🚨 Low Attendance Warning: Physics",
+    message: "Your attendance in Physics has dropped to 72% (minimum required threshold is 75%). Please submit a leave report or consult your faculty.",
+    type: "warning",
+    category: "Attendance Warning",
+    createdAt: "2026-09-15T09:30:00Z",
+    read: false
+  },
+  {
+    id: "notif_02",
+    role: "student",
+    userId: "usr_student_01",
+    title: "📝 Practical Lab Assigned",
+    message: "Binary Search Tree Operations & Visualizer practical lab assigned by Dr. Priya Sharma. Due Date: 25th Sept.",
+    type: "info",
+    category: "Practical Lab",
+    createdAt: "2026-09-14T11:00:00Z",
+    read: false
+  },
+  {
+    id: "notif_03",
+    role: "student",
+    userId: "usr_student_01",
+    title: "🏆 OOP Quiz Result Graded",
+    message: "Your submission for OOP Concepts Quiz has been evaluated. You scored 18/20 (90%). Great job!",
+    type: "success",
+    category: "Academic",
+    createdAt: "2026-09-13T16:45:00Z",
+    read: true
+  },
+  {
+    id: "notif_04",
+    role: "teacher",
+    userId: "usr_teacher_01",
+    title: "⚠️ At-Risk Students Alert",
+    message: "3 students in B.Tech CSE Section A are currently flagged with attendance below 75% threshold.",
+    type: "warning",
+    category: "Alert",
+    createdAt: "2026-09-15T08:15:00Z",
+    read: false
+  },
+  {
+    id: "notif_05",
+    role: "teacher",
+    userId: "usr_teacher_01",
+    title: "📥 Pending Lab Evaluations",
+    message: "5 new practical lab solutions submitted by students are awaiting your grading.",
+    type: "info",
+    category: "Grading Queue",
+    createdAt: "2026-09-14T14:20:00Z",
+    read: false
+  },
+  {
+    id: "notif_06",
+    role: "parent",
+    userId: "usr_parent_01",
+    title: "⚠️ Ward Attendance Threshold Warning",
+    message: "Alex's Physics attendance has dipped to 72%. An academic warning notice has been generated.",
+    type: "warning",
+    category: "Attendance Alert",
+    createdAt: "2026-09-15T09:30:00Z",
+    read: false
+  },
+  {
+    id: "notif_07",
+    role: "parent",
+    userId: "usr_parent_01",
+    title: "📊 Term Performance Report Released",
+    message: "Monthly academic progression summary and GPA transcript card is available for download.",
+    type: "info",
+    category: "Report Card",
+    createdAt: "2026-09-12T10:00:00Z",
+    read: true
+  },
+  {
+    id: "notif_08",
+    role: "admin",
+    userId: "usr_admin_01",
+    title: "🚨 Department Risk Index Alert",
+    message: "Physics Department pass rate dipped below the institutional 70% benchmark in recent mid-terms.",
+    type: "warning",
+    category: "System Alert",
+    createdAt: "2026-09-15T07:00:00Z",
+    read: false
+  },
+  {
+    id: "notif_09",
+    role: "admin",
+    userId: "usr_admin_01",
+    title: "🛠️ Institution Backup Completed",
+    message: "Weekly institutional record backup and Firestore sync completed without errors.",
+    type: "info",
+    category: "System",
+    createdAt: "2026-09-14T02:00:00Z",
+    read: true
+  }
+];
+
+// Seed Student To-Do List Items
+const INITIAL_TODOS = [
+  {
+    id: "todo_01",
+    studentId: "usr_student_01",
+    title: "Complete Binary Search Tree practical lab code",
+    category: "Lab Practical",
+    priority: "High",
+    dueDate: "2026-09-25",
+    completed: false,
+    createdAt: "2026-09-14T10:00:00Z"
+  },
+  {
+    id: "todo_02",
+    studentId: "usr_student_01",
+    title: "Revise Calculus integration formulas for mid-terms",
+    category: "Quiz Revision",
+    priority: "Medium",
+    dueDate: "2026-09-20",
+    completed: false,
+    createdAt: "2026-09-14T11:30:00Z"
+  },
+  {
+    id: "todo_03",
+    studentId: "usr_student_01",
+    title: "Submit Physics Thermodynamics assignment",
+    category: "Assignment",
+    priority: "High",
+    dueDate: "2026-09-18",
+    completed: true,
+    createdAt: "2026-09-12T09:00:00Z"
+  },
+  {
+    id: "todo_04",
+    studentId: "usr_student_01",
+    title: "Read Chapter 4: Database Normalization (3NF & BCNF)",
+    category: "Personal Study",
+    priority: "Low",
+    dueDate: "2026-09-22",
+    completed: false,
+    createdAt: "2026-09-15T08:00:00Z"
+  }
+];
 
 // Initial Seed Exam Timetable
 const INITIAL_EXAMS = [
@@ -1048,7 +1196,12 @@ const SmartLearnStorage = {
 
     // 6. Notifications
     if (isKeyEmpty(STORAGE_KEYS.NOTIFICATIONS)) {
-      localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(defaultData.notifications));
+      localStorage.setItem(STORAGE_KEYS.NOTIFICATIONS, JSON.stringify(INITIAL_NOTIFICATIONS));
+    }
+
+    // 6.b Todos
+    if (isKeyEmpty(STORAGE_KEYS.TODOS)) {
+      localStorage.setItem(STORAGE_KEYS.TODOS, JSON.stringify(INITIAL_TODOS));
     }
 
     // 7. Quizzes

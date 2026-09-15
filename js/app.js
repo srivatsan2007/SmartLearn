@@ -112,6 +112,12 @@ const SmartLearnApp = {
     if (typeof SmartLearnNotifications !== "undefined") {
       try { SmartLearnNotifications.init(); } catch (e) { console.warn("Notifications init warning:", e); }
     }
+    if (typeof SmartLearnWarningSystem !== "undefined") {
+      try { SmartLearnWarningSystem.init(); } catch (e) { console.warn("Warning system init warning:", e); }
+    }
+    if (typeof SmartLearnTodo !== "undefined") {
+      try { SmartLearnTodo.init(); } catch (e) { console.warn("Todo init warning:", e); }
+    }
   },
 
   handleHashNavigation() {
@@ -288,13 +294,12 @@ const SmartLearnApp = {
         }
       }
 
-      if (targetId === "exam-timetable") {
-        if (typeof SmartLearnTeacherExamTimetable !== "undefined" && SmartLearnTeacherExamTimetable.renderExamTable) {
-          SmartLearnTeacherExamTimetable.renderExamTable();
-        }
-        if ((targetId === "exam-timetable" || targetId === "exams") && typeof SmartLearnStudentExamTimetable !== "undefined" && SmartLearnStudentExamTimetable.renderStudentExams) {
-          SmartLearnStudentExamTimetable.renderStudentExams();
-        }
+      if (targetId === "todo" && typeof SmartLearnTodo !== "undefined" && SmartLearnTodo.init) {
+        SmartLearnTodo.init();
+      }
+
+      if ((targetId === "overview" || !targetId) && typeof SmartLearnWarningSystem !== "undefined" && SmartLearnWarningSystem.init) {
+        SmartLearnWarningSystem.init();
       }
 
       if (typeof SmartLearnAdmin !== "undefined" && document.getElementById("admin-students-section-container") && SmartLearnAdmin.init) {
@@ -11471,5 +11476,432 @@ const SmartLearnTeacherLabs = {
 if (typeof window !== "undefined") {
   window.SmartLearnLabs = SmartLearnLabs;
   window.SmartLearnTeacherLabs = SmartLearnTeacherLabs;
+}
+
+/**
+ * SmartLearn - Smart Notifications System Controller (All 4 Roles)
+ */
+const SmartLearnNotifications = {
+  activeFilter: "all",
+
+  init() {
+    this.updateUnreadCountBadge();
+    this.renderNotificationsList();
+  },
+
+  getRoleNotifications() {
+    const user = SmartLearnAuth.getCurrentUser();
+    if (!user) return [];
+    const allNotifs = SmartLearnStorage.get(STORAGE_KEYS.NOTIFICATIONS) || [];
+    const roleLower = (user.role || "").toLowerCase();
+    
+    return allNotifs.filter(n => {
+      if (n.userId && n.userId === user.id) return true;
+      if (n.role && n.role.toLowerCase() === roleLower) return true;
+      if (!n.role && !n.userId) return true;
+      return false;
+    });
+  },
+
+  updateUnreadCountBadge() {
+    const notifs = this.getRoleNotifications();
+    const unreadCount = notifs.filter(n => !n.read).length;
+    
+    const badgeEl = document.getElementById("unread-count-badge");
+    if (badgeEl) {
+      if (unreadCount > 0) {
+        badgeEl.innerText = unreadCount > 99 ? "99+" : unreadCount;
+        badgeEl.style.display = "flex";
+      } else {
+        badgeEl.style.display = "none";
+      }
+    }
+
+    const modalBadge = document.getElementById("notif-unread-count-badge");
+    if (modalBadge) {
+      modalBadge.innerText = `${unreadCount} Unread`;
+    }
+  },
+
+  filterNotifications(filterType, btnEl) {
+    this.activeFilter = filterType;
+    if (btnEl && btnEl.parentElement) {
+      const btns = btnEl.parentElement.querySelectorAll(".notif-filter-btn");
+      btns.forEach(b => b.classList.remove("active"));
+      btnEl.classList.add("active");
+    }
+    this.renderNotificationsList();
+  },
+
+  renderNotificationsList() {
+    const container = document.getElementById("notifications-list");
+    if (!container) return;
+
+    let notifs = this.getRoleNotifications();
+
+    if (this.activeFilter === "unread") {
+      notifs = notifs.filter(n => !n.read);
+    } else if (this.activeFilter === "warning") {
+      notifs = notifs.filter(n => n.type === "warning" || (n.category && (n.category.toLowerCase().includes("warning") || n.category.toLowerCase().includes("alert"))));
+    } else if (this.activeFilter === "academic") {
+      notifs = notifs.filter(n => n.type === "info" || n.type === "success" || (n.category && (n.category.toLowerCase().includes("academic") || n.category.toLowerCase().includes("lab"))));
+    }
+
+    if (notifs.length === 0) {
+      container.innerHTML = `<div class="empty-state-text" style="padding:1.5rem; text-align:center;">No notifications found for this filter.</div>`;
+      return;
+    }
+
+    container.innerHTML = notifs.map(n => {
+      const isUnread = !n.read;
+      const iconClass = n.type === "warning" ? "notif-icon-warning" : (n.type === "success" ? "notif-icon-success" : "notif-icon-info");
+      const iconSvg = n.type === "warning" 
+        ? `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`
+        : (n.type === "success" 
+            ? `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`
+            : `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`);
+
+      const timeAgo = n.createdAt ? new Date(n.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : "Recently";
+
+      return `
+        <div class="notif-item ${isUnread ? 'unread' : ''}" onclick="SmartLearnNotifications.markAsRead('${n.id}')">
+          <div class="notif-icon-box ${iconClass}">
+            ${iconSvg}
+          </div>
+          <div class="notif-content-area">
+            <div class="notif-title-row">
+              <span class="notif-title-text">${n.title}</span>
+              <span class="notif-time-stamp">${timeAgo}</span>
+            </div>
+            <div class="notif-message-text">${n.message}</div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="badge badge-outline text-xs">${n.category || 'General'}</span>
+              ${isUnread ? `<span style="font-size:0.7rem; color:var(--primary); font-weight:700;">● Unread</span>` : `<span style="font-size:0.7rem; color:var(--text-muted);">Read</span>`}
+            </div>
+          </div>
+        </div>
+      `;
+    }).join("");
+  },
+
+  markAsRead(notifId) {
+    const allNotifs = SmartLearnStorage.get(STORAGE_KEYS.NOTIFICATIONS) || [];
+    const idx = allNotifs.findIndex(n => n.id === notifId);
+    if (idx >= 0) {
+      allNotifs[idx].read = true;
+      SmartLearnStorage.set(STORAGE_KEYS.NOTIFICATIONS, allNotifs);
+      this.updateUnreadCountBadge();
+      this.renderNotificationsList();
+    }
+  },
+
+  markAllRead() {
+    const user = SmartLearnAuth.getCurrentUser();
+    if (!user) return;
+    const roleLower = (user.role || "").toLowerCase();
+
+    const allNotifs = SmartLearnStorage.get(STORAGE_KEYS.NOTIFICATIONS) || [];
+    allNotifs.forEach(n => {
+      if (n.userId === user.id || (n.role && n.role.toLowerCase() === roleLower)) {
+        n.read = true;
+      }
+    });
+    SmartLearnStorage.set(STORAGE_KEYS.NOTIFICATIONS, allNotifs);
+    this.updateUnreadCountBadge();
+    this.renderNotificationsList();
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("All notifications marked as read! ✅", "info");
+    }
+  },
+
+  clearAll() {
+    const user = SmartLearnAuth.getCurrentUser();
+    if (!user) return;
+    const roleLower = (user.role || "").toLowerCase();
+
+    let allNotifs = SmartLearnStorage.get(STORAGE_KEYS.NOTIFICATIONS) || [];
+    allNotifs = allNotifs.filter(n => n.userId !== user.id && (!n.role || n.role.toLowerCase() !== roleLower));
+    SmartLearnStorage.set(STORAGE_KEYS.NOTIFICATIONS, allNotifs);
+    this.updateUnreadCountBadge();
+    this.renderNotificationsList();
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Notifications cleared.", "info");
+    }
+  }
+};
+
+/**
+ * SmartLearn - Smart Warning System Controller
+ */
+const SmartLearnWarningSystem = {
+  init() {
+    this.evaluateAndRenderWarnings();
+  },
+
+  evaluateAndRenderWarnings() {
+    const container = document.getElementById("smart-warning-banner-container");
+    if (!container) return;
+
+    const user = SmartLearnAuth.getCurrentUser();
+    if (!user) return;
+
+    const roleLower = (user.role || "").toLowerCase();
+    let warningCardsHtml = "";
+
+    if (roleLower === "student") {
+      const attendanceList = SmartLearnStorage.get(STORAGE_KEYS.ATTENDANCE) || [];
+      const userAtt = attendanceList.filter(a => a.studentId === user.id);
+      let rate = 72; // Seed threshold calculation fallback
+      if (userAtt.length > 0) {
+        const presentCount = userAtt.filter(a => a.status === "present").length;
+        rate = Math.round((presentCount / userAtt.length) * 100);
+      }
+
+      if (rate < 75) {
+        warningCardsHtml += `
+          <div class="warning-alert-card critical">
+            <div class="warning-icon-badge">🚨</div>
+            <div class="warning-text-box">
+              <div class="warning-headline">Critical Attendance Threshold Warning (${rate}%)</div>
+              <div class="warning-description">Your attendance rate in Physics has dropped below the mandatory 75% threshold. Please submit a leave appeal or consult your course advisor.</div>
+              <div class="warning-actions-row">
+                <button class="btn-warning-action" onclick="SmartLearnApp.switchDashboardTab('attendance')">View Attendance Log &rarr;</button>
+                <button class="btn-warning-action" onclick="SmartLearnTodo.quickAddTask('Submit Attendance Leave Appeal', 'Personal Study', 'High')">➕ Add Remediate Task</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      warningCardsHtml += `
+        <div class="warning-alert-card warning">
+          <div class="warning-icon-badge">⚠️</div>
+          <div class="warning-text-box">
+            <div class="warning-headline">Imminent Practical Lab & Quiz Deadlines</div>
+            <div class="warning-description">You have 2 pending assignments and 1 practical lab due within the next 48 hours.</div>
+            <div class="warning-actions-row">
+              <button class="btn-warning-action" onclick="SmartLearnApp.switchDashboardTab('labs')">Open Lab Workspace &rarr;</button>
+              <button class="btn-warning-action" onclick="SmartLearnApp.switchDashboardTab('todo')">Manage To-Do List</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+    } else if (roleLower === "teacher" || roleLower === "faculty") {
+      warningCardsHtml += `
+        <div class="warning-alert-card warning">
+          <div class="warning-icon-badge">⚠️</div>
+          <div class="warning-text-box">
+            <div class="warning-headline">Faculty Action Required: 3 At-Risk Students Flagged</div>
+            <div class="warning-description">Students in B.Tech CSE Section A currently have attendance dipping below 75% or scores < 50%. Review roster and initiate intervention.</div>
+            <div class="warning-actions-row">
+              <button class="btn-warning-action" onclick="SmartLearnTeacherPerformance.flagAtRiskStudents()">Flag At-Risk Students &rarr;</button>
+              <button class="btn-warning-action" onclick="SmartLearnApp.switchDashboardTab('labs')">Review Lab Queue</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+    } else if (roleLower === "parent") {
+      warningCardsHtml += `
+        <div class="warning-alert-card critical">
+          <div class="warning-icon-badge">🚨</div>
+          <div class="warning-text-box">
+            <div class="warning-headline">Ward Academic Risk Alert: Attendance Dip (72%)</div>
+            <div class="warning-description">Alex's Physics class attendance dropped to 72%. We recommend scheduling a faculty conference to review coursework progression.</div>
+            <div class="warning-actions-row">
+              <button class="btn-warning-action" onclick="SmartLearnParentPerformance.scheduleConsultation()">Schedule Faculty Conference 📅</button>
+              <button class="btn-warning-action" onclick="SmartLearnApp.switchDashboardTab('performance')">View Subject Proficiency</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+    } else if (roleLower === "admin" || roleLower === "administrator") {
+      warningCardsHtml += `
+        <div class="warning-alert-card critical">
+          <div class="warning-icon-badge">🚨</div>
+          <div class="warning-text-box">
+            <div class="warning-headline">Institutional Alert: Physics Department Risk Index Threshold</div>
+            <div class="warning-description">Physics Department mid-term pass rate dropped to 64% (below institutional 70% target). Departmental audit recommended.</div>
+            <div class="warning-actions-row">
+              <button class="btn-warning-action" onclick="SmartLearnAdminPerformance.triggerAcademicAudit()">Trigger Departmental Audit 🛠️</button>
+              <button class="btn-warning-action" onclick="SmartLearnApp.switchDashboardTab('performance')">View Institutional Matrix</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    container.innerHTML = warningCardsHtml;
+  }
+};
+
+/**
+ * SmartLearn - Student To-Do List Maker Controller
+ */
+const SmartLearnTodo = {
+  activeFilter: "all",
+
+  init() {
+    this.renderTodoList();
+  },
+
+  getTodos() {
+    const user = SmartLearnAuth.getCurrentUser();
+    const userId = user ? user.id : "usr_student_01";
+    const allTodos = SmartLearnStorage.get(STORAGE_KEYS.TODOS) || [];
+    return allTodos.filter(t => t.studentId === userId || t.studentId === "usr_student_01");
+  },
+
+  filterTodos(filterType, btnEl) {
+    this.activeFilter = filterType;
+    if (btnEl && btnEl.parentElement) {
+      const btns = btnEl.parentElement.querySelectorAll(".notif-filter-btn");
+      btns.forEach(b => b.classList.remove("active"));
+      btnEl.classList.add("active");
+    }
+    this.renderTodoList();
+  },
+
+  renderTodoList() {
+    const container = document.getElementById("todo-list-container");
+    const progressCountEl = document.getElementById("todo-progress-count");
+    const progressPercentEl = document.getElementById("todo-progress-percent");
+    const progressBarFillEl = document.getElementById("todo-progress-bar-fill");
+
+    const todos = this.getTodos();
+    const totalCount = todos.length;
+    const completedCount = todos.filter(t => t.completed).length;
+    const percent = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
+    if (progressCountEl) progressCountEl.innerText = `${completedCount} of ${totalCount} tasks completed`;
+    if (progressPercentEl) progressPercentEl.innerText = `${percent}%`;
+    if (progressBarFillEl) progressBarFillEl.style.width = `${percent}%`;
+
+    if (!container) return;
+
+    let filtered = [...todos];
+    if (this.activeFilter === "pending") {
+      filtered = filtered.filter(t => !t.completed);
+    } else if (this.activeFilter === "completed") {
+      filtered = filtered.filter(t => t.completed);
+    } else if (this.activeFilter === "high") {
+      filtered = filtered.filter(t => t.priority === "High");
+    }
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<div class="empty-state-text" style="padding: 1.5rem; text-align: center;">No tasks match your filter. Add a new task to get started!</div>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => {
+      const priorityClass = item.priority === "High" ? "todo-priority-high" : (item.priority === "Medium" ? "todo-priority-medium" : "todo-priority-low");
+
+      return `
+        <div class="todo-item ${item.completed ? 'completed' : ''}">
+          <div style="display: flex; align-items: center; gap: 0.85rem; flex: 1;">
+            <div class="todo-checkbox-wrapper">
+              <button type="button" class="todo-custom-checkbox" onclick="SmartLearnTodo.toggleTodoComplete('${item.id}')">
+                ${item.completed ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ffffff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+              </button>
+            </div>
+            <div>
+              <div class="todo-title-text">${item.title}</div>
+              <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.2rem;">
+                <span class="todo-category-tag">${item.category || 'General'}</span>
+                <span class="text-xs text-muted">📅 Due: ${item.dueDate || 'No Date'}</span>
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span class="todo-priority-pill ${priorityClass}">${item.priority || 'Medium'}</span>
+            <button class="btn btn-sm btn-subtle" onclick="SmartLearnTodo.deleteTodo('${item.id}')" style="color: var(--danger); font-size: 0.85rem;" title="Delete Task">&times;</button>
+          </div>
+        </div>
+      `;
+    }).join("");
+  },
+
+  toggleTodoComplete(todoId) {
+    const allTodos = SmartLearnStorage.get(STORAGE_KEYS.TODOS) || [];
+    const idx = allTodos.findIndex(t => t.id === todoId);
+    if (idx >= 0) {
+      allTodos[idx].completed = !allTodos[idx].completed;
+      SmartLearnStorage.set(STORAGE_KEYS.TODOS, allTodos);
+      this.renderTodoList();
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        const stateText = allTodos[idx].completed ? "Task marked completed! 🎉" : "Task restored.";
+        SmartLearnApp.showToast(stateText, "info");
+      }
+    }
+  },
+
+  deleteTodo(todoId) {
+    let allTodos = SmartLearnStorage.get(STORAGE_KEYS.TODOS) || [];
+    allTodos = allTodos.filter(t => t.id !== todoId);
+    SmartLearnStorage.set(STORAGE_KEYS.TODOS, allTodos);
+    this.renderTodoList();
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Task deleted.", "info");
+    }
+  },
+
+  clearCompletedTasks() {
+    const user = SmartLearnAuth.getCurrentUser();
+    const userId = user ? user.id : "usr_student_01";
+    let allTodos = SmartLearnStorage.get(STORAGE_KEYS.TODOS) || [];
+    allTodos = allTodos.filter(t => !(t.completed && (t.studentId === userId || t.studentId === "usr_student_01")));
+    SmartLearnStorage.set(STORAGE_KEYS.TODOS, allTodos);
+    this.renderTodoList();
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast("Completed tasks cleared!", "success");
+    }
+  },
+
+  handleCreateTodoSubmit(e) {
+    if (e) e.preventDefault();
+    const title = document.getElementById("todo-input-title")?.value.trim();
+    const category = document.getElementById("todo-input-category")?.value || "Personal Study";
+    const priority = document.getElementById("todo-input-priority")?.value || "Medium";
+    const dueDate = document.getElementById("todo-input-duedate")?.value || new Date().toISOString().split("T")[0];
+
+    if (!title) return;
+
+    this.quickAddTask(title, category, priority, dueDate);
+    SmartLearnApp.closeModal("add-todo-modal");
+    if (document.getElementById("todo-input-title")) document.getElementById("todo-input-title").value = "";
+  },
+
+  quickAddTask(title, category = "General", priority = "Medium", dueDate = null) {
+    const user = SmartLearnAuth.getCurrentUser() || { id: "usr_student_01" };
+    const allTodos = SmartLearnStorage.get(STORAGE_KEYS.TODOS) || [];
+    const newTodo = {
+      id: "todo_" + Date.now(),
+      studentId: user.id,
+      title: title,
+      category: category,
+      priority: priority,
+      dueDate: dueDate || new Date(Date.now() + 3 * 86400000).toISOString().split("T")[0],
+      completed: false,
+      createdAt: new Date().toISOString()
+    };
+
+    allTodos.unshift(newTodo);
+    SmartLearnStorage.set(STORAGE_KEYS.TODOS, allTodos);
+    this.renderTodoList();
+
+    if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+      SmartLearnApp.showToast(`Task '${title}' added to your To-Do list! 📝`, "success");
+    }
+  }
+};
+
+if (typeof window !== "undefined") {
+  window.SmartLearnLabs = SmartLearnLabs;
+  window.SmartLearnTeacherLabs = SmartLearnTeacherLabs;
+  window.SmartLearnNotifications = SmartLearnNotifications;
+  window.SmartLearnWarningSystem = SmartLearnWarningSystem;
+  window.SmartLearnTodo = SmartLearnTodo;
 }
 
