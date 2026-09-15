@@ -133,121 +133,124 @@
 
       <main class="dashboard-container">
         
-        <div class="dashboard-page-header">
-          <div>
-            <h1 class="greeting-title" id="greeting-text">Welcome Back 👋</h1>
-            <p class="greeting-sub">Monitoring Student: <strong class="text-primary" id="student-name-sub">Linked Student</strong></p>
-          </div>
-          <button class="btn btn-secondary" onclick="SmartLearnApp.openModal('teacher-comm-modal')">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-            Contact Advisor
-          </button>
-        </div>
-
-        <!-- Smart Warning System Alert Container -->
-        <div id="smart-warning-banner-container" class="smart-warning-container"></div>
-
-        <!-- Student Summary Cards -->
-        <div class="stats-grid">
-          <div class="card stat-card">
-            <div class="stat-icon-wrapper stat-icon-success">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </div>
+        <!-- Tab 1: Dashboard Overview -->
+        <div id="overview" class="dashboard-tab-content">
+          <div class="dashboard-page-header">
             <div>
-              <div class="stat-val" id="parent-stat-attendance">87%</div>
-              <div class="stat-lbl">Attendance Rate</div>
+              <h1 class="greeting-title" id="greeting-text">Welcome Back 👋</h1>
+              <p class="greeting-sub">Monitoring Student: <strong class="text-primary" id="student-name-sub">Linked Student</strong></p>
+            </div>
+            <button class="btn btn-secondary" onclick="SmartLearnApp.openModal('teacher-comm-modal')">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              Contact Advisor
+            </button>
+          </div>
+
+          <!-- Smart Warning System Alert Container -->
+          <div id="smart-warning-banner-container" class="smart-warning-container"></div>
+
+          <!-- Student Summary Cards -->
+          <div class="stats-grid">
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="parent-stat-attendance">87%</div>
+                <div class="stat-lbl">Attendance Rate</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="parent-stat-avg-score">84%</div>
+                <div class="stat-lbl">Average Score</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="parent-stat-pending">2</div>
+                <div class="stat-lbl">Pending Assignments</div>
+              </div>
+            </div>
+
+            <div class="card stat-card">
+              <div class="stat-icon-wrapper stat-icon-accent">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
+              </div>
+              <div>
+                <div class="stat-val" id="parent-stat-exams">1</div>
+                <div class="stat-lbl">Upcoming Exam</div>
+              </div>
             </div>
           </div>
 
-          <div class="card stat-card">
-            <div class="stat-icon-wrapper stat-icon-primary">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
-            </div>
-            <div>
-              <div class="stat-val" id="parent-stat-avg-score">84%</div>
-              <div class="stat-lbl">Average Score</div>
-            </div>
-          </div>
-
-          <div class="card stat-card">
-            <div class="stat-icon-wrapper stat-icon-warning">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-            </div>
-            <div>
-              <div class="stat-val" id="parent-stat-pending">2</div>
-              <div class="stat-lbl">Pending Assignments</div>
-            </div>
-          </div>
-
-          <div class="card stat-card">
-            <div class="stat-icon-wrapper stat-icon-accent">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/></svg>
-            </div>
-            <div>
-              <div class="stat-val" id="parent-stat-exams">1</div>
-              <div class="stat-lbl">Upcoming Exam</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dashboard Grid -->
-        <div class="dashboard-sections-grid">
-          
-          <div class="section-column">
+          <!-- Dashboard Grid -->
+          <div class="dashboard-sections-grid">
             
-            <!-- Recent Marks & Quiz Results -->
-            <div class="card">
-              <div class="section-card-title">Recent Marks & Test Grades</div>
+            <div class="section-column">
               
-              <div class="assignment-list" id="parent-recent-marks-list">
-                <div class="assignment-item">
+              <!-- Recent Marks & Quiz Results -->
+              <div class="card">
+                <div class="section-card-title">Recent Marks & Test Grades</div>
+                
+                <div class="assignment-list" id="parent-recent-marks-list">
+                  <div class="assignment-item">
+                    <div>
+                      <div class="font-bold text-sm">Data Structures • Unit Test 2</div>
+                      <div class="text-xs text-muted">Aug 20, 2026 • Scored 46 / 50</div>
+                    </div>
+                    <span class="badge badge-success">92% (A+)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Attendance Overview -->
+              <div class="card">
+                <div class="section-card-title">Monthly Attendance Breakdown</div>
+                
+                <div id="parent-attendance-breakdown" style="display: flex; flex-direction: column; gap: 0.85rem;">
                   <div>
-                    <div class="font-bold text-sm">Data Structures • Unit Test 2</div>
-                    <div class="text-xs text-muted">Aug 20, 2026 • Scored 46 / 50</div>
+                    <div style="display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.3rem;">
+                      <span>August 2026</span>
+                      <span>87% (14 / 16 Days)</span>
+                    </div>
+                    <div class="progress-bar-wrap">
+                      <div class="progress-bar-fill" style="width: 87%;"></div>
+                    </div>
                   </div>
-                  <span class="badge badge-success">92% (A+)</span>
                 </div>
               </div>
+
             </div>
 
-            <!-- Attendance Overview -->
-            <div class="card">
-              <div class="section-card-title">Monthly Attendance Breakdown</div>
+            <div class="section-column">
               
-              <div id="parent-attendance-breakdown" style="display: flex; flex-direction: column; gap: 0.85rem;">
-                <div>
-                  <div style="display: flex; justify-content: space-between; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.3rem;">
-                    <span>August 2026</span>
-                    <span>87% (14 / 16 Days)</span>
-                  </div>
-                  <div class="progress-bar-wrap">
-                    <div class="progress-bar-fill" style="width: 87%;"></div>
+              <!-- Academic Performance Visualizer -->
+              <div class="card">
+                <div class="section-card-title">Subject Wise Progress</div>
+                
+                <div id="parent-subject-progress" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                  <div style="display: flex; justify-content: space-between;" class="text-sm font-semibold">
+                    <span>Computer Science & IT</span>
+                    <span class="text-primary">90%</span>
                   </div>
                 </div>
               </div>
-            </div>
 
-          </div>
-
-          <div class="section-column">
-            
-            <!-- Academic Performance Visualizer -->
-            <div class="card">
-              <div class="section-card-title">Subject Wise Progress</div>
-              
-              <div id="parent-subject-progress" style="display: flex; flex-direction: column; gap: 0.75rem;">
-                <div style="display: flex; justify-content: space-between;" class="text-sm font-semibold">
-                  <span>Computer Science & IT</span>
-                  <span class="text-primary">90%</span>
+              <!-- Announcements -->
+              <div class="card">
+                <div class="section-card-title" style="margin-bottom: 0.85rem;">Important Announcements 📢</div>
+                <div id="parent-announcements-container">
+                  <div class="empty-state-text">Loading announcements...</div>
                 </div>
-              </div>
-            </div>
-
-            <!-- Announcements -->
-            <div class="card">
-              <div class="section-card-title" style="margin-bottom: 0.85rem;">Important Announcements 📢</div>
-              <div id="parent-announcements-container">
-                <div class="empty-state-text">Loading announcements...</div>
               </div>
             </div>
           </div>
@@ -426,6 +429,85 @@
             <div class="section-card-title" style="margin-bottom: 1rem;">Recent Broadcasts & Circulars</div>
             <div id="parent-announcements-list" style="display: flex; flex-direction: column; gap: 1rem;">
               <div class="empty-state-text">Loading announcements...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Parent Ward Attendance View -->
+        <div id="attendance" class="dashboard-tab-content" style="display: none; margin-top: 1.5rem;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Ward Attendance Record 📊</h1>
+              <p class="greeting-sub">Track monthly attendance percentage, present vs absent days, and faculty attendance logs.</p>
+            </div>
+          </div>
+
+          <div class="card mb-6">
+            <div class="section-card-title mb-4">🗓️ Detailed Monthly Attendance Summary</div>
+            <div id="parent-tab-attendance-container" style="display: flex; flex-direction: column; gap: 1rem;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Parent Ward Assignments View -->
+        <div id="assignments" class="dashboard-tab-content" style="display: none; margin-top: 1.5rem;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Ward Coursework & Assignments 📘</h1>
+              <p class="greeting-sub">Monitor active assignment deadlines, turned-in solutions, and faculty evaluation scores.</p>
+            </div>
+          </div>
+
+          <div class="card mb-6">
+            <div class="section-card-title mb-4">📚 Coursework Progress & Submissions</div>
+            <div id="parent-tab-assignments-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Parent Marks & Grades View -->
+        <div id="marks" class="dashboard-tab-content" style="display: none; margin-top: 1.5rem;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Ward Marks & Assessment Grades 🎓</h1>
+              <p class="greeting-sub">Complete breakdown of unit tests, mid-term examinations, and assignment scores.</p>
+            </div>
+          </div>
+
+          <div class="card mb-6">
+            <div class="section-card-title mb-4">🏆 Evaluation Scorecard</div>
+            <div id="parent-tab-marks-container" style="display: flex; flex-direction: column; gap: 0.85rem;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Tab: Parent Profile & Settings View -->
+        <div id="profile" class="dashboard-tab-content" style="display: none; margin-top: 1.5rem;">
+          <div class="dashboard-page-header">
+            <div>
+              <h1 class="greeting-title">Parent Profile & Linked Student 👤</h1>
+              <p class="greeting-sub">Account credentials, contact details, and linked student information.</p>
+            </div>
+          </div>
+
+          <div class="card mb-6">
+            <div class="section-card-title mb-4">👨‍👩‍👧 Linked Ward & Account Info</div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+              <div style="padding: 1rem; background: var(--bg-subtle); border-radius: 12px; border: 1px solid var(--border-color);">
+                <div class="font-bold text-sm" style="color: var(--text-primary); margin-bottom: 0.5rem;">Parent Account Information</div>
+                <div class="text-xs text-muted"><strong>Name:</strong> <span id="parent-prof-name">Parent Account</span></div>
+                <div class="text-xs text-muted" style="margin-top: 0.25rem;"><strong>Email:</strong> parent@smartlearn.edu</div>
+                <div class="text-xs text-muted" style="margin-top: 0.25rem;"><strong>Role:</strong> Authorized Guardian</div>
+              </div>
+              <div style="padding: 1rem; background: var(--bg-subtle); border-radius: 12px; border: 1px solid var(--border-color);">
+                <div class="font-bold text-sm" style="color: var(--text-primary); margin-bottom: 0.5rem;">Monitored Student Information</div>
+                <div class="text-xs text-muted"><strong>Student Name:</strong> Alex Kumar</div>
+                <div class="text-xs text-muted" style="margin-top: 0.25rem;"><strong>Student ID:</strong> STU-2026-001</div>
+                <div class="text-xs text-muted" style="margin-top: 0.25rem;"><strong>Class / Section:</strong> B.Tech CSE - Section A</div>
+              </div>
             </div>
           </div>
         </div>

@@ -5142,11 +5142,118 @@ const SmartLearnParent = {
       `;
     }
 
-    // 6. Render Child's Exam Timetable, Class Timetable & Announcements
+    // 6. Render Child's Exam Timetable, Class Timetable, Tab Details & Announcements
     this.renderParentExams();
     this.renderParentSchedule();
+    this.renderParentTabDetails(student);
     if (typeof SmartLearnAnnouncements !== "undefined") {
       SmartLearnAnnouncements.renderParentAnnouncements();
+    }
+  },
+
+  renderParentTabDetails(student) {
+    if (!student) return;
+    const parent = SmartLearnAuth.getCurrentUser();
+
+    // Profile Name
+    const profName = document.getElementById("parent-prof-name");
+    if (profName && parent) profName.innerText = parent.fullName || parent.name || "Parent Account";
+
+    // Attendance Tab Detail
+    const attContainer = document.getElementById("parent-tab-attendance-container");
+    if (attContainer) {
+      attContainer.innerHTML = `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+          <div style="padding: 1rem; background: var(--bg-subtle); border-radius: 10px; border-left: 4px solid var(--success);">
+            <div class="text-xs text-muted font-bold">TOTAL SESSIONS</div>
+            <div class="font-bold text-lg" style="color: var(--text-primary); margin-top: 0.2rem;">20 Sessions</div>
+          </div>
+          <div style="padding: 1rem; background: var(--bg-subtle); border-radius: 10px; border-left: 4px solid var(--success);">
+            <div class="text-xs text-muted font-bold">ATTENDED SESSIONS</div>
+            <div class="font-bold text-lg" style="color: var(--success); margin-top: 0.2rem;">18 Present (90%)</div>
+          </div>
+          <div style="padding: 1rem; background: var(--bg-subtle); border-radius: 10px; border-left: 4px solid var(--danger);">
+            <div class="text-xs text-muted font-bold">ABSENT / LEAVE SESSIONS</div>
+            <div class="font-bold text-lg" style="color: var(--danger); margin-top: 0.2rem;">2 Absent</div>
+          </div>
+        </div>
+        <div style="padding: 1rem; background: var(--bg-subtle); border-radius: 10px; border: 1px solid var(--border-color);">
+          <div class="font-bold text-sm" style="color: var(--text-primary); margin-bottom: 0.5rem;">Subject Wise Attendance Rate</div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.85rem;">
+            <div style="display: flex; justify-content: space-between;"><span>Computer Science:</span> <strong style="color: var(--success);">95% Present</strong></div>
+            <div style="display: flex; justify-content: space-between;"><span>Calculus Mathematics:</span> <strong style="color: var(--success);">90% Present</strong></div>
+            <div style="display: flex; justify-content: space-between;"><span>Physics Thermodynamics:</span> <strong style="color: var(--danger);">72% (Critical Warning)</strong></div>
+          </div>
+        </div>
+      `;
+    }
+
+    // Assignments Tab Detail
+    const asgnContainer = document.getElementById("parent-tab-assignments-container");
+    if (asgnContainer) {
+      asgnContainer.innerHTML = `
+        <div class="assignment-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem; border-bottom: 1px solid var(--border-color);">
+          <div>
+            <div class="font-bold text-sm">Binary Search Tree Operations Lab</div>
+            <div class="text-xs text-muted">Submitted on Aug 25 • Evaluated by Dr. Priya Sharma</div>
+          </div>
+          <span class="badge badge-success">Graded (48/50)</span>
+        </div>
+        <div class="assignment-item" style="display: flex; justify-content: space-between; align-items: center; padding: 0.85rem; border-bottom: 1px solid var(--border-color);">
+          <div>
+            <div class="font-bold text-sm">Calculus Differential Formula Problem Set</div>
+            <div class="text-xs text-muted">Due Sept 20 • Coursework Pending</div>
+          </div>
+          <span class="badge badge-warning">Pending Turn-in</span>
+        </div>
+      `;
+    }
+
+    // Marks Tab Detail
+    const marksContainer = document.getElementById("parent-tab-marks-container");
+    if (marksContainer) {
+      marksContainer.innerHTML = `
+        <div style="overflow-x: auto;">
+          <table class="data-table" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Subject</th>
+                <th>Exam / Test</th>
+                <th>Max Marks</th>
+                <th>Scored</th>
+                <th>Percentage</th>
+                <th>Grade</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Computer Science</strong></td>
+                <td>Unit Test 2</td>
+                <td>50</td>
+                <td>46</td>
+                <td>92%</td>
+                <td><span class="badge badge-success">A+</span></td>
+              </tr>
+              <tr>
+                <td><strong>Mathematics</strong></td>
+                <td>Mid-Term Quiz</td>
+                <td>20</td>
+                <td>16</td>
+                <td>80%</td>
+                <td><span class="badge badge-success">A</span></td>
+              </tr>
+              <tr>
+                <td><strong>Physics</strong></td>
+                <td>Practical Assessment</td>
+                <td>50</td>
+                <td>37</td>
+                <td>74%</td>
+                <td><span class="badge badge-warning">B</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
     }
   },
 
@@ -11903,5 +12010,182 @@ if (typeof window !== "undefined") {
   window.SmartLearnNotifications = SmartLearnNotifications;
   window.SmartLearnWarningSystem = SmartLearnWarningSystem;
   window.SmartLearnTodo = SmartLearnTodo;
+  window.SmartLearnPDFReport = SmartLearnPDFReport;
 }
+
+/**
+ * SmartLearn - Student PDF Report Card Generator
+ */
+const SmartLearnPDFReport = {
+  generateStudentReport() {
+    const user = SmartLearnAuth.getCurrentUser() || { fullName: "Alex Kumar", studentId: "STU-2026-001", className: "B.Tech CSE", section: "A" };
+    const attendance = SmartLearnStorage.get(STORAGE_KEYS.ATTENDANCE) || [];
+    const userAtt = attendance.filter(a => a.studentId === user.id);
+    const presentCount = userAtt.filter(a => a.status === "present").length;
+    const attRate = userAtt.length > 0 ? Math.round((presentCount / userAtt.length) * 100) : 87;
+
+    const reportWindow = window.open("", "_blank");
+    if (!reportWindow) {
+      if (typeof SmartLearnApp !== "undefined" && SmartLearnApp.showToast) {
+        SmartLearnApp.showToast("Please allow popups to download your official PDF report card!", "warning");
+      }
+      return;
+    }
+
+    const todayDate = new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+
+    reportWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>SmartLearn_Academic_Report_${(user.fullName || 'Student').replace(/\s+/g, '_')}</title>
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #1e293b; padding: 2rem; background: #fff; line-height: 1.5; }
+          .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #4f46e5; padding-bottom: 1rem; margin-bottom: 1.5rem; }
+          .logo { font-size: 1.6rem; font-weight: 800; color: #4f46e5; text-transform: uppercase; letter-spacing: 1px; }
+          .badge-seal { background: #4f46e5; color: #fff; font-size: 0.75rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 20px; text-transform: uppercase; }
+          .student-meta { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; background: #f8fafc; padding: 1rem; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
+          .meta-item { font-size: 0.88rem; }
+          .meta-label { font-weight: 700; color: #64748b; font-size: 0.78rem; text-transform: uppercase; }
+          .meta-val { font-weight: 700; color: #0f172a; font-size: 0.95rem; }
+          .section-title { font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-top: 1.5rem; margin-bottom: 0.75rem; border-left: 4px solid #4f46e5; padding-left: 0.5rem; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; font-size: 0.88rem; }
+          th { background: #f1f5f9; text-align: left; padding: 0.6rem 0.8rem; font-weight: 700; color: #334155; border-bottom: 2px solid #cbd5e1; }
+          td { padding: 0.6rem 0.8rem; border-bottom: 1px solid #e2e8f0; }
+          .status-pass { color: #10b981; font-weight: 700; background: #ecfdf5; padding: 0.15rem 0.5rem; border-radius: 6px; }
+          .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+          .kpi-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 10px; padding: 0.85rem; text-align: center; }
+          .kpi-num { font-size: 1.4rem; font-weight: 800; color: #4f46e5; }
+          .kpi-lbl { font-size: 0.75rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+          .footer-note { margin-top: 2rem; font-size: 0.8rem; color: #94a3b8; border-top: 1px solid #e2e8f0; padding-top: 1rem; display: flex; justify-content: space-between; align-items: center; }
+          @media print {
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print" style="margin-bottom: 1.5rem; text-align: right;">
+          <button onclick="window.print()" style="background: #4f46e5; color: #fff; font-weight: 700; padding: 0.6rem 1.2rem; border: none; border-radius: 8px; cursor: pointer;">🖨️ Print / Save as PDF</button>
+        </div>
+
+        <div class="header">
+          <div>
+            <div class="logo">SmartLearn 🎓</div>
+            <div style="font-size: 0.82rem; color: #64748b;">Connected Classroom • Official Student Transcript</div>
+          </div>
+          <div class="badge-seal">Verified Academic Report</div>
+        </div>
+
+        <div class="student-meta">
+          <div class="meta-item"><div class="meta-label">Student Name</div><div class="meta-val">${user.fullName || user.name || 'Alex Kumar'}</div></div>
+          <div class="meta-item"><div class="meta-label">Student ID</div><div class="meta-val">${user.studentId || user.id || 'STU-2026-001'}</div></div>
+          <div class="meta-item"><div class="meta-label">Class & Section</div><div class="meta-val">${user.className || 'B.Tech CSE'} - Section ${user.section || 'A'}</div></div>
+          <div class="meta-item"><div class="meta-label">Report Date</div><div class="meta-val">${todayDate}</div></div>
+        </div>
+
+        <div class="kpi-row">
+          <div class="kpi-box"><div class="kpi-num">3.85 / 4.0</div><div class="kpi-lbl">Cumulative GPA</div></div>
+          <div class="kpi-box"><div class="kpi-num">${attRate}%</div><div class="kpi-lbl">Attendance Rate</div></div>
+          <div class="kpi-box"><div class="kpi-num">A+</div><div class="kpi-lbl">Grade Letter</div></div>
+          <div class="kpi-box"><div class="kpi-num">#4 in Class</div><div class="kpi-lbl">Academic Rank</div></div>
+        </div>
+
+        <div class="section-title">📚 Subject-wise Assessment Breakdown</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Subject</th>
+              <th>Assessment Type</th>
+              <th>Max Score</th>
+              <th>Scored Marks</th>
+              <th>Percentage</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Computer Science & Data Structures</strong></td>
+              <td>Unit Test & Practical</td>
+              <td>100</td>
+              <td>92</td>
+              <td>92%</td>
+              <td><span class="status-pass">PASS (A+)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Differential Calculus</strong></td>
+              <td>Mid-Term Theory Paper</td>
+              <td>100</td>
+              <td>84</td>
+              <td>84%</td>
+              <td><span class="status-pass">PASS (A)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Physics Thermodynamics</strong></td>
+              <td>Theory & Lab Check</td>
+              <td>100</td>
+              <td>78</td>
+              <td>78%</td>
+              <td><span class="status-pass">PASS (B+)</span></td>
+            </tr>
+            <tr>
+              <td><strong>Web Development & SQL</strong></td>
+              <td>Practical Project</td>
+              <td>100</td>
+              <td>95</td>
+              <td>95%</td>
+              <td><span class="status-pass">PASS (A+)</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">🔬 Practical Lab & Coursework Summary</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Practical Title</th>
+              <th>Software Stack</th>
+              <th>Faculty Evaluator</th>
+              <th>Submitted Date</th>
+              <th>Lab Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Binary Search Tree Operations</td>
+              <td>Python 3.10 / VS Code</td>
+              <td>Dr. Priya Sharma</td>
+              <td>Aug 25, 2026</td>
+              <td><strong>48 / 50 (96%)</strong></td>
+            </tr>
+            <tr>
+              <td>Complex SQL Joins & Schema</td>
+              <td>MySQL / SQLite</td>
+              <td>Prof. Rajesh Kumar</td>
+              <td>Aug 20, 2026</td>
+              <td><strong>45 / 50 (90%)</strong></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="section-title">🧠 AI Advisor Guidance & Remarks</div>
+        <div style="background: #f1f5f9; padding: 1rem; border-radius: 8px; font-size: 0.85rem; color: #334155; margin-bottom: 1.5rem;">
+          <strong>Advisor Note:</strong> Alex demonstrates exceptional algorithmic proficiency in Data Structures and Web Technologies. Attendance is well maintained above 85%. Continued practice in Calculus integration problem sets is recommended for final term examinations.
+        </div>
+
+        <div class="footer-note">
+          <div>Report generated automatically via SmartLearn Academic Platform.</div>
+          <div>Authorized Signature: _______________________</div>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() { window.print(); }, 500);
+          };
+        </script>
+      </body>
+      </html>
+    `);
+    reportWindow.document.close();
+  }
+};
 

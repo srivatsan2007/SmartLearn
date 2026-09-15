@@ -1074,13 +1074,13 @@
               <p class="greeting-sub">Track subject-wise proficiency, exam scores, attendance breakdown, and AI learning recommendations.</p>
             </div>
             <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-primary" onclick="SmartLearnPDFReport.generateStudentReport()">
+                📄 Export Official PDF Report
+              </button>
               <button class="btn btn-outline" onclick="SmartLearnPerformanceCharts.openTargetGoalModal()">
                 🎯 Set Target Goal
               </button>
-              <button class="btn btn-outline" onclick="SmartLearnPerformanceCharts.exportReport()">
-                📥 Export Report
-              </button>
-              <button class="btn btn-primary" onclick="SmartLearnPerformanceCharts.init()">
+              <button class="btn btn-outline" onclick="SmartLearnPerformanceCharts.init()">
                 🔄 Refresh Analytics
               </button>
             </div>
