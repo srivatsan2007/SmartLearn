@@ -309,6 +309,37 @@
     </div>
   </div>
 
+  <!-- Modal: Notifications Hub -->
+  <div class="modal-overlay" id="notifications-modal" style="display: none;">
+    <div class="modal-container" style="max-width: 580px;">
+      <div class="modal-header">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <div class="modal-title">Smart Notification Hub 🔔</div>
+          <span id="notif-unread-count-badge" class="badge badge-primary" style="font-size:0.75rem;">0 Unread</span>
+        </div>
+        <button class="modal-close-btn" data-close-modal onclick="SmartLearnApp.closeModal('notifications-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="notif-filter-tabs">
+          <button class="notif-filter-btn active" onclick="SmartLearnNotifications.filterNotifications('all', this)">All</button>
+          <button class="notif-filter-btn" onclick="SmartLearnNotifications.filterNotifications('unread', this)">Unread</button>
+          <button class="notif-filter-btn" onclick="SmartLearnNotifications.filterNotifications('warning', this)">Warnings & Alerts</button>
+          <button class="notif-filter-btn" onclick="SmartLearnNotifications.filterNotifications('academic', this)">Academic</button>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+          <span class="text-xs text-muted">Real-time alerts and system updates</span>
+          <div style="display:flex; gap:0.5rem;">
+            <button class="btn btn-sm btn-subtle" onclick="SmartLearnNotifications.markAllRead()" style="font-size:0.75rem;">Mark All as Read</button>
+            <button class="btn btn-sm btn-subtle" onclick="SmartLearnNotifications.clearAll()" style="font-size:0.75rem; color:var(--danger);">Clear</button>
+          </div>
+        </div>
+        <div id="notifications-list" style="display:flex; flex-direction:column; gap:0.6rem; max-height: 400px; overflow-y: auto;">
+          <div class="empty-state-text">Loading notifications...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Firebase SDKs (v10 Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>

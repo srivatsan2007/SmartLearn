@@ -1093,6 +1093,20 @@ const SmartLearnDashboard = {
     }
   },
 
+  openAdminEditTeacherModal() {
+    const currentUser = SmartLearnAuth.getCurrentUser();
+    if (!currentUser || (currentUser.role !== "Administrator" && currentUser.role !== "admin" && currentUser.role !== "Admin")) {
+      SmartLearnApp.showToast("Administrative Override requires Administrator privileges.", "warning");
+      return;
+    }
+    const editFields = ["prof-teacher-phone", "prof-teacher-fullname", "prof-teacher-department", "prof-teacher-classes"];
+    editFields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.removeAttribute("readonly");
+    });
+    SmartLearnApp.showToast("Admin Override Enabled: Faculty profile fields unlocked for editing.", "success");
+  },
+
   // 10. Populate Student Profile & Settings Page
   populateProfilePage(user) {
     if (!user) user = SmartLearnAuth.getCurrentUser();
