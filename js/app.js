@@ -790,7 +790,7 @@ const SmartLearnDashboard = {
     if (!container) return;
 
     const allAssignments = SmartLearnStorage.get(STORAGE_KEYS.ASSIGNMENTS) || [];
-    const submissions = SmartLearnStorage.get(STORAGE_KEYS.SUBMISSIONS).filter(s => s.studentId === user.id);
+    const submissions = (SmartLearnStorage.get(STORAGE_KEYS.SUBMISSIONS) || []).filter(s => s && s.studentId === user.id);
 
     const userSection = (user.section || "A").toUpperCase();
     const assignments = allAssignments.filter(a => {
@@ -11588,7 +11588,7 @@ if (typeof window !== "undefined") {
 /**
  * SmartLearn - Smart Notifications System Controller (All 4 Roles)
  */
-const SmartLearnNotifications = {
+Object.assign(SmartLearnNotifications, {
   activeFilter: "all",
 
   init() {
@@ -11735,7 +11735,7 @@ const SmartLearnNotifications = {
       SmartLearnApp.showToast("Notifications cleared.", "info");
     }
   }
-};
+});
 
 /**
  * SmartLearn - Smart Warning System Controller
