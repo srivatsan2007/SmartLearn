@@ -126,6 +126,10 @@
             <span id="unread-count-badge" class="notification-badge-count" style="display:none;">0</span>
           </div>
 
+          <button class="btn btn-sm btn-outline" title="QR Check-in" onclick="SmartLearnAttendance.openQrScanModal()" style="display: flex; align-items: center; gap: 0.35rem; font-weight: 600; margin-right: 0.5rem;">
+            📷 QR Check-in
+          </button>
+
           <!-- User Profile Dropdown -->
           <div class="profile-dropdown-wrapper">
             <div class="user-card-mini" id="user-profile-btn" style="cursor: pointer;">
@@ -156,10 +160,15 @@
               <h1 class="greeting-title" id="greeting-text">Good Morning 👋</h1>
               <p class="greeting-sub" id="greeting-sub">Student Portal</p>
             </div>
-            <button class="btn btn-primary" onclick="SmartLearnApp.openModal('ai-assistant-modal')">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-              Ask SmartLearn AI
-            </button>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+              <button class="btn btn-outline" onclick="SmartLearnAttendance.openQrScanModal()" style="font-weight: 600;">
+                📷 QR Check-in
+              </button>
+              <button class="btn btn-primary" onclick="SmartLearnApp.openModal('ai-assistant-modal')">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                Ask SmartLearn AI
+              </button>
+            </div>
           </div>
 
           <!-- Smart Warning System Alert Container -->
@@ -1938,13 +1947,16 @@
 
       <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.15rem;">
         
-        <!-- Mode Switcher: Scanner vs Session Token -->
+        <!-- Mode Switcher: Scanner vs Session Token vs My Student QR -->
         <div style="display: flex; gap: 0.5rem; background: var(--bg-subtle); padding: 0.35rem; border-radius: var(--radius-md);">
           <button type="button" id="qr-tab-scanner-btn" class="btn btn-sm btn-primary" style="flex: 1;" onclick="SmartLearnAttendance.switchQrTab('scanner')">
-            📷 Camera Scanner
+            📷 Scanner
           </button>
           <button type="button" id="qr-tab-token-btn" class="btn btn-sm btn-outline" style="flex: 1;" onclick="SmartLearnAttendance.switchQrTab('token')">
-            🔑 Session Code / Token
+            🔑 Session Code
+          </button>
+          <button type="button" id="qr-tab-myqr-btn" class="btn btn-sm btn-outline" style="flex: 1;" onclick="SmartLearnAttendance.switchQrTab('myqr')">
+            🪪 My Student QR
           </button>
         </div>
 
@@ -1970,6 +1982,30 @@
               Submit Session Code & Check In
             </button>
           </form>
+        </div>
+
+        <!-- My Student ID QR View (View 3) -->
+        <div id="qr-myqr-view" style="display: none; flex-direction: column; align-items: center; text-align: center; gap: 0.85rem;">
+          <div style="background: #fff; padding: 1.25rem; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: inline-block;">
+            <svg viewBox="0 0 100 100" width="160" height="160">
+              <rect width="100" height="100" fill="#ffffff" />
+              <rect x="5" y="5" width="30" height="30" fill="#0f172a" />
+              <rect x="10" y="10" width="20" height="20" fill="#ffffff" />
+              <rect x="15" y="15" width="10" height="10" fill="#0f172a" />
+              <rect x="65" y="5" width="30" height="30" fill="#0f172a" />
+              <rect x="70" y="10" width="20" height="20" fill="#ffffff" />
+              <rect x="75" y="15" width="10" height="10" fill="#0f172a" />
+              <rect x="5" y="65" width="30" height="30" fill="#0f172a" />
+              <rect x="10" y="70" width="20" height="20" fill="#ffffff" />
+              <rect x="15" y="75" width="10" height="10" fill="#0f172a" />
+              <rect x="40" y="10" width="10" height="10" fill="#0f172a" />
+              <rect x="45" y="45" width="15" height="15" fill="#0f172a" />
+              <rect x="65" y="65" width="20" height="20" fill="#0f172a" />
+              <rect x="40" y="75" width="10" height="15" fill="#0f172a" />
+            </svg>
+          </div>
+          <div class="font-bold text-sm" style="color: var(--text-main);" id="modal-student-personal-qr-id">SL-2026-894</div>
+          <p class="text-xs text-muted">Show this QR code to your faculty instructor for direct attendance scanning.</p>
         </div>
 
         <!-- Real Success Feedback Container -->

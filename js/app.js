@@ -5977,25 +5977,46 @@ const SmartLearnAttendance = {
     if (errBox) errBox.style.display = "none";
     if (succBox) succBox.style.display = "none";
 
+    const user = SmartLearnAuth.getCurrentUser();
+    if (user) {
+      const personalQrIdEl = document.getElementById("student-personal-qr-id");
+      if (personalQrIdEl) personalQrIdEl.innerText = user.studentId || user.id || "SL-2026-894";
+      const modalPersonalQrIdEl = document.getElementById("modal-student-personal-qr-id");
+      if (modalPersonalQrIdEl) modalPersonalQrIdEl.innerText = user.studentId || user.id || "SL-2026-894";
+    }
+
     SmartLearnApp.openModal("qr-attendance-modal");
   },
 
   switchQrTab(tabName) {
     const scannerView = document.getElementById("qr-scanner-view");
     const tokenView = document.getElementById("qr-token-view");
+    const myQrView = document.getElementById("qr-myqr-view");
     const scannerBtn = document.getElementById("qr-tab-scanner-btn");
     const tokenBtn = document.getElementById("qr-tab-token-btn");
+    const myQrBtn = document.getElementById("qr-tab-myqr-btn");
 
     if (tabName === "scanner") {
       if (scannerView) scannerView.style.display = "flex";
       if (tokenView) tokenView.style.display = "none";
-      if (scannerBtn) { scannerBtn.className = "btn btn-sm btn-primary"; }
-      if (tokenBtn) { tokenBtn.className = "btn btn-sm btn-outline"; }
+      if (myQrView) myQrView.style.display = "none";
+      if (scannerBtn) scannerBtn.className = "btn btn-sm btn-primary";
+      if (tokenBtn) tokenBtn.className = "btn btn-sm btn-outline";
+      if (myQrBtn) myQrBtn.className = "btn btn-sm btn-outline";
+    } else if (tabName === "myqr") {
+      if (scannerView) scannerView.style.display = "none";
+      if (tokenView) tokenView.style.display = "none";
+      if (myQrView) myQrView.style.display = "flex";
+      if (scannerBtn) scannerBtn.className = "btn btn-sm btn-outline";
+      if (tokenBtn) tokenBtn.className = "btn btn-sm btn-outline";
+      if (myQrBtn) myQrBtn.className = "btn btn-sm btn-primary";
     } else {
       if (scannerView) scannerView.style.display = "none";
       if (tokenView) tokenView.style.display = "flex";
-      if (scannerBtn) { scannerBtn.className = "btn btn-sm btn-outline"; }
-      if (tokenBtn) { tokenBtn.className = "btn btn-sm btn-primary"; }
+      if (myQrView) myQrView.style.display = "none";
+      if (scannerBtn) scannerBtn.className = "btn btn-sm btn-outline";
+      if (tokenBtn) tokenBtn.className = "btn btn-sm btn-primary";
+      if (myQrBtn) myQrBtn.className = "btn btn-sm btn-outline";
     }
   },
 
