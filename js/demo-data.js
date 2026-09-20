@@ -1218,6 +1218,28 @@ const SmartLearnStorage = {
       localStorage.setItem(STORAGE_KEYS.EXAMS, JSON.stringify(exams));
     }
 
+    // 8.b Attendance Sessions
+    if (isKeyEmpty(STORAGE_KEYS.ATTENDANCE_SESSIONS)) {
+      const defaultSessions = [
+        {
+          id: "SESS-849201",
+          sessionId: "SESS-849201",
+          code: "849201",
+          token: "849201",
+          classId: "B.Tech CSE",
+          section: "A",
+          subjectId: "sub_cs",
+          subjectName: "Data Structures",
+          teacherId: "usr_teacher_01",
+          teacherName: "Dr. Priya Sharma",
+          active: true,
+          createdAt: new Date().toISOString(),
+          expiresAt: new Date(Date.now() + 365 * 24 * 3600 * 1000).toISOString()
+        }
+      ];
+      localStorage.setItem(STORAGE_KEYS.ATTENDANCE_SESSIONS, JSON.stringify(defaultSessions));
+    }
+
     // 9. Timetable / Today Classes (8 Periods per Day)
     if (isKeyEmpty(STORAGE_KEYS.TIMETABLE)) {
       const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
